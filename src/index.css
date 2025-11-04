@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gray-950 text-gray-100 min-h-screen;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+  }
+}
+
+@layer components {
+  .game-card {
+    @apply bg-gray-900 rounded-lg shadow-lg border border-gray-800 p-4 transition-all hover:border-gray-700 hover:shadow-xl;
+  }
+
+  .confidence-badge-high {
+    @apply bg-green-600 text-white px-2 py-1 rounded-full text-xs font-bold;
+  }
+
+  .confidence-badge-medium {
+    @apply bg-yellow-600 text-white px-2 py-1 rounded-full text-xs font-bold;
+  }
+
+  .confidence-badge-low {
+    @apply bg-red-600 text-white px-2 py-1 rounded-full text-xs font-bold;
+  }
+
+  .btn-primary {
+    @apply bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-800 hover:bg-gray-700 text-gray-100 font-semibold py-2 px-4 rounded-lg transition-colors border border-gray-700;
+  }
+}
