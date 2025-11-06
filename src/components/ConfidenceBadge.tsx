@@ -1,4 +1,4 @@
-import { Confidence } from '../types';
+import type { Confidence } from '../types';
 
 interface ConfidenceBadgeProps {
   confidence: Confidence;

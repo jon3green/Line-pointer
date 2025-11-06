@@ -5,7 +5,8 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { socialService, LeaderboardEntry, ActivityFeedItem, UserProfile, SharedBet } from '../services/social.service';
+import { socialService } from '../services/social.service';
+import type { LeaderboardEntry, ActivityFeedItem, UserProfile, SharedBet } from '../services/social.service';
 import { authService } from '../services/auth.service';
 
 export function CommunityPage() {

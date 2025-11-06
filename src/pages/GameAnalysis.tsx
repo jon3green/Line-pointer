@@ -2,7 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { mockNFLGames, mockNCAAFGames } from '../data/mockGames';
 import ConfidenceBadge from '../components/ConfidenceBadge';
 import { useState } from 'react';
-import { ParlayPick } from '../types';
+import type { ParlayPick } from '../types';
 
 export default function GameAnalysis() {
   const { gameId } = useParams<{ gameId: string }>();

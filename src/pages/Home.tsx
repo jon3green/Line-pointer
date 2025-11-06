@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Sport } from '../types';
+import type { Sport } from '../types';
 import { mockNFLGames, mockNCAAFGames } from '../data/mockGames';
 
 export default function Home() {

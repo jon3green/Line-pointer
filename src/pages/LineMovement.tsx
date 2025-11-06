@@ -6,8 +6,8 @@ import { Link } from 'react-router-dom';
 export function LineMovementPage() {
   const [movements, setMovements] = useState<LineMovement[]>([]);
   const [alerts, setAlerts] = useState<LineAlert[]>([]);
-  const [selectedGame, setSelectedGame] = useState<LineMovement | null>(null);
-  const [chartType, _setChartType] = useState<'spread' | 'total' | 'moneyline'>('spread');
+  // const [selectedGame, setSelectedGame] = useState<LineMovement | null>(null);
+  // const [chartType, _setChartType] = useState<'spread' | 'total' | 'moneyline'>('spread');
   const [filter, setFilter] = useState<'all' | 'sharp' | 'significant'>('all');
 
   useEffect(() => {

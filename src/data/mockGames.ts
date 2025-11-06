@@ -1,4 +1,4 @@
-import { Game, HistoricalRecord } from '../types';
+import type { Game, HistoricalRecord } from '../types';
 
 export const mockNFLGames: Game[] = [
   {

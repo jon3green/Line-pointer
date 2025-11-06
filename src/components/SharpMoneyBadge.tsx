@@ -95,7 +95,7 @@ interface SharpMoneyIndicatorProps {
 }
 
 export function SharpMoneyIndicator({
-  gameId,
+  gameId: _gameId,
   lineMovement,
   publicBetting,
   sharpConsensus

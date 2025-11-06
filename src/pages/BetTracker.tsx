@@ -8,7 +8,7 @@ export function BetTracker() {
   const [stats, setStats] = useState<BetStats | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [filter, setFilter] = useState<'all' | 'pending' | 'won' | 'lost'>('all');
-  const [editingBet, setEditingBet] = useState<Bet | null>(null);
+  // const [editingBet, setEditingBet] = useState<Bet | null>(null);
 
   // Form state
   const [formData, setFormData] = useState({

@@ -1,5 +1,5 @@
 import { mockHistoricalData } from '../data/mockGames';
-import { Sport } from '../types';
+import type { Sport } from '../types';
 import { useState } from 'react';
 
 export default function HistoricalPerformance() {

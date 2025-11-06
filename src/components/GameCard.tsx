@@ -1,4 +1,4 @@
-import { Game } from '../types';
+import type { Game } from '../types';
 import { Link } from 'react-router-dom';
 import ConfidenceBadge from './ConfidenceBadge';
 

@@ -1542,8 +1542,8 @@ function ParlayBuilder() {
     if (parlayPicks.length === 0) return 0;
 
     // Use the AI win probability from each game
-    const probabilities = parlayPicks.map((pick: any) => {
-      const game = allGamesData[pick.id];
+    const probabilities = parlayPicks.map((pick: { id: number }) => {
+      const game = allGamesData[pick.id as keyof typeof allGamesData];
       return game.winProb / 100; // Convert to decimal
     });
 
@@ -1583,8 +1583,8 @@ function ParlayBuilder() {
                 </button>
               </div>
 
-              {parlayPicks.map((pick: any) => {
-                const game = allGamesData[pick.id];
+              {parlayPicks.map((pick: { id: number }) => {
+                const game = allGamesData[pick.id as keyof typeof allGamesData];
                 return (
                   <div key={pick.id} className="bg-gray-900 rounded-lg p-4 border border-gray-800">
                     <div className="flex justify-between items-start mb-3">
@@ -1819,12 +1819,12 @@ function HistoricalPerformance() {
 
 // Bankroll Management Component
 function BankrollManager() {
-  const [bankroll, setBankroll] = useState(() => {
+  const [bankroll, _setBankroll] = useState(() => {
     const saved = localStorage.getItem('bankroll');
     return saved ? parseFloat(saved) : 1000;
   });
 
-  const [transactions, setTransactions] = useState(() => {
+  const [transactions, _setTransactions] = useState(() => {
     const saved = localStorage.getItem('transactions');
     return saved ? JSON.parse(saved) : [
       { id: 1, date: '2025-11-02', type: 'win', amount: 90.91, description: 'SEA -3.5 Win', balance: 1090.91 },
@@ -1889,7 +1889,7 @@ function BankrollManager() {
       <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
         <h2 className="text-lg font-semibold text-white mb-4">Transaction History</h2>
         <div className="space-y-3">
-          {transactions.map(txn => (
+          {transactions.map((txn: any) => (
             <div key={txn.id} className="flex items-center justify-between bg-gray-800 rounded-lg p-4">
               <div className="flex items-center space-x-4">
                 <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
