@@ -1,19 +1,19 @@
 /**
- * Line Pointer
- */
-/**
  * Community Page
  * Social features: leaderboards, following, activity feed
  */
 
+/**
+ * Community Page - Line Pointer
+ */
+
 import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { socialService } from '../services/social.service';
 import type { LeaderboardEntry, ActivityFeedItem, UserProfile, SharedBet } from '../services/social.service';
 import { authService } from '../services/auth.service';
 
 export function CommunityPage() {
-  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'leaderboard' | 'feed' | 'shared' | 'following'>('leaderboard');
   const [leaderboardType, setLeaderboardType] = useState<'profit' | 'roi' | 'winRate' | 'streak'>('profit');
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
@@ -98,19 +98,10 @@ export function CommunityPage() {
           </svg>
           <span className="font-medium">Back to Home</span>
         </Link>
-    <div className="max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="mb-6">
-        <button
-          onClick={() => navigate(-1)}
-          className="mb-4 text-text-secondary hover:text-white transition-colors"
-        >
-          ← Back
-        </button>
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-4xl font-bold text-white mb-2">🌟 Community</h1>
-            <p className="text-text-primary">Connect with top bettors, share picks, and compete on leaderboards</p>
+            <p className="text-gray-300">Connect with top bettors, share picks, and compete on leaderboards</p>
           </div>
           {currentUserProfile && (
             <div className="bg-gray-900 rounded-lg p-4 border border-gray-800">
@@ -287,7 +278,7 @@ export function CommunityPage() {
                           onClick={() => isFollowingUser(entry.userId) ? handleUnfollow(entry.userId) : handleFollow(entry.userId)}
                           className={`px-4 py-2 rounded-lg font-semibold text-sm transition-colors ${
                             isFollowingUser(entry.userId)
-                              ? 'bg-gray-700 text-text-primary hover:bg-gray-600'
+                              ? 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                               : 'bg-blue-600 text-white hover:bg-blue-700'
                           }`}
                         >
@@ -324,7 +315,7 @@ export function CommunityPage() {
                       <span className="text-gray-600 text-sm">•</span>
                       <span className="text-text-secondary text-sm">{formatDate(activity.timestamp)}</span>
                     </div>
-                    <p className="text-text-primary mb-3">{activity.content}</p>
+                    <p className="text-gray-300 mb-3">{activity.content}</p>
                     <div className="flex items-center gap-6 text-sm">
                       <button className="text-text-secondary hover:text-red-500 transition-colors flex items-center gap-1">
                         ❤️ {activity.likes}
@@ -375,7 +366,7 @@ export function CommunityPage() {
                     </div>
 
                     {/* Bet Details */}
-                    <div className="stat-card mb-3">
+                    <div className="bg-gray-800 rounded-lg p-4 mb-3">
                       <div className="flex items-center justify-between mb-2">
                         <div>
                           <p className="text-text-secondary text-sm">{bet.betDetails.sport} • {bet.betDetails.betType}</p>
@@ -416,7 +407,7 @@ export function CommunityPage() {
                     </div>
 
                     {bet.analysis && (
-                      <p className="text-text-primary mb-3 italic">{bet.analysis}</p>
+                      <p className="text-gray-300 mb-3 italic">{bet.analysis}</p>
                     )}
 
                     <div className="flex items-center gap-6 text-sm">
@@ -461,15 +452,6 @@ export function CommunityPage() {
                 if (!profile) return null;
 
                 return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div>
-        <Link to="/" className="flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors group mb-3">
-          <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          <span className="font-medium">Back to Home</span>
-        </Link>
                   <div key={userId} className="card">
                     <div className="flex items-center gap-4 mb-4">
                       <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-text-primary font-bold text-xl">

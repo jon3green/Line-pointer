@@ -1,6 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { mockNFLGames, mockNCAAFGames } from '../data/mockGames';
-import ConfidenceBadge from '../components/ConfidenceBadge';
 import { useState } from 'react';
 import type { ParlayPick } from '../types';
 
