@@ -116,8 +116,8 @@ class SocialService {
     }
 
     // Update stats from bet tracker
-    const bets = betTrackerService.getBets();
-    const stats = betTrackerService.getStats(bets);
+    const bets = betTrackerService.getAllBets();
+    const stats = betTrackerService.calculateStats(bets);
 
     profile.stats.totalBets = bets.length;
     profile.stats.netProfit = stats.netProfit;
@@ -390,8 +390,8 @@ class SocialService {
       return { success: false, error: 'Not logged in' };
     }
 
-    const bets = betTrackerService.getBets();
-    const bet = bets.find(b => b.id === betId);
+    const bets = betTrackerService.getAllBets();
+    const bet = bets.find((b: any) => b.id === betId);
 
     if (!bet) {
       return { success: false, error: 'Bet not found' };

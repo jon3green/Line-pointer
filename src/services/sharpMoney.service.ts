@@ -145,7 +145,7 @@ class SharpMoneyService {
   // API Configuration (set these in .env)
   private readonly ACTION_NETWORK_KEY = import.meta.env.VITE_ACTION_NETWORK_API_KEY;
   private readonly PINNACLE_KEY = import.meta.env.VITE_PINNACLE_API_KEY;
-  private readonly SPORTS_INSIGHTS_KEY = import.meta.env.VITE_SPORTS_INSIGHTS_KEY;
+  // private readonly SPORTS_INSIGHTS_KEY = import.meta.env.VITE_SPORTS_INSIGHTS_KEY;
 
   /**
    * Fetch real sharp money data from Action Network API
@@ -239,7 +239,7 @@ class SharpMoneyService {
   detectRLM(
     publicPercentage: number,
     moneyPercentage: number,
-    lineMovement: number
+    _lineMovement: number
   ): boolean {
     // RLM occurs when:
     // - Public is heavily on one side (>65%)

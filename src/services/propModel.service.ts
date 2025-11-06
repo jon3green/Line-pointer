@@ -171,7 +171,7 @@ class PropModelService {
 
   // Private helper methods
 
-  private generateFactors(player: string, team: string, opponent: string, stat: PropModel['stat']): PropFactors {
+  private generateFactors(_player: string, _team: string, _opponent: string, stat: PropModel['stat']): PropFactors {
     // Mock factors - in production, fetch real player stats
     const base = this.getStatBaseline(stat);
 
@@ -190,7 +190,7 @@ class PropModelService {
     };
   }
 
-  private calculateProjection(factors: PropFactors, stat: PropModel['stat']): number {
+  private calculateProjection(factors: PropFactors, _stat: PropModel['stat']): number {
     // Weighted regression model
     let projection = 0;
 

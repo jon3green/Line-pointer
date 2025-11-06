@@ -167,17 +167,17 @@ class RegressionModelService {
   private readonly PERFORMANCE_KEY = 'model_performance';
 
   // Model hyperparameters (tuned via cross-validation)
-  private readonly LEARNING_RATE = 0.01;
-  private readonly REGULARIZATION = 0.001; // L2 regularization to prevent overfitting
+  // private readonly LEARNING_RATE = 0.01;
+  // private readonly REGULARIZATION = 0.001; // L2 regularization to prevent overfitting
 
   /**
    * Generate prediction using regression model
    */
   generatePrediction(
-    gameId: string,
-    sport: string,
-    homeTeam: string,
-    awayTeam: string,
+    _gameId: string,
+    _sport: string,
+    _homeTeam: string,
+    _awayTeam: string,
     currentSpread: number,
     factors: Partial<RegressionFactors>
   ): RegressionPrediction {
@@ -393,7 +393,7 @@ class RegressionModelService {
   private generateRecommendation(
     predictedMargin: number,
     currentSpread: number,
-    edge: number,
+    _edge: number,
     confidence: number
   ): RegressionPrediction['recommendation'] {
     let side: 'home' | 'away' | 'pass' = 'pass';
@@ -471,7 +471,7 @@ class RegressionModelService {
   /**
    * Get model accuracy statistics
    */
-  private getModelAccuracy(sport: string, gameId: string): RegressionPrediction['modelAccuracy'] {
+  private getModelAccuracy(sport: string, _gameId: string): RegressionPrediction['modelAccuracy'] {
     // In production, calculate from actual historical performance
     // For now, return realistic accuracy based on research
 
@@ -589,10 +589,10 @@ class RegressionModelService {
    * Find similar historical games
    */
   findSimilarGames(
-    sport: string,
-    homeTeam: string,
-    awayTeam: string,
-    factors: RegressionFactors
+    _sport: string,
+    _homeTeam: string,
+    _awayTeam: string,
+    _factors: RegressionFactors
   ): HistoricalComparison {
     // In production, query historical database
     // For now, return mock similar games

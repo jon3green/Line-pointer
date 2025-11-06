@@ -1,4 +1,4 @@
-import { ParlayPick, Parlay } from '../types';
+import type { ParlayPick, Parlay } from '../types';
 
 export function calculateCombinedProbability(picks: ParlayPick[]): number {
   if (picks.length === 0) return 0;

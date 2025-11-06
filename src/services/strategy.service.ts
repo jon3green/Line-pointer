@@ -9,9 +9,9 @@
  * 4. Kelly Criterion: 1-5% bankroll max
  */
 
-import { clvService } from './clv.service';
-import { sharpMoneyService } from './sharpMoney.service';
-import { edgeService } from './edge.service';
+// import { clvService } from './clv.service';
+// import { sharpMoneyService } from './sharpMoney.service';
+// import { edgeService } from './edge.service';
 
 export type WinningFilters = {
   sharpConsensus: number; // 0-1 (0.70 = 70%+)
@@ -135,7 +135,7 @@ class StrategyService {
    * Calculate professional edge score (0-100)
    */
   calculateProfessionalEdgeScore(
-    gameId: string,
+    _gameId: string,
     currentLine: number,
     openingLine: number,
     projectedClosing: number,

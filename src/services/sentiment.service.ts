@@ -254,7 +254,7 @@ class SentimentService {
     }));
   }
 
-  private generateMockPosts(context: string, count: number): SocialPost[] {
+  private generateMockPosts(_context: string, count: number): SocialPost[] {
     const templates = [
       { content: 'This team is looking dominant today! #NFL', sentiment: 'positive' as const },
       { content: 'Not sure about this matchup, feels like a trap game', sentiment: 'neutral' as const },
