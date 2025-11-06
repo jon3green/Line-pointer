@@ -572,7 +572,7 @@ const allGamesData = {
 function GameDetail() {
   const { gameId } = useParams();
   const navigate = useNavigate();
-  const game = allGamesData[parseInt(gameId || '1')];
+  const game = allGamesData[parseInt(gameId || '1') as keyof typeof allGamesData];
 
   if (!game) {
     return <div className="text-white">Game not found</div>;
@@ -711,7 +711,7 @@ function GameDetail() {
             <div className="text-blue-400 font-semibold mb-3">{game.awayShort}</div>
             {game.injuries.away.length > 0 ? (
               <div className="space-y-2">
-                {game.injuries.away.map((injury, i) => (
+                {game.injuries.away.map((injury: any, i: number) => (
                   <div key={i} className="bg-gray-800 rounded p-3">
                     <div className="flex justify-between items-start mb-1">
                       <div className="text-white font-semibold text-sm">{injury.player}</div>
@@ -736,7 +736,7 @@ function GameDetail() {
             <div className="text-green-400 font-semibold mb-3">{game.homeShort}</div>
             {game.injuries.home.length > 0 ? (
               <div className="space-y-2">
-                {game.injuries.home.map((injury, i) => (
+                {game.injuries.home.map((injury: any, i: number) => (
                   <div key={i} className="bg-gray-800 rounded p-3">
                     <div className="flex justify-between items-start mb-1">
                       <div className="text-white font-semibold text-sm">{injury.player}</div>
@@ -798,7 +798,7 @@ function GameDetail() {
               <div>
                 <div className="text-gray-400 text-sm mb-2">Recent Form</div>
                 <div className="flex space-x-1">
-                  {game.awayStats.form.split('-').map((r, i) => (
+                  {game.awayStats.form.split('-').map((r: string, i: number) => (
                     <span key={i} className={`w-6 h-6 rounded flex items-center justify-center text-xs font-bold ${
                       r === 'W' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
                     }`}>{r}</span>
@@ -808,7 +808,7 @@ function GameDetail() {
               <div>
                 <div className="text-gray-400 text-sm mb-2">Recent Form</div>
                 <div className="flex space-x-1">
-                  {game.homeStats.form.split('-').map((r, i) => (
+                  {game.homeStats.form.split('-').map((r: string, i: number) => (
                     <span key={i} className={`w-6 h-6 rounded flex items-center justify-center text-xs font-bold ${
                       r === 'W' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
                     }`}>{r}</span>
@@ -847,26 +847,26 @@ function GameDetail() {
       </div>
 
       {/* Advanced Metrics (EPA, DVOA) */}
-      {game.advancedMetrics && (
+      {("advancedMetrics" in game) && game.advancedMetrics && (
         <div className="bg-gray-900 rounded-lg p-6 mb-6 border border-gray-800">
           <h2 className="text-lg font-semibold text-white mb-4 flex items-center">
             <span className="mr-2">📊</span>
             Advanced Performance Metrics
           </h2>
           <div className="space-y-4">
-            <StatRow label="EPA (Expected Points Added)" away={game.advancedMetrics.away.epa.toFixed(2)} home={game.advancedMetrics.home.epa.toFixed(2)} />
-            <StatRow label="DVOA (Defense-Adjusted Value)" away={`${game.advancedMetrics.away.dvoa.toFixed(1)}%`} home={`${game.advancedMetrics.home.dvoa.toFixed(1)}%`} />
-            <StatRow label="Success Rate" away={`${game.advancedMetrics.away.successRate.toFixed(1)}%`} home={`${game.advancedMetrics.home.successRate.toFixed(1)}%`} />
-            <StatRow label="Explosive Play Rate" away={`${game.advancedMetrics.away.explosivePlayRate.toFixed(1)}%`} home={`${game.advancedMetrics.home.explosivePlayRate.toFixed(1)}%`} />
-            <StatRow label="Stuff Rate (Lower is Better)" away={`${game.advancedMetrics.away.stuffRate.toFixed(1)}%`} home={`${game.advancedMetrics.home.stuffRate.toFixed(1)}%`} />
+            <StatRow label="EPA (Expected Points Added)" away={game.advancedMetrics?.away.epa.toFixed(2) ?? 'N/A'} home={game.advancedMetrics?.home.epa.toFixed(2) ?? 'N/A'} />
+            <StatRow label="DVOA (Defense-Adjusted Value)" away={`${game.advancedMetrics?.away.dvoa.toFixed(1) ?? 'N/A'}%`} home={`${game.advancedMetrics?.home.dvoa.toFixed(1) ?? 'N/A'}%`} />
+            <StatRow label="Success Rate" away={`${game.advancedMetrics?.away.successRate.toFixed(1) ?? 'N/A'}%`} home={`${game.advancedMetrics?.home.successRate.toFixed(1) ?? 'N/A'}%`} />
+            <StatRow label="Explosive Play Rate" away={`${game.advancedMetrics?.away.explosivePlayRate.toFixed(1) ?? 'N/A'}%`} home={`${game.advancedMetrics?.home.explosivePlayRate.toFixed(1) ?? 'N/A'}%`} />
+            <StatRow label="Stuff Rate (Lower is Better)" away={`${game.advancedMetrics?.away.stuffRate.toFixed(1) ?? 'N/A'}%`} home={`${game.advancedMetrics?.home.stuffRate.toFixed(1) ?? 'N/A'}%`} />
           </div>
           <div className="mt-4 p-3 bg-blue-900/20 border border-blue-800/30 rounded">
             <div className="text-blue-400 text-xs font-semibold mb-1">What This Means</div>
             <div className="text-gray-300 text-xs">
               EPA measures offensive efficiency per play. DVOA adjusts for opponent strength. Success rate shows consistency.
-              {game.advancedMetrics.home.epa > game.advancedMetrics.away.epa && game.advancedMetrics.home.dvoa > game.advancedMetrics.away.dvoa
+              {game.advancedMetrics?.home.epa > (game.advancedMetrics?.away.epa ?? 0) && (game.advancedMetrics?.home.dvoa ?? 0) > (game.advancedMetrics?.away.dvoa ?? 0)
                 ? ` ${game.homeShort} has clear advanced metrics advantage.`
-                : game.advancedMetrics.away.epa > game.advancedMetrics.home.epa && game.advancedMetrics.away.dvoa > game.advancedMetrics.home.dvoa
+                : (game.advancedMetrics?.away.epa ?? 0) > (game.advancedMetrics?.home.epa ?? 0) && (game.advancedMetrics?.away.dvoa ?? 0) > (game.advancedMetrics?.home.dvoa ?? 0)
                 ? ` ${game.awayShort} has clear advanced metrics advantage.`
                 : ` Advanced metrics suggest a closely matched game.`}
             </div>
@@ -875,7 +875,7 @@ function GameDetail() {
       )}
 
       {/* Coaching Analysis */}
-      {game.coaching && (
+      {("coaching" in game) && game.coaching && (
         <div className="bg-gray-900 rounded-lg p-6 mb-6 border border-gray-800">
           <h2 className="text-lg font-semibold text-white mb-4 flex items-center">
             <span className="mr-2">🎯</span>
@@ -883,44 +883,44 @@ function GameDetail() {
           </h2>
           <div className="grid grid-cols-2 gap-6">
             <div>
-              <div className="text-blue-400 font-semibold mb-3">{game.coaching.away.headCoach} ({game.awayShort})</div>
+              <div className="text-blue-400 font-semibold mb-3">{game.coaching?.away.headCoach} ({game.awayShort})</div>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-400">Career Record:</span>
-                  <span className="text-white font-semibold">{game.coaching.away.record}</span>
+                  <span className="text-white font-semibold">{game.coaching?.away.record}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-400">Playoff Record:</span>
-                  <span className="text-white font-semibold">{game.coaching.away.playoffRecord}</span>
+                  <span className="text-white font-semibold">{game.coaching?.away.playoffRecord}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-400">vs Opposing Coach:</span>
-                  <span className="text-white font-semibold">{game.coaching.away.vsOpposingCoach}</span>
+                  <span className="text-white font-semibold">{game.coaching?.away.vsOpposingCoach}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-400">Adjustment Rating:</span>
-                  <span className="text-white font-semibold">{game.coaching.away.adjustmentRating}/10</span>
+                  <span className="text-white font-semibold">{game.coaching?.away.adjustmentRating}/10</span>
                 </div>
               </div>
             </div>
             <div>
-              <div className="text-green-400 font-semibold mb-3">{game.coaching.home.headCoach} ({game.homeShort})</div>
+              <div className="text-green-400 font-semibold mb-3">{game.coaching?.home.headCoach} ({game.homeShort})</div>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-400">Career Record:</span>
-                  <span className="text-white font-semibold">{game.coaching.home.record}</span>
+                  <span className="text-white font-semibold">{game.coaching?.home.record}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-400">Playoff Record:</span>
-                  <span className="text-white font-semibold">{game.coaching.home.playoffRecord}</span>
+                  <span className="text-white font-semibold">{game.coaching?.home.playoffRecord}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-400">vs Opposing Coach:</span>
-                  <span className="text-white font-semibold">{game.coaching.home.vsOpposingCoach}</span>
+                  <span className="text-white font-semibold">{game.coaching?.home.vsOpposingCoach}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-400">Adjustment Rating:</span>
-                  <span className="text-white font-semibold">{game.coaching.home.adjustmentRating}/10</span>
+                  <span className="text-white font-semibold">{game.coaching?.home.adjustmentRating}/10</span>
                 </div>
               </div>
             </div>
@@ -928,10 +928,10 @@ function GameDetail() {
           <div className="mt-4 p-3 bg-purple-900/20 border border-purple-800/30 rounded">
             <div className="text-purple-400 text-xs font-semibold mb-1">Coaching Edge</div>
             <div className="text-gray-300 text-xs">
-              {game.coaching.home.adjustmentRating > game.coaching.away.adjustmentRating + 1
-                ? `${game.homeShort} has significant coaching advantage. ${game.coaching.home.headCoach} excels at in-game adjustments.`
-                : game.coaching.away.adjustmentRating > game.coaching.home.adjustmentRating + 1
-                ? `${game.awayShort} has significant coaching advantage. ${game.coaching.away.headCoach} excels at in-game adjustments.`
+              {(game.coaching?.home.adjustmentRating ?? 0) > (game.coaching?.away.adjustmentRating ?? 0) + 1
+                ? `${game.homeShort} has significant coaching advantage. ${game.coaching?.home.headCoach} excels at in-game adjustments.`
+                : (game.coaching?.away.adjustmentRating ?? 0) > (game.coaching?.home.adjustmentRating ?? 0) + 1
+                ? `${game.awayShort} has significant coaching advantage. ${game.coaching?.away.headCoach} excels at in-game adjustments.`
                 : `Coaching matchup is evenly matched. Both coaches are experienced in big games.`}
             </div>
           </div>
@@ -939,24 +939,24 @@ function GameDetail() {
       )}
 
       {/* Rest & Travel Analysis */}
-      {game.restAndTravel && (
+      {("restAndTravel" in game) && game.restAndTravel && (
         <div className="bg-gray-900 rounded-lg p-6 mb-6 border border-gray-800">
           <h2 className="text-lg font-semibold text-white mb-4 flex items-center">
             <span className="mr-2">✈️</span>
             Rest & Travel Factors
           </h2>
           <div className="space-y-4">
-            <StatRow label="Days Rest" away={game.restAndTravel.away.daysRest.toString()} home={game.restAndTravel.home.daysRest.toString()} />
-            <StatRow label="Travel Distance (miles)" away={game.restAndTravel.away.travelDistance.toString()} home={game.restAndTravel.home.travelDistance.toString()} />
-            <StatRow label="Time Zone Change" away={game.restAndTravel.away.timeZoneChange > 0 ? `+${game.restAndTravel.away.timeZoneChange}` : game.restAndTravel.away.timeZoneChange.toString()} home={game.restAndTravel.home.timeZoneChange.toString()} />
+            <StatRow label="Days Rest" away={game.restAndTravel?.away.daysRest.toString() ?? 'N/A'} home={game.restAndTravel?.home.daysRest.toString() ?? 'N/A'} />
+            <StatRow label="Travel Distance (miles)" away={game.restAndTravel?.away.travelDistance.toString() ?? 'N/A'} home={game.restAndTravel?.home.travelDistance.toString() ?? 'N/A'} />
+            <StatRow label="Time Zone Change" away={(game.restAndTravel?.away.timeZoneChange ?? 0) > 0 ? `+${game.restAndTravel?.away.timeZoneChange}` : game.restAndTravel?.away.timeZoneChange.toString() ?? 'N/A'} home={game.restAndTravel?.home.timeZoneChange.toString() ?? 'N/A'} />
           </div>
           <div className="mt-4 p-3 bg-green-900/20 border border-green-800/30 rounded">
             <div className="text-green-400 text-xs font-semibold mb-1">Impact Assessment</div>
             <div className="text-gray-300 text-xs">
-              {game.restAndTravel.away.daysRest < game.restAndTravel.home.daysRest
+              {(game.restAndTravel?.away.daysRest ?? 0) < (game.restAndTravel?.home.daysRest ?? 0)
                 ? `${game.homeShort} has rest advantage. Fatigue could be a factor for ${game.awayShort}.`
-                : game.restAndTravel.away.travelDistance > 1000
-                ? `${game.awayShort} traveled ${game.restAndTravel.away.travelDistance} miles. Long travel can impact performance by 2-3 points on average.`
+                : (game.restAndTravel?.away.travelDistance ?? 0) > 1000
+                ? `${game.awayShort} traveled ${game.restAndTravel?.away.travelDistance} miles. Long travel can impact performance by 2-3 points on average.`
                 : `Both teams on equal rest. Minimal travel impact expected.`}
             </div>
           </div>
@@ -964,7 +964,7 @@ function GameDetail() {
       )}
 
       {/* Betting Market Intelligence */}
-      {game.bettingAnalysis && (
+      {("bettingAnalysis" in game) && game.bettingAnalysis && (
         <div className="bg-gray-900 rounded-lg p-6 mb-6 border border-gray-800">
           <h2 className="text-lg font-semibold text-white mb-4 flex items-center">
             <span className="mr-2">💰</span>
@@ -1014,14 +1014,14 @@ function GameDetail() {
       )}
 
       {/* Key Matchups */}
-      {game.keyMatchups && (
+      {("keyMatchups" in game) && game.keyMatchups && (
         <div className="bg-gray-900 rounded-lg p-6 mb-6 border border-gray-800">
           <h2 className="text-lg font-semibold text-white mb-4 flex items-center">
             <span className="mr-2">⚔️</span>
             Key Matchups to Watch
           </h2>
           <div className="space-y-4">
-            {game.keyMatchups.map((matchup, i) => (
+            {game.keyMatchups.map((matchup: any, i: number) => (
               <div key={i} className="bg-gray-800 rounded p-4">
                 <div className="flex justify-between items-start mb-2">
                   <div className="text-white font-semibold">{matchup.matchup}</div>
@@ -1046,7 +1046,7 @@ function GameDetail() {
       )}
 
       {/* Situational Factors */}
-      {game.situationalFactors && (
+      {("situationalFactors" in game) && game.situationalFactors && (
         <div className="bg-gray-900 rounded-lg p-6 mb-6 border border-gray-800">
           <h2 className="text-lg font-semibold text-white mb-4 flex items-center">
             <span className="mr-2">🎲</span>
@@ -1110,7 +1110,7 @@ function GameDetail() {
       )}
 
       {/* Model Prediction Breakdown */}
-      {game.modelPrediction && (
+      {("modelPrediction" in game) && game.modelPrediction && (
         <div className="bg-gradient-to-r from-purple-900/40 to-blue-900/40 rounded-lg p-6 mb-6 border border-purple-800/30">
           <h2 className="text-lg font-semibold text-white mb-4 flex items-center">
             <span className="mr-2">🧮</span>
@@ -1143,7 +1143,7 @@ function GameDetail() {
           <div className="mb-4">
             <h3 className="text-white font-semibold mb-3 text-sm">Factor Contribution Analysis</h3>
             <div className="space-y-2">
-              {game.modelPrediction.factors.map((factor, i) => (
+              {game.modelPrediction.factors.map((factor: any, i: number) => (
                 <div key={i} className="bg-gray-900/70 rounded p-3">
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-gray-300 text-sm">{factor.factor}</span>
@@ -1276,7 +1276,7 @@ function HomePage() {
 
   // Apply sorting
   if (sortBy === 'confidence') {
-    const order = { 'High': 0, 'Medium': 1, 'Low': 2 };
+    const order: Record<string, number> = { 'High': 0, 'Medium': 1, 'Low': 2 };
     games = [...games].sort((a, b) => order[a.confidence] - order[b.confidence]);
   } else if (sortBy === 'spread') {
     games = [...games].sort((a, b) => Math.abs(a.spread) - Math.abs(b.spread));
@@ -1484,7 +1484,7 @@ function ParlayBuilder() {
     return saved ? JSON.parse(saved) : [];
   });
   const [betAmount, setBetAmount] = useState(100);
-  const [betType, setBetType] = useState('spread');
+  // const [betType, setBetType] = useState('spread');
 
   useEffect(() => {
     localStorage.setItem('parlay', JSON.stringify(parlayPicks));
@@ -1507,21 +1507,13 @@ function ParlayBuilder() {
     return (100 / Math.abs(americanOdds)) + 1;
   };
 
-  // Calculate implied probability from odds
-  const getImpliedProbability = (americanOdds: number) => {
-    if (americanOdds > 0) {
-      return (100 / (americanOdds + 100)) * 100;
-    }
-    return (Math.abs(americanOdds) / (Math.abs(americanOdds) + 100)) * 100;
-  };
-
   // Calculate parlay odds
   const calculateParlayOdds = () => {
     if (parlayPicks.length === 0) return { decimal: 1, american: 0, payout: 0, profit: 0 };
 
     // For spread bets, typical odds are -110
     const decimalOdds = parlayPicks.map(() => americanToDecimal(-110));
-    const totalDecimal = decimalOdds.reduce((acc, odd) => acc * odd, 1);
+    const totalDecimal = decimalOdds.reduce((acc: number, odd: number) => acc * odd, 1);
 
     const payout = betAmount * totalDecimal;
     const profit = payout - betAmount;
