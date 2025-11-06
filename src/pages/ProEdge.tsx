@@ -1,10 +1,13 @@
 /**
+ * Line Pointer
+ */
+/**
  * Pro Edge Dashboard
  * Professional betting tools: CLV, Edge Scores, Sharp Analysis, Props
  */
 
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { clvService } from '../services/clv.service';
 import type { CLVStats, CLVAlert } from '../services/clv.service';
 import { edgeService } from '../services/edge.service';
@@ -25,7 +28,6 @@ import { correlationService } from '../services/correlation.service';
 import type { ParlayCorrelationReport, ParlayLeg } from '../services/correlation.service';
 
 export function ProEdgePage() {
-  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'clv' | 'edge' | 'books' | 'props' | 'risk' | 'sharp' | 'model' | 'weather' | 'strategy'>('strategy');
   const [clvStats, setClvStats] = useState<CLVStats | null>(null);
   const [clvAlerts, setClvAlerts] = useState<CLVAlert[]>([]);
@@ -119,7 +121,7 @@ export function ProEdgePage() {
   const getEdgeColor = (score: number) => {
     if (score >= 75) return 'text-green-500';
     if (score >= 60) return 'text-yellow-500';
-    if (score >= 50) return 'text-gray-400';
+    if (score >= 50) return 'text-text-secondary';
     return 'text-red-500';
   };
 
@@ -134,19 +136,28 @@ export function ProEdgePage() {
   };
 
   return (
+    <div className="space-y-8">
+      {/* Header */}
+      <div>
+        <Link to="/" className="flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors group mb-3">
+          <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          <span className="font-medium">Back to Home</span>
+        </Link>
     <div className="max-w-7xl mx-auto">
       {/* Header */}
       <div className="mb-6">
         <button
           onClick={() => navigate(-1)}
-          className="mb-4 text-gray-400 hover:text-white transition-colors"
+          className="mb-4 text-text-secondary hover:text-white transition-colors"
         >
           ← Back
         </button>
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-4xl font-bold text-white mb-2">💎 Pro Edge Dashboard</h1>
-            <p className="text-gray-300">Professional betting analytics for serious bettors</p>
+            <p className="text-text-primary">Professional betting analytics for serious bettors</p>
           </div>
         </div>
       </div>
@@ -158,7 +169,7 @@ export function ProEdgePage() {
           className={`px-6 py-3 rounded-lg font-semibold whitespace-nowrap transition-colors ${
             activeTab === 'strategy'
               ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white'
-              : 'bg-gray-800 text-gray-400 hover:text-white'
+              : 'bg-gray-800 text-text-secondary hover:text-white'
           }`}
         >
           🎯 Winning Strategy
@@ -168,7 +179,7 @@ export function ProEdgePage() {
           className={`px-6 py-3 rounded-lg font-semibold whitespace-nowrap transition-colors ${
             activeTab === 'clv'
               ? 'bg-blue-600 text-white'
-              : 'bg-gray-800 text-gray-400 hover:text-white'
+              : 'bg-gray-800 text-text-secondary hover:text-white'
           }`}
         >
           📊 CLV Tracking
@@ -178,7 +189,7 @@ export function ProEdgePage() {
           className={`px-6 py-3 rounded-lg font-semibold whitespace-nowrap transition-colors ${
             activeTab === 'edge'
               ? 'bg-blue-600 text-white'
-              : 'bg-gray-800 text-gray-400 hover:text-white'
+              : 'bg-gray-800 text-text-secondary hover:text-white'
           }`}
         >
           🎯 Edge Scores
@@ -188,7 +199,7 @@ export function ProEdgePage() {
           className={`px-6 py-3 rounded-lg font-semibold whitespace-nowrap transition-colors ${
             activeTab === 'books'
               ? 'bg-blue-600 text-white'
-              : 'bg-gray-800 text-gray-400 hover:text-white'
+              : 'bg-gray-800 text-text-secondary hover:text-white'
           }`}
         >
           📚 Book Shopping
@@ -198,7 +209,7 @@ export function ProEdgePage() {
           className={`px-6 py-3 rounded-lg font-semibold whitespace-nowrap transition-colors ${
             activeTab === 'props'
               ? 'bg-blue-600 text-white'
-              : 'bg-gray-800 text-gray-400 hover:text-white'
+              : 'bg-gray-800 text-text-secondary hover:text-white'
           }`}
         >
           🏀 Player Props
@@ -208,7 +219,7 @@ export function ProEdgePage() {
           className={`px-6 py-3 rounded-lg font-semibold whitespace-nowrap transition-colors ${
             activeTab === 'risk'
               ? 'bg-blue-600 text-white'
-              : 'bg-gray-800 text-gray-400 hover:text-white'
+              : 'bg-gray-800 text-text-secondary hover:text-white'
           }`}
         >
           ⚖️ Risk Management
@@ -218,7 +229,7 @@ export function ProEdgePage() {
           className={`px-6 py-3 rounded-lg font-semibold whitespace-nowrap transition-colors ${
             activeTab === 'sharp'
               ? 'bg-blue-600 text-white'
-              : 'bg-gray-800 text-gray-400 hover:text-white'
+              : 'bg-gray-800 text-text-secondary hover:text-white'
           }`}
         >
           💎 Sharp Money
@@ -228,7 +239,7 @@ export function ProEdgePage() {
           className={`px-6 py-3 rounded-lg font-semibold whitespace-nowrap transition-colors ${
             activeTab === 'model'
               ? 'bg-blue-600 text-white'
-              : 'bg-gray-800 text-gray-400 hover:text-white'
+              : 'bg-gray-800 text-text-secondary hover:text-white'
           }`}
         >
           🧠 Regression Model
@@ -238,7 +249,7 @@ export function ProEdgePage() {
           className={`px-6 py-3 rounded-lg font-semibold whitespace-nowrap transition-colors ${
             activeTab === 'weather'
               ? 'bg-blue-600 text-white'
-              : 'bg-gray-800 text-gray-400 hover:text-white'
+              : 'bg-gray-800 text-text-secondary hover:text-white'
           }`}
         >
           🌤️ Weather Impact
@@ -252,24 +263,24 @@ export function ProEdgePage() {
 
           {/* Strategy Summary */}
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-            <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
-              <div className="text-gray-400 text-sm mb-1">Total Opportunities</div>
+            <div className="card">
+              <div className="text-text-secondary text-sm mb-1">Total Opportunities</div>
               <div className="text-3xl font-bold text-white">{dailyStrategy.summary.totalOpportunities}</div>
             </div>
             <div className="bg-gray-900 rounded-lg p-6 border border-green-800">
-              <div className="text-gray-400 text-sm mb-1">Strong Bets</div>
+              <div className="text-text-secondary text-sm mb-1">Strong Bets</div>
               <div className="text-3xl font-bold text-green-500">{dailyStrategy.summary.strongBets}</div>
             </div>
             <div className="bg-gray-900 rounded-lg p-6 border border-yellow-800">
-              <div className="text-gray-400 text-sm mb-1">Leans</div>
+              <div className="text-text-secondary text-sm mb-1">Leans</div>
               <div className="text-3xl font-bold text-yellow-500">{dailyStrategy.summary.leans}</div>
             </div>
-            <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
-              <div className="text-gray-400 text-sm mb-1">Avg Edge Score</div>
+            <div className="card">
+              <div className="text-text-secondary text-sm mb-1">Avg Edge Score</div>
               <div className="text-3xl font-bold text-blue-500">{dailyStrategy.summary.avgEdgeScore.toFixed(0)}</div>
             </div>
-            <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
-              <div className="text-gray-400 text-sm mb-1">Potential Exposure</div>
+            <div className="card">
+              <div className="text-text-secondary text-sm mb-1">Potential Exposure</div>
               <div className="text-3xl font-bold text-purple-500">${dailyStrategy.summary.potentialExposure.toFixed(0)}</div>
             </div>
           </div>
@@ -281,7 +292,7 @@ export function ProEdgePage() {
               <div className="bg-gray-900 rounded-lg p-12 text-center border border-gray-800">
                 <div className="text-6xl mb-4">🔍</div>
                 <div className="text-white font-semibold mb-2">No opportunities found today</div>
-                <div className="text-gray-400">Filters are very strict - only showing highest-value bets</div>
+                <div className="text-text-secondary">Filters are very strict - only showing highest-value bets</div>
               </div>
             )}
 
@@ -294,7 +305,7 @@ export function ProEdgePage() {
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <h4 className="text-xl font-bold text-white mb-1">{opp.matchup}</h4>
-                    <div className="text-gray-300">{opp.sport} • {opp.side === 'home' ? 'HOME' : 'AWAY'} • {opp.currentLine > 0 ? '+' : ''}{opp.currentLine}</div>
+                    <div className="text-text-primary">{opp.sport} • {opp.side === 'home' ? 'HOME' : 'AWAY'} • {opp.currentLine > 0 ? '+' : ''}{opp.currentLine}</div>
                   </div>
                   <div className="text-right">
                     <div className={`px-4 py-2 rounded font-semibold mb-2 ${
@@ -310,20 +321,20 @@ export function ProEdgePage() {
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                   <div>
-                    <div className="text-gray-400 text-sm">Expected CLV</div>
+                    <div className="text-text-secondary text-sm">Expected CLV</div>
                     <div className="text-green-500 font-bold text-lg">+{opp.expectedCLV.toFixed(1)} pts</div>
                   </div>
                   <div>
-                    <div className="text-gray-400 text-sm">Sharp Consensus</div>
+                    <div className="text-text-secondary text-sm">Sharp Consensus</div>
                     <div className="text-white font-semibold">{opp.sharpConsensusPercent}%</div>
                   </div>
                   <div>
-                    <div className="text-gray-400 text-sm">Public Betting</div>
-                    <div className="text-gray-300">{opp.publicBettingPercent}%</div>
+                    <div className="text-text-secondary text-sm">Public Betting</div>
+                    <div className="text-text-primary">{opp.publicBettingPercent}%</div>
                   </div>
                   <div>
-                    <div className="text-gray-400 text-sm">RLM</div>
-                    <div className={`font-semibold ${opp.isRLM ? 'text-yellow-500' : 'text-gray-400'}`}>
+                    <div className="text-text-secondary text-sm">RLM</div>
+                    <div className={`font-semibold ${opp.isRLM ? 'text-yellow-500' : 'text-text-secondary'}`}>
                       {opp.isRLM ? '✓ YES' : 'No'}
                     </div>
                   </div>
@@ -331,7 +342,7 @@ export function ProEdgePage() {
 
                 {/* Line Movement */}
                 <div className="bg-gray-800 p-3 rounded mb-4">
-                  <div className="text-sm text-gray-400">Line Movement</div>
+                  <div className="text-sm text-text-secondary">Line Movement</div>
                   <div className="text-white">
                     Opening: {opp.openingLine > 0 ? '+' : ''}{opp.openingLine} → Current: {opp.currentLine > 0 ? '+' : ''}{opp.currentLine}
                     <span className={`ml-2 ${opp.lineMovement > 0 ? 'text-red-500' : 'text-green-500'}`}>
@@ -345,7 +356,7 @@ export function ProEdgePage() {
                   <div className="flex justify-between items-center">
                     <div>
                       <div className="text-white font-semibold">Recommended Stake</div>
-                      <div className="text-gray-300 text-sm">Quarter Kelly: {opp.stakePercentage.toFixed(1)}% of bankroll</div>
+                      <div className="text-text-primary text-sm">Quarter Kelly: {opp.stakePercentage.toFixed(1)}% of bankroll</div>
                     </div>
                     <div className="text-2xl font-bold text-blue-500">${opp.recommendedStake.toFixed(0)}</div>
                   </div>
@@ -355,7 +366,7 @@ export function ProEdgePage() {
                 <div className={`p-3 rounded font-semibold text-center ${
                   opp.actionNeeded === 'BET NOW' ? 'bg-red-600 text-white' :
                   opp.actionNeeded === 'LINE GETTING WORSE' ? 'bg-yellow-600 text-white' :
-                  'bg-gray-700 text-gray-300'
+                  'bg-gray-700 text-text-primary'
                 }`}>
                   {opp.actionNeeded} • {opp.hoursUntilKickoff}hrs until kickoff
                 </div>
@@ -396,7 +407,7 @@ export function ProEdgePage() {
                     <div className="flex justify-between items-start mb-3">
                       <div>
                         <h4 className="text-lg font-bold text-white">{report.team}</h4>
-                        <div className="text-gray-400 text-sm">{report.game}</div>
+                        <div className="text-text-secondary text-sm">{report.game}</div>
                       </div>
                       <div className={`px-3 py-1 rounded text-xs font-semibold ${
                         report.severity === 'critical' ? 'bg-red-600' :
@@ -409,17 +420,17 @@ export function ProEdgePage() {
 
                     <div className="mb-3">
                       <div className="text-2xl font-bold text-red-500">{report.totalSpreadImpact.toFixed(1)} pts</div>
-                      <div className="text-gray-400 text-sm">Total spread impact</div>
+                      <div className="text-text-secondary text-sm">Total spread impact</div>
                     </div>
 
-                    <div className="text-gray-300 text-sm mb-3">{report.summary}</div>
+                    <div className="text-text-primary text-sm mb-3">{report.summary}</div>
 
                     {report.injuries.map((injury, iidx) => (
                       <div key={iidx} className="bg-gray-800 p-3 rounded mb-2">
                         <div className="flex justify-between items-start">
                           <div>
                             <div className="text-white font-semibold">{injury.player} ({injury.position})</div>
-                            <div className="text-gray-400 text-xs">{injury.status.toUpperCase()}</div>
+                            <div className="text-text-secondary text-xs">{injury.status.toUpperCase()}</div>
                           </div>
                           <div className="text-red-500 font-bold">{injury.spreadImpact.toFixed(1)} pts</div>
                         </div>
@@ -443,20 +454,20 @@ export function ProEdgePage() {
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                 <div>
-                  <div className="text-gray-400 text-sm">Assumed Probability</div>
-                  <div className="text-white font-bold">{(parlayCorrelation.assumedProbability * 100).toFixed(1)}%</div>
+                  <div className="text-text-secondary text-sm">Assumed Probability</div>
+                  <div className="text-text-primary font-bold">{(parlayCorrelation.assumedProbability * 100).toFixed(1)}%</div>
                 </div>
                 <div>
-                  <div className="text-gray-400 text-sm">True Probability</div>
+                  <div className="text-text-secondary text-sm">True Probability</div>
                   <div className="text-yellow-500 font-bold">{(parlayCorrelation.adjustedProbability * 100).toFixed(1)}%</div>
                 </div>
                 <div>
-                  <div className="text-gray-400 text-sm">Value Reduction</div>
+                  <div className="text-text-secondary text-sm">Value Reduction</div>
                   <div className="text-red-500 font-bold text-lg">{parlayCorrelation.valueReduction.toFixed(0)}%</div>
                 </div>
                 <div>
-                  <div className="text-gray-400 text-sm">High Correlations</div>
-                  <div className="text-white font-bold">{parlayCorrelation.highCorrelations}</div>
+                  <div className="text-text-secondary text-sm">High Correlations</div>
+                  <div className="text-text-primary font-bold">{parlayCorrelation.highCorrelations}</div>
                 </div>
               </div>
 
@@ -473,7 +484,7 @@ export function ProEdgePage() {
                   <div className="flex justify-between items-start mb-2">
                     <div>
                       <div className="text-white font-medium">{corr.bet1.selection} + {corr.bet2.selection}</div>
-                      <div className="text-gray-400 text-sm">{corr.warning}</div>
+                      <div className="text-text-secondary text-sm">{corr.warning}</div>
                     </div>
                     <div className={`text-lg font-bold ${
                       Math.abs(corr.correlationCoefficient) > 0.5 ? 'text-red-500' : 'text-yellow-500'
@@ -481,7 +492,7 @@ export function ProEdgePage() {
                       {(corr.correlationCoefficient * 100).toFixed(0)}%
                     </div>
                   </div>
-                  <div className="text-gray-300 text-sm">{corr.recommendation}</div>
+                  <div className="text-text-primary text-sm">{corr.recommendation}</div>
                 </div>
               ))}
             </div>
@@ -494,52 +505,52 @@ export function ProEdgePage() {
         <div className="space-y-6">
           {/* CLV Overview Stats */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
-              <div className="text-gray-400 text-sm mb-1">Avg CLV</div>
+            <div className="card">
+              <div className="text-text-secondary text-sm mb-1">Avg CLV</div>
               <div className={`text-3xl font-bold ${clvStats.avgCLV > 0 ? 'text-green-500' : 'text-red-500'}`}>
                 {clvStats.avgCLV > 0 ? '+' : ''}{clvStats.avgCLV.toFixed(2)}
               </div>
-              <div className="text-gray-500 text-xs mt-1">Points per bet</div>
+              <div className="text-text-muted text-xs mt-1">Points per bet</div>
             </div>
 
-            <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
-              <div className="text-gray-400 text-sm mb-1">Positive CLV %</div>
+            <div className="card">
+              <div className="text-text-secondary text-sm mb-1">Positive CLV %</div>
               <div className="text-3xl font-bold text-white">{clvStats.positiveCLVPercentage.toFixed(1)}%</div>
-              <div className="text-gray-500 text-xs mt-1">{clvStats.positiveCLVBets} of {clvStats.totalBets} bets</div>
+              <div className="text-text-muted text-xs mt-1">{clvStats.positiveCLVBets} of {clvStats.totalBets} bets</div>
             </div>
 
-            <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
-              <div className="text-gray-400 text-sm mb-1">Expected ROI</div>
+            <div className="card">
+              <div className="text-text-secondary text-sm mb-1">Expected ROI</div>
               <div className={`text-3xl font-bold ${clvStats.expectedROI > 0 ? 'text-green-500' : 'text-red-500'}`}>
                 {clvStats.expectedROI > 0 ? '+' : ''}{clvStats.expectedROI.toFixed(1)}%
               </div>
-              <div className="text-gray-500 text-xs mt-1">Based on CLV correlation</div>
+              <div className="text-text-muted text-xs mt-1">Based on CLV correlation</div>
             </div>
 
-            <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
-              <div className="text-gray-400 text-sm mb-1">Recent Trend</div>
+            <div className="card">
+              <div className="text-text-secondary text-sm mb-1">Recent Trend</div>
               <div className={`text-2xl font-bold ${
                 clvStats.recentTrend === 'improving' ? 'text-green-500' :
-                clvStats.recentTrend === 'declining' ? 'text-red-500' : 'text-gray-400'
+                clvStats.recentTrend === 'declining' ? 'text-red-500' : 'text-text-secondary'
               }`}>
                 {clvStats.recentTrend === 'improving' ? '📈 UP' :
                  clvStats.recentTrend === 'declining' ? '📉 DOWN' : '➡️ STABLE'}
               </div>
-              <div className="text-gray-500 text-xs mt-1">Last 20 vs prev 20</div>
+              <div className="text-text-muted text-xs mt-1">Last 20 vs prev 20</div>
             </div>
           </div>
 
           {/* CLV by Sport */}
-          <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
+          <div className="card">
             <h2 className="text-xl font-bold text-white mb-4">CLV by Sport</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {Object.entries(clvStats.bySport).map(([sport, data]) => (
-                <div key={sport} className="bg-gray-800 rounded-lg p-4">
+                <div key={sport} className="stat-card">
                   <div className="text-white font-semibold mb-2">{sport}</div>
                   <div className={`text-2xl font-bold ${data.avgCLV > 0 ? 'text-green-500' : 'text-red-500'}`}>
                     {data.avgCLV > 0 ? '+' : ''}{data.avgCLV.toFixed(2)}
                   </div>
-                  <div className="text-gray-400 text-sm">{data.count} bets</div>
+                  <div className="text-text-secondary text-sm">{data.count} bets</div>
                 </div>
               ))}
             </div>
@@ -547,7 +558,7 @@ export function ProEdgePage() {
 
           {/* CLV Alerts */}
           {clvAlerts.length > 0 && (
-            <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
+            <div className="card">
               <h2 className="text-xl font-bold text-white mb-4">CLV Alerts</h2>
               <div className="space-y-3">
                 {clvAlerts.slice(0, 5).map(alert => (
@@ -560,7 +571,7 @@ export function ProEdgePage() {
                     }`}
                   >
                     <p className="text-white">{alert.message}</p>
-                    <p className="text-gray-400 text-sm mt-1">
+                    <p className="text-text-secondary text-sm mt-1">
                       Expected CLV: {alert.expectedCLV > 0 ? '+' : ''}{alert.expectedCLV.toFixed(1)} points
                     </p>
                   </div>
@@ -583,22 +594,22 @@ export function ProEdgePage() {
       {activeTab === 'edge' && (
         <div className="space-y-6">
           {edgeScores.map((edge, idx) => (
-            <div key={idx} className="bg-gray-900 rounded-lg p-6 border border-gray-800">
+            <div key={idx} className="card">
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h3 className="text-xl font-bold text-white">Game {idx + 1}</h3>
-                  <p className="text-gray-400 text-sm">Complete edge analysis</p>
+                  <p className="text-text-secondary text-sm">Complete edge analysis</p>
                 </div>
                 <div className="text-center">
                   <div className={`text-5xl font-bold ${getEdgeColor(edge.overall)}`}>
                     {edge.overall.toFixed(0)}
                   </div>
-                  <div className="text-gray-400 text-sm">Overall Score</div>
+                  <div className="text-text-secondary text-sm">Overall Score</div>
                 </div>
               </div>
 
               {/* Recommendation */}
-              <div className="bg-gray-800 rounded-lg p-4 mb-4">
+              <div className="stat-card mb-4">
                 <div className="flex items-center justify-between">
                   <div>
                     <span className={`px-4 py-2 rounded-lg font-bold ${getRecommendationBadge(edge.recommendation)}`}>
@@ -608,7 +619,7 @@ export function ProEdgePage() {
                       Suggested Stake: <span className="text-green-500 font-bold">{edge.suggestedStake.toFixed(1)}%</span> of bankroll
                     </span>
                   </div>
-                  <div className="text-gray-400">
+                  <div className="text-text-secondary">
                     Confidence: <span className="text-white font-semibold">{(edge.confidence * 100).toFixed(0)}%</span>
                   </div>
                 </div>
@@ -618,14 +629,14 @@ export function ProEdgePage() {
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
                 {Object.entries(edge.factors).map(([key, factor]) => (
                   <div key={key} className="bg-gray-800 rounded-lg p-3">
-                    <div className="text-gray-400 text-xs mb-1">{key.replace(/([A-Z])/g, ' $1').trim()}</div>
+                    <div className="text-text-secondary text-xs mb-1">{key.replace(/([A-Z])/g, ' $1').trim()}</div>
                     <div className="flex items-center justify-between">
-                      <div className={`text-xl font-bold ${factor.score > 60 ? 'text-green-500' : factor.score > 40 ? 'text-gray-400' : 'text-red-500'}`}>
+                      <div className={`text-xl font-bold ${factor.score > 60 ? 'text-green-500' : factor.score > 40 ? 'text-text-secondary' : 'text-red-500'}`}>
                         {factor.score.toFixed(0)}
                       </div>
-                      <div className="text-gray-500 text-xs">{factor.weight}% weight</div>
+                      <div className="text-text-muted text-xs">{factor.weight}% weight</div>
                     </div>
-                    <div className="text-gray-500 text-xs mt-1">{factor.details}</div>
+                    <div className="text-text-muted text-xs mt-1">{factor.details}</div>
                   </div>
                 ))}
               </div>
@@ -658,33 +669,33 @@ export function ProEdgePage() {
       {activeTab === 'books' && bookComparison && (
         <div className="space-y-6">
           {/* Best Lines Summary */}
-          <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
+          <div className="card">
             <h2 className="text-xl font-bold text-white mb-4">🏆 Best Available Lines</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-gray-800 rounded-lg p-4">
-                <div className="text-gray-400 text-sm mb-2">Best Spread</div>
-                <div className="text-white font-bold text-xl">{bookComparison.bestLines.spread.line} @ {bookComparison.bestLines.spread.odds}</div>
+              <div className="stat-card">
+                <div className="text-text-secondary text-sm mb-2">Best Spread</div>
+                <div className="text-text-primary font-bold text-xl">{bookComparison.bestLines.spread.line} @ {bookComparison.bestLines.spread.odds}</div>
                 <div className="text-green-500 text-sm">{bookComparison.bestLines.spread.book}</div>
               </div>
-              <div className="bg-gray-800 rounded-lg p-4">
-                <div className="text-gray-400 text-sm mb-2">Best Total</div>
-                <div className="text-white font-bold text-xl">{bookComparison.bestLines.total.line} @ {bookComparison.bestLines.total.odds}</div>
+              <div className="stat-card">
+                <div className="text-text-secondary text-sm mb-2">Best Total</div>
+                <div className="text-text-primary font-bold text-xl">{bookComparison.bestLines.total.line} @ {bookComparison.bestLines.total.odds}</div>
                 <div className="text-green-500 text-sm">{bookComparison.bestLines.total.book}</div>
               </div>
             </div>
           </div>
 
           {/* All Books Comparison */}
-          <div className="bg-gray-900 rounded-lg p-6 border border-gray-800 overflow-x-auto">
+          <div className="card overflow-x-auto">
             <h2 className="text-xl font-bold text-white mb-4">📚 All Books</h2>
             <table className="w-full">
               <thead className="bg-gray-800">
                 <tr>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-400">Book</th>
-                  <th className="px-4 py-3 text-center text-sm font-semibold text-gray-400">Spread</th>
-                  <th className="px-4 py-3 text-center text-sm font-semibold text-gray-400">Total</th>
-                  <th className="px-4 py-3 text-center text-sm font-semibold text-gray-400">ML Home</th>
-                  <th className="px-4 py-3 text-center text-sm font-semibold text-gray-400">ML Away</th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-text-secondary">Book</th>
+                  <th className="px-4 py-3 text-center text-sm font-semibold text-text-secondary">Spread</th>
+                  <th className="px-4 py-3 text-center text-sm font-semibold text-text-secondary">Total</th>
+                  <th className="px-4 py-3 text-center text-sm font-semibold text-text-secondary">ML Home</th>
+                  <th className="px-4 py-3 text-center text-sm font-semibold text-text-secondary">ML Away</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-800">
@@ -715,7 +726,7 @@ export function ProEdgePage() {
             <div className="bg-yellow-900/20 border border-yellow-800 rounded-lg p-6">
               <h2 className="text-xl font-bold text-yellow-400 mb-4">⚡ Market Inefficiencies Detected</h2>
               {bookComparison.discrepancies.map((disc, idx) => (
-                <div key={idx} className="bg-gray-800 rounded-lg p-4 mb-3">
+                <div key={idx} className="stat-card mb-3">
                   <div className="text-white font-semibold mb-2">{disc.description}</div>
                   <div className="text-green-500">Expected Value: +{disc.edge.toFixed(2)}%</div>
                 </div>
@@ -728,18 +739,18 @@ export function ProEdgePage() {
       {/* Player Props Tab */}
       {activeTab === 'props' && (
         <div className="space-y-6">
-          <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
+          <div className="card">
             <h2 className="text-xl font-bold text-white mb-4">🔥 Top Prop Picks</h2>
             {topProps.length === 0 ? (
-              <p className="text-gray-400">No high-confidence props available right now</p>
+              <p className="text-text-secondary">No high-confidence props available right now</p>
             ) : (
               <div className="space-y-4">
                 {topProps.map(prop => (
-                  <div key={prop.propId} className="bg-gray-800 rounded-lg p-4">
+                  <div key={prop.propId} className="stat-card">
                     <div className="flex items-start justify-between mb-3">
                       <div>
-                        <div className="text-white font-bold text-lg">{prop.player}</div>
-                        <div className="text-gray-400 text-sm">{prop.team} vs {prop.opponent}</div>
+                        <div className="text-text-primary font-bold text-lg">{prop.player}</div>
+                        <div className="text-text-secondary text-sm">{prop.team} vs {prop.opponent}</div>
                       </div>
                       <div className="text-right">
                         <span className={`px-3 py-1 rounded-lg font-bold ${
@@ -754,19 +765,19 @@ export function ProEdgePage() {
 
                     <div className="grid grid-cols-4 gap-3 mb-3">
                       <div className="bg-gray-900 rounded p-2">
-                        <div className="text-gray-400 text-xs">Stat</div>
+                        <div className="text-text-secondary text-xs">Stat</div>
                         <div className="text-white font-semibold">{prop.stat}</div>
                       </div>
                       <div className="bg-gray-900 rounded p-2">
-                        <div className="text-gray-400 text-xs">Projection</div>
+                        <div className="text-text-secondary text-xs">Projection</div>
                         <div className="text-blue-500 font-bold">{prop.projection.toFixed(1)}</div>
                       </div>
                       <div className="bg-gray-900 rounded p-2">
-                        <div className="text-gray-400 text-xs">Book Line</div>
+                        <div className="text-text-secondary text-xs">Book Line</div>
                         <div className="text-white font-semibold">{prop.bookLine}</div>
                       </div>
                       <div className="bg-gray-900 rounded p-2">
-                        <div className="text-gray-400 text-xs">Edge</div>
+                        <div className="text-text-secondary text-xs">Edge</div>
                         <div className={`font-bold ${prop.edge > 0 ? 'text-green-500' : 'text-red-500'}`}>
                           {prop.edge > 0 ? '+' : ''}{prop.edge.toFixed(1)}
                         </div>
@@ -774,10 +785,10 @@ export function ProEdgePage() {
                     </div>
 
                     <div className="flex items-center justify-between text-sm">
-                      <div className="text-gray-400">
+                      <div className="text-text-secondary">
                         Confidence: <span className="text-white font-semibold">{(prop.confidence * 100).toFixed(0)}%</span>
                       </div>
-                      <div className="text-gray-400">
+                      <div className="text-text-secondary">
                         Historical Hit Rate: <span className="text-white font-semibold">{prop.historicalHitRate}%</span>
                       </div>
                     </div>
@@ -794,41 +805,41 @@ export function ProEdgePage() {
         <div className="space-y-6">
           {/* Bankroll Overview */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
-              <div className="text-gray-400 text-sm mb-1">Total Bankroll</div>
+            <div className="card">
+              <div className="text-text-secondary text-sm mb-1">Total Bankroll</div>
               <div className="text-3xl font-bold text-white">${riskManagement.bankroll.toLocaleString()}</div>
             </div>
-            <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
-              <div className="text-gray-400 text-sm mb-1">Current Exposure</div>
+            <div className="card">
+              <div className="text-text-secondary text-sm mb-1">Current Exposure</div>
               <div className={`text-3xl font-bold ${riskManagement.exposure.percentage > 30 ? 'text-red-500' : 'text-yellow-500'}`}>
                 ${riskManagement.exposure.current.toLocaleString()}
               </div>
-              <div className="text-gray-500 text-sm">{riskManagement.exposure.percentage.toFixed(1)}% at risk</div>
+              <div className="text-text-muted text-sm">{riskManagement.exposure.percentage.toFixed(1)}% at risk</div>
             </div>
-            <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
-              <div className="text-gray-400 text-sm mb-1">Available</div>
+            <div className="card">
+              <div className="text-text-secondary text-sm mb-1">Available</div>
               <div className="text-3xl font-bold text-green-500">${riskManagement.exposure.remaining.toLocaleString()}</div>
             </div>
           </div>
 
           {/* Kelly Criterion Stakes */}
-          <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
+          <div className="card">
             <h2 className="text-xl font-bold text-white mb-4">Kelly Criterion Recommendations</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-gray-800 rounded-lg p-4">
-                <div className="text-gray-400 text-sm mb-2">Conservative (10% Kelly)</div>
+              <div className="stat-card">
+                <div className="text-text-secondary text-sm mb-2">Conservative (10% Kelly)</div>
                 <div className="text-2xl font-bold text-blue-500">${riskManagement.kellyStake.conservative}</div>
-                <div className="text-gray-500 text-xs mt-1">Safest approach</div>
+                <div className="text-text-muted text-xs mt-1">Safest approach</div>
               </div>
               <div className="bg-green-900/20 border border-green-600 rounded-lg p-4">
                 <div className="text-green-400 text-sm mb-2">Recommended (25% Kelly) ⭐</div>
                 <div className="text-2xl font-bold text-green-500">${riskManagement.kellyStake.fractional}</div>
-                <div className="text-gray-500 text-xs mt-1">Optimal risk/reward</div>
+                <div className="text-text-muted text-xs mt-1">Optimal risk/reward</div>
               </div>
-              <div className="bg-gray-800 rounded-lg p-4">
-                <div className="text-gray-400 text-sm mb-2">Aggressive (Full Kelly)</div>
+              <div className="stat-card">
+                <div className="text-text-secondary text-sm mb-2">Aggressive (Full Kelly)</div>
                 <div className="text-2xl font-bold text-red-500">${riskManagement.kellyStake.full}</div>
-                <div className="text-gray-500 text-xs mt-1">High variance</div>
+                <div className="text-text-muted text-xs mt-1">High variance</div>
               </div>
             </div>
           </div>
@@ -854,7 +865,7 @@ export function ProEdgePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div>
                 <div className="text-white font-semibold mb-2">Position Sizing</div>
-                <ul className="text-gray-300 space-y-1">
+                <ul className="text-text-primary space-y-1">
                   <li>• Max 5% per single bet</li>
                   <li>• Max 30% total exposure</li>
                   <li>• Use Quarter Kelly for optimal growth</li>
@@ -862,7 +873,7 @@ export function ProEdgePage() {
               </div>
               <div>
                 <div className="text-white font-semibold mb-2">Discipline</div>
-                <ul className="text-gray-300 space-y-1">
+                <ul className="text-text-primary space-y-1">
                   <li>• Stop if down 20% in a day</li>
                   <li>• Max 2 correlated bets</li>
                   <li>• Track every bet for CLV</li>
@@ -880,42 +891,42 @@ export function ProEdgePage() {
 
           {/* Sharp Stats Overview */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
-              <div className="text-gray-400 text-sm mb-1">Sharp Accuracy</div>
+            <div className="card">
+              <div className="text-text-secondary text-sm mb-1">Sharp Accuracy</div>
               <div className="text-3xl font-bold text-green-500">{(sharpStats.avgSharpAccuracy * 100).toFixed(1)}%</div>
-              <div className="text-gray-400 text-xs mt-1">Following sharp consensus</div>
+              <div className="text-text-secondary text-xs mt-1">Following sharp consensus</div>
             </div>
-            <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
-              <div className="text-gray-400 text-sm mb-1">Steam Moves</div>
+            <div className="card">
+              <div className="text-text-secondary text-sm mb-1">Steam Moves</div>
               <div className="text-3xl font-bold text-yellow-500">{sharpStats.steamMovesDetected}</div>
-              <div className="text-gray-400 text-xs mt-1">2+ points in &lt;10 mins</div>
+              <div className="text-text-secondary text-xs mt-1">2+ points in &lt;10 mins</div>
             </div>
-            <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
-              <div className="text-gray-400 text-sm mb-1">RLM Opportunities</div>
+            <div className="card">
+              <div className="text-text-secondary text-sm mb-1">RLM Opportunities</div>
               <div className="text-3xl font-bold text-blue-500">{sharpStats.rlmOpportunities}</div>
-              <div className="text-gray-400 text-xs mt-1">Reverse line movement</div>
+              <div className="text-text-secondary text-xs mt-1">Reverse line movement</div>
             </div>
           </div>
 
           {/* Current Game Sharp Analysis */}
-          <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
+          <div className="card">
             <h3 className="text-xl font-bold text-white mb-4">{sharpMoneyData.matchup}</h3>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
               <div>
-                <div className="text-gray-400 text-sm">Public %</div>
+                <div className="text-text-secondary text-sm">Public %</div>
                 <div className="text-white font-semibold">{sharpMoneyData.publicBettingPercentage.home}% Home</div>
               </div>
               <div>
-                <div className="text-gray-400 text-sm">Money %</div>
+                <div className="text-text-secondary text-sm">Money %</div>
                 <div className="text-white font-semibold">{sharpMoneyData.moneyPercentage.home}% Home</div>
               </div>
               <div>
-                <div className="text-gray-400 text-sm">Line Movement</div>
+                <div className="text-text-secondary text-sm">Line Movement</div>
                 <div className="text-white font-semibold">{sharpMoneyData.currentLine} ({sharpMoneyData.lineVelocity.toFixed(1)}/hr)</div>
               </div>
               <div>
-                <div className="text-gray-400 text-sm">Sharp Consensus</div>
+                <div className="text-text-secondary text-sm">Sharp Consensus</div>
                 <div className="text-white font-semibold uppercase">{sharpMoneyData.sharpConsensus.replace('_', ' ')}</div>
               </div>
             </div>
@@ -931,8 +942,8 @@ export function ProEdgePage() {
                     'bg-blue-900/20 border-blue-600'
                   }`}>
                     <div className="text-white font-medium">{indicator.type.toUpperCase()}</div>
-                    <div className="text-gray-300 text-sm mt-1">{indicator.description}</div>
-                    <div className="text-gray-400 text-xs mt-2">Confidence: {(indicator.confidence * 100).toFixed(0)}%</div>
+                    <div className="text-text-primary text-sm mt-1">{indicator.description}</div>
+                    <div className="text-text-secondary text-xs mt-2">Confidence: {(indicator.confidence * 100).toFixed(0)}%</div>
                   </div>
                 ))}
               </div>
@@ -940,23 +951,23 @@ export function ProEdgePage() {
           </div>
 
           {/* Book Comparison */}
-          <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
+          <div className="card">
             <h3 className="text-xl font-bold text-white mb-4">Pinnacle vs Other Books</h3>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               <div className="p-3 bg-blue-900/20 rounded border border-blue-600">
-                <div className="text-gray-400 text-sm">Pinnacle (Sharp)</div>
-                <div className="text-white font-bold text-lg">{sharpMoneyData.pinnacleSpread.toFixed(1)}</div>
+                <div className="text-text-secondary text-sm">Pinnacle (Sharp)</div>
+                <div className="text-text-primary font-bold text-lg">{sharpMoneyData.pinnacleSpread.toFixed(1)}</div>
               </div>
               <div className="p-3 bg-gray-800 rounded">
-                <div className="text-gray-400 text-sm">DraftKings</div>
-                <div className="text-white font-bold text-lg">{sharpMoneyData.draftKingsSpread.toFixed(1)}</div>
+                <div className="text-text-secondary text-sm">DraftKings</div>
+                <div className="text-text-primary font-bold text-lg">{sharpMoneyData.draftKingsSpread.toFixed(1)}</div>
               </div>
               <div className="p-3 bg-gray-800 rounded">
-                <div className="text-gray-400 text-sm">FanDuel</div>
-                <div className="text-white font-bold text-lg">{sharpMoneyData.fanDuelSpread.toFixed(1)}</div>
+                <div className="text-text-secondary text-sm">FanDuel</div>
+                <div className="text-text-primary font-bold text-lg">{sharpMoneyData.fanDuelSpread.toFixed(1)}</div>
               </div>
             </div>
-            <div className="mt-4 text-gray-300">
+            <div className="mt-4 text-text-primary">
               Max discrepancy: <span className="text-yellow-500 font-bold">{sharpMoneyData.maxDiscrepancy.toFixed(1)} points</span>
             </div>
           </div>
@@ -970,25 +981,25 @@ export function ProEdgePage() {
 
           {/* Model Performance Stats */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
-              <div className="text-gray-400 text-sm mb-1">Model Accuracy</div>
+            <div className="card">
+              <div className="text-text-secondary text-sm mb-1">Model Accuracy</div>
               <div className="text-3xl font-bold text-green-500">{(modelPerformance.accuracy * 100).toFixed(1)}%</div>
-              <div className="text-gray-400 text-xs mt-1">{modelPerformance.totalPredictions} predictions</div>
+              <div className="text-text-secondary text-xs mt-1">{modelPerformance.totalPredictions} predictions</div>
             </div>
-            <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
-              <div className="text-gray-400 text-sm mb-1">Average ROI</div>
+            <div className="card">
+              <div className="text-text-secondary text-sm mb-1">Average ROI</div>
               <div className="text-3xl font-bold text-blue-500">+{(modelPerformance.profitability * 100).toFixed(1)}%</div>
-              <div className="text-gray-400 text-xs mt-1">Following model</div>
+              <div className="text-text-secondary text-xs mt-1">Following model</div>
             </div>
-            <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
-              <div className="text-gray-400 text-sm mb-1">Avg Error</div>
-              <div className="text-3xl font-bold text-gray-400">{modelPerformance.avgError.toFixed(1)} pts</div>
-              <div className="text-gray-400 text-xs mt-1">Typical prediction error</div>
+            <div className="card">
+              <div className="text-text-secondary text-sm mb-1">Avg Error</div>
+              <div className="text-3xl font-bold text-text-secondary">{modelPerformance.avgError.toFixed(1)} pts</div>
+              <div className="text-text-secondary text-xs mt-1">Typical prediction error</div>
             </div>
-            <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
-              <div className="text-gray-400 text-sm mb-1">High Confidence</div>
+            <div className="card">
+              <div className="text-text-secondary text-sm mb-1">High Confidence</div>
               <div className="text-3xl font-bold text-yellow-500">{(modelPerformance.byConfidence.high.accuracy * 100).toFixed(1)}%</div>
-              <div className="text-gray-400 text-xs mt-1">{modelPerformance.byConfidence.high.count} bets</div>
+              <div className="text-text-secondary text-xs mt-1">{modelPerformance.byConfidence.high.count} bets</div>
             </div>
           </div>
 
@@ -996,11 +1007,11 @@ export function ProEdgePage() {
           <div className="space-y-4">
             <h3 className="text-xl font-bold text-white">Current Predictions</h3>
             {regressionPredictions.map((prediction, idx) => (
-              <div key={idx} className="bg-gray-900 rounded-lg p-6 border border-gray-800">
+              <div key={idx} className="card">
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <div className="text-xl font-bold text-white mb-1">Game {idx + 1} - {prediction.sport}</div>
-                    <div className="text-gray-400">Model Prediction: {prediction.predictedScore.margin > 0 ? 'Home' : 'Away'} by {Math.abs(prediction.predictedScore.margin).toFixed(1)}</div>
+                    <div className="text-text-secondary">Model Prediction: {prediction.predictedScore.margin > 0 ? 'Home' : 'Away'} by {Math.abs(prediction.predictedScore.margin).toFixed(1)}</div>
                   </div>
                   <div className="text-right">
                     <div className={`px-4 py-2 rounded font-semibold ${
@@ -1015,26 +1026,26 @@ export function ProEdgePage() {
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                   <div>
-                    <div className="text-gray-400 text-sm">Predicted Score</div>
+                    <div className="text-text-secondary text-sm">Predicted Score</div>
                     <div className="text-white font-semibold">{prediction.predictedScore.home.toFixed(1)} - {prediction.predictedScore.away.toFixed(1)}</div>
                   </div>
                   <div>
-                    <div className="text-gray-400 text-sm">Edge vs Line</div>
+                    <div className="text-text-secondary text-sm">Edge vs Line</div>
                     <div className="text-yellow-500 font-bold">{prediction.recommendation.edge >= 0 ? '+' : ''}{prediction.recommendation.edge.toFixed(1)} pts</div>
                   </div>
                   <div>
-                    <div className="text-gray-400 text-sm">Model Confidence</div>
+                    <div className="text-text-secondary text-sm">Model Confidence</div>
                     <div className="text-white font-semibold">{(prediction.confidence * 100).toFixed(0)}%</div>
                   </div>
                   <div>
-                    <div className="text-gray-400 text-sm">Suggested Stake</div>
+                    <div className="text-text-secondary text-sm">Suggested Stake</div>
                     <div className="text-green-500 font-bold">{prediction.recommendation.suggestedStake.toFixed(1)}%</div>
                   </div>
                 </div>
 
                 {/* Confidence Interval */}
                 <div className="mt-4 p-3 bg-gray-800 rounded">
-                  <div className="text-gray-400 text-sm mb-1">95% Confidence Interval</div>
+                  <div className="text-text-secondary text-sm mb-1">95% Confidence Interval</div>
                   <div className="text-white">{prediction.confidenceInterval.lower.toFixed(1)} to {prediction.confidenceInterval.upper.toFixed(1)} point margin</div>
                 </div>
               </div>
@@ -1042,7 +1053,7 @@ export function ProEdgePage() {
           </div>
 
           {/* Model Performance by Sport */}
-          <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
+          <div className="card">
             <h3 className="text-xl font-bold text-white mb-4">Performance by Sport</h3>
             <div className="space-y-3">
               {Object.entries(modelPerformance.bySport).map(([sport, stats]) => (
@@ -1050,7 +1061,7 @@ export function ProEdgePage() {
                   <div className="text-white font-semibold">{sport}</div>
                   <div className="text-right">
                     <div className="text-green-500">{(stats.accuracy * 100).toFixed(1)}% Accuracy</div>
-                    <div className="text-gray-400 text-sm">ROI: +{(stats.roi * 100).toFixed(1)}%</div>
+                    <div className="text-text-secondary text-sm">ROI: +{(stats.roi * 100).toFixed(1)}%</div>
                   </div>
                 </div>
               ))}
@@ -1075,7 +1086,7 @@ export function ProEdgePage() {
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <h3 className="text-xl font-bold text-white mb-1">{weather.stadium}</h3>
-                    <div className="text-gray-300">{weather.temperature}°F • Wind: {weather.windSpeed} MPH • {weather.precipitation === 'none' ? 'No Precipitation' : weather.precipitation.toUpperCase()}</div>
+                    <div className="text-text-primary">{weather.temperature}°F • Wind: {weather.windSpeed} MPH • {weather.precipitation === 'none' ? 'No Precipitation' : weather.precipitation.toUpperCase()}</div>
                   </div>
                   <div className={`px-4 py-2 rounded font-semibold ${
                     weather.totalRecommendation === 'STRONG_UNDER' ? 'bg-blue-600 text-white' :
@@ -1089,25 +1100,25 @@ export function ProEdgePage() {
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                   <div>
-                    <div className="text-gray-400 text-sm">Scoring Impact</div>
+                    <div className="text-text-secondary text-sm">Scoring Impact</div>
                     <div className={`text-2xl font-bold ${weather.scoringImpact < 0 ? 'text-blue-500' : 'text-red-500'}`}>
                       {weather.scoringImpact >= 0 ? '+' : ''}{weather.scoringImpact} pts
                     </div>
                   </div>
                   <div>
-                    <div className="text-gray-400 text-sm">Passing Impact</div>
+                    <div className="text-text-secondary text-sm">Passing Impact</div>
                     <div className={`text-lg font-semibold ${weather.passingEffectiveness < 0 ? 'text-red-500' : 'text-green-500'}`}>
                       {weather.passingEffectiveness >= 0 ? '+' : ''}{weather.passingEffectiveness}
                     </div>
                   </div>
                   <div>
-                    <div className="text-gray-400 text-sm">Rushing Advantage</div>
-                    <div className={`text-lg font-semibold ${weather.rushingAdvantage > 0 ? 'text-green-500' : 'text-gray-400'}`}>
+                    <div className="text-text-secondary text-sm">Rushing Advantage</div>
+                    <div className={`text-lg font-semibold ${weather.rushingAdvantage > 0 ? 'text-green-500' : 'text-text-secondary'}`}>
                       {weather.rushingAdvantage >= 0 ? '+' : ''}{weather.rushingAdvantage}
                     </div>
                   </div>
                   <div>
-                    <div className="text-gray-400 text-sm">Confidence</div>
+                    <div className="text-text-secondary text-sm">Confidence</div>
                     <div className="text-white font-semibold">{(weather.confidence * 100).toFixed(0)}%</div>
                   </div>
                 </div>
@@ -1128,8 +1139,8 @@ export function ProEdgePage() {
                             {factor.severity}
                           </div>
                         </div>
-                        <div className="text-gray-300 text-sm">{factor.description}</div>
-                        <div className="text-gray-400 text-xs mt-2">{factor.historicalData}</div>
+                        <div className="text-text-primary text-sm">{factor.description}</div>
+                        <div className="text-text-secondary text-xs mt-2">{factor.historicalData}</div>
                       </div>
                     ))}
                   </div>
@@ -1139,7 +1150,7 @@ export function ProEdgePage() {
           </div>
 
           {/* Stadium Database */}
-          <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
+          <div className="card">
             <h3 className="text-xl font-bold text-white mb-4">Stadium Database</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {stadiums.map((stadium, idx) => (
@@ -1152,18 +1163,18 @@ export function ProEdgePage() {
                       {stadium.type.toUpperCase()}
                     </div>
                   </div>
-                  <div className="text-gray-400 text-sm">{stadium.city}</div>
+                  <div className="text-text-secondary text-sm">{stadium.city}</div>
                   <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
                     <div>
-                      <div className="text-gray-500 text-xs">Dec Avg Temp</div>
+                      <div className="text-text-muted text-xs">Dec Avg Temp</div>
                       <div className="text-white">{stadium.avgTempDecember}°F</div>
                     </div>
                     <div>
-                      <div className="text-gray-500 text-xs">Avg Wind</div>
+                      <div className="text-text-muted text-xs">Avg Wind</div>
                       <div className="text-white">{stadium.avgWindSpeed} MPH</div>
                     </div>
                     <div className="col-span-2">
-                      <div className="text-gray-500 text-xs">Bad Weather UNDER Rate</div>
+                      <div className="text-text-muted text-xs">Bad Weather UNDER Rate</div>
                       <div className="text-blue-500 font-semibold">{(stadium.historicalUnderRate * 100).toFixed(0)}%</div>
                     </div>
                   </div>

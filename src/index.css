@@ -27,6 +27,24 @@
     scrollbar-width: none;  /* Firefox */
   }
 
+  /* Custom scrollbar styles */
+  .scrollbar-custom::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .scrollbar-custom::-webkit-scrollbar-track {
+    @apply bg-dark-surface;
+  }
+
+  .scrollbar-custom::-webkit-scrollbar-thumb {
+    @apply bg-dark-border rounded-full;
+  }
+
+  .scrollbar-custom::-webkit-scrollbar-thumb:hover {
+    @apply bg-brand-blue/50;
+  }
+
   /* Line clamp utilities */
   .line-clamp-1 {
     overflow: hidden;
@@ -49,68 +67,133 @@
     -webkit-line-clamp: 3;
   }
 
-  /* Gradient text */
+  /* Gradient text effects */
   .gradient-text {
-    @apply bg-gradient-to-r from-accent-blue-light to-accent-blue bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-brand-blue-light to-brand-blue bg-clip-text text-transparent;
+  }
+
+  .gradient-text-green {
+    @apply bg-gradient-to-r from-accent-green-light to-accent-green bg-clip-text text-transparent;
+  }
+
+  .gradient-text-purple {
+    @apply bg-gradient-to-r from-brand-purple-light to-brand-purple bg-clip-text text-transparent;
+  }
+
+  /* Glass morphism effect */
+  .glass {
+    background: rgba(20, 27, 51, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .glass-border {
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 }
 
 @layer components {
   /* Modern card styles */
   .card {
-    @apply bg-dark-surface border border-dark-border rounded-2xl p-6 transition-all;
+    @apply bg-dark-card border border-dark-border rounded-3xl p-6 transition-all duration-300;
   }
 
   .card-hover {
-    @apply hover:border-accent-blue/50 hover:shadow-xl hover:shadow-accent-blue/10 hover:scale-[1.01];
+    @apply hover:border-brand-blue/50 hover:shadow-card hover:scale-[1.02] cursor-pointer;
   }
 
-  /* Button styles */
+  .card-glow {
+    @apply hover:shadow-glow-blue;
+  }
+
+  /* Button styles - Pill shaped */
   .btn-primary {
-    @apply px-6 py-2.5 bg-gradient-to-r from-accent-blue-light to-accent-blue text-white font-semibold rounded-3xl hover:shadow-lg hover:shadow-accent-blue/30 transition-all hover:scale-105;
+    @apply px-6 py-3 bg-gradient-brand text-white font-semibold rounded-full hover:brightness-90 transition-all duration-300 hover:scale-105 shadow-lg;
   }
 
   .btn-secondary {
-    @apply px-6 py-2.5 bg-dark-surface text-text-secondary hover:text-text-primary font-semibold rounded-3xl border border-dark-border hover:border-accent-blue/50 transition-all;
+    @apply px-6 py-3 bg-dark-card text-text-secondary hover:text-text-primary font-semibold rounded-full border-2 border-dark-border hover:border-brand-blue/50 transition-all duration-300;
   }
 
-  /* Badge styles */
+  .btn-success {
+    @apply px-6 py-3 bg-gradient-success text-white font-semibold rounded-full hover:brightness-90 transition-all duration-300 hover:scale-105 shadow-lg;
+  }
+
+  .btn-outline {
+    @apply px-6 py-3 bg-transparent text-brand-blue border-2 border-brand-blue font-semibold rounded-full hover:bg-brand-blue hover:text-white transition-all duration-300;
+  }
+
+  /* Badge styles - Pill shaped */
   .badge {
-    @apply px-3 py-1 rounded-full text-xs font-bold border;
+    @apply px-3 py-1.5 rounded-full text-xs font-bold border inline-flex items-center gap-1;
   }
 
   .badge-success {
-    @apply bg-accent-green/20 text-accent-green border-accent-green/30;
+    @apply bg-accent-green/20 text-accent-green-light border-accent-green/40;
   }
 
   .badge-warning {
-    @apply bg-yellow-500/20 text-yellow-500 border-yellow-500/30;
+    @apply bg-accent-orange/20 text-accent-orange border-accent-orange/40;
   }
 
   .badge-danger {
-    @apply bg-red-500/20 text-red-500 border-red-500/30;
+    @apply bg-accent-red/20 text-accent-red border-accent-red/40;
   }
 
   .badge-info {
-    @apply bg-accent-blue/20 text-accent-blue border-accent-blue/30;
+    @apply bg-brand-blue/20 text-brand-blue-light border-brand-blue/40;
+  }
+
+  .badge-high {
+    @apply bg-accent-green/20 text-accent-green-light border-accent-green/40 shadow-glow-green;
+  }
+
+  .badge-medium {
+    @apply bg-accent-orange/20 text-accent-orange border-accent-orange/40;
+  }
+
+  .badge-low {
+    @apply bg-text-muted/20 text-text-secondary border-text-muted/40;
   }
 
   /* Input styles */
   .input {
-    @apply w-full px-4 py-2.5 bg-dark-surface border border-dark-border rounded-xl text-text-primary placeholder-text-muted focus:outline-none focus:border-accent-blue/50 focus:ring-2 focus:ring-accent-blue/20 transition-all;
+    @apply w-full px-4 py-3 bg-dark-card border-2 border-dark-border rounded-2xl text-text-primary placeholder-text-muted focus:outline-none focus:border-brand-blue/50 focus:ring-4 focus:ring-brand-blue/20 transition-all duration-300;
+  }
+
+  /* Stat card styles */
+  .stat-card {
+    @apply bg-dark-card border border-dark-border rounded-2xl p-4 flex flex-col items-center justify-center text-center transition-all duration-300 hover:border-brand-blue/30;
   }
 
   /* Section styles */
   .section {
-    @apply space-y-6 sm:space-y-8;
+    @apply space-y-8 sm:space-y-12;
   }
 
   .section-header {
-    @apply text-2xl sm:text-3xl font-bold text-text-primary mb-4;
+    @apply text-3xl sm:text-4xl font-bold text-text-primary mb-2;
   }
 
   .section-subheader {
-    @apply text-text-secondary text-base sm:text-lg;
+    @apply text-text-secondary text-lg sm:text-xl;
+  }
+
+  /* Pill container for nav items */
+  .pill-container {
+    @apply bg-dark-card border border-dark-border rounded-full p-1 flex items-center gap-1;
+  }
+
+  .pill-item {
+    @apply px-4 py-2 rounded-full text-sm font-medium transition-all duration-300;
+  }
+
+  .pill-item-active {
+    @apply bg-gradient-brand text-white shadow-glow-blue;
+  }
+
+  .pill-item-inactive {
+    @apply text-text-secondary hover:text-text-primary hover:bg-dark-hover;
   }
 }
 

@@ -1,3 +1,7 @@
+/**
+ * Arbitrage Finder - Line Pointer
+ */
+
 import { useState, useEffect } from 'react';
 import { arbitrageService } from '../services/arbitrage.service';
 import type { ArbitrageOpportunity, MiddleOpportunity } from '../services/arbitrage.service';
@@ -160,331 +164,316 @@ export function ArbitrageFinder() {
   const filteredOpps = getFilteredOpportunities();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="bg-black/30 backdrop-blur-sm border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link to="/" className="text-blue-400 hover:text-blue-300">
-                ← Back
-              </Link>
-              <div>
-                <h1 className="text-2xl font-bold">Arbitrage Finder</h1>
-                <p className="text-sm text-gray-400">Find guaranteed profit opportunities</p>
-              </div>
-            </div>
+      <div>
+        <Link to="/" className="flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors group mb-3">
+          <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          <span className="font-medium">Back to Home</span>
+        </Link>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-4xl font-bold text-text-primary mb-2">Arbitrage Finder</h1>
+            <p className="text-text-secondary text-lg">Find guaranteed profit opportunities across multiple sportsbooks</p>
+          </div>
+          <button
+            onClick={handleScan}
+            disabled={scanning}
+            className={`btn-primary ${scanning ? 'opacity-50 cursor-not-allowed' : ''}`}
+          >
+            {scanning ? '⚡ Scanning...' : '🔍 Scan for Opportunities'}
+          </button>
+        </div>
+      </div>
+      {/* Controls */}
+      <div className="grid md:grid-cols-3 gap-6">
+        {/* Filter */}
+        <div className="card">
+          <label className="block text-sm font-semibold text-text-muted mb-3">Filter Type</label>
+          <div className="pill-container">
             <button
-              onClick={handleScan}
-              disabled={scanning}
-              className={`px-6 py-3 rounded-lg font-medium transition-colors ${
-                scanning
-                  ? 'bg-gray-600 cursor-not-allowed'
-                  : 'bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700'
-              }`}
+              onClick={() => setFilter('all')}
+              className={`pill-item ${filter === 'all' ? 'pill-item-active' : 'pill-item-inactive'}`}
             >
-              {scanning ? '⚡ Scanning...' : '🔍 Scan for Opportunities'}
+              All
+            </button>
+            <button
+              onClick={() => setFilter('arbitrage')}
+              className={`pill-item ${filter === 'arbitrage' ? 'pill-item-active' : 'pill-item-inactive'}`}
+            >
+              Arbitrage
+            </button>
+            <button
+              onClick={() => setFilter('middle')}
+              className={`pill-item ${filter === 'middle' ? 'pill-item-active' : 'pill-item-inactive'}`}
+            >
+              Middles
             </button>
           </div>
         </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Controls */}
-        <div className="mb-6 grid md:grid-cols-3 gap-4">
-          {/* Filter */}
-          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-4">
-            <label className="block text-sm text-gray-400 mb-2">Filter Type</label>
-            <div className="flex gap-2">
-              <button
-                onClick={() => setFilter('all')}
-                className={`flex-1 px-3 py-2 rounded text-sm font-medium transition-colors ${
-                  filter === 'all' ? 'bg-purple-600' : 'bg-white/10 hover:bg-white/20'
-                }`}
-              >
-                All
-              </button>
-              <button
-                onClick={() => setFilter('arbitrage')}
-                className={`flex-1 px-3 py-2 rounded text-sm font-medium transition-colors ${
-                  filter === 'arbitrage' ? 'bg-green-600' : 'bg-white/10 hover:bg-white/20'
-                }`}
-              >
-                Arbitrage
-              </button>
-              <button
-                onClick={() => setFilter('middle')}
-                className={`flex-1 px-3 py-2 rounded text-sm font-medium transition-colors ${
-                  filter === 'middle' ? 'bg-blue-600' : 'bg-white/10 hover:bg-white/20'
-                }`}
-              >
-                Middles
-              </button>
-            </div>
-          </div>
-
-          {/* Min ROI */}
-          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-4">
-            <label className="block text-sm text-gray-400 mb-2">
-              Minimum ROI: {minROI}%
-            </label>
-            <input
-              type="range"
-              min="0"
-              max="10"
-              step="0.1"
-              value={minROI}
-              onChange={(e) => setMinROI(parseFloat(e.target.value))}
-              className="w-full"
-            />
-          </div>
-
-          {/* Bankroll */}
-          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-4">
-            <label className="block text-sm text-gray-400 mb-2">Total Bankroll</label>
-            <input
-              type="number"
-              value={totalBankroll}
-              onChange={(e) => setTotalBankroll(parseInt(e.target.value))}
-              className="w-full bg-white/10 border border-white/20 rounded px-3 py-2 text-white"
-            />
-          </div>
+        {/* Min ROI */}
+        <div className="card">
+          <label className="block text-sm font-semibold text-text-muted mb-3">
+            Minimum ROI: <span className="text-brand-blue-light">{minROI}%</span>
+          </label>
+          <input
+            type="range"
+            min="0"
+            max="10"
+            step="0.1"
+            value={minROI}
+            onChange={(e) => setMinROI(parseFloat(e.target.value))}
+            className="w-full accent-brand-blue"
+          />
         </div>
 
-        {/* Summary Stats */}
-        {filteredOpps.length > 0 && (
-          <div className="mb-8 grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-gradient-to-br from-green-600/20 to-emerald-600/20 border border-green-500/30 rounded-lg p-4">
-              <div className="text-sm text-gray-400 mb-1">Total Opportunities</div>
-              <div className="text-3xl font-bold text-green-400">{filteredOpps.length}</div>
-            </div>
-            <div className="bg-gradient-to-br from-purple-600/20 to-pink-600/20 border border-purple-500/30 rounded-lg p-4">
-              <div className="text-sm text-gray-400 mb-1">Avg ROI</div>
-              <div className="text-3xl font-bold text-purple-400">
-                {(filteredOpps.reduce((sum, o) => sum + o.roi, 0) / filteredOpps.length).toFixed(2)}%
-              </div>
-            </div>
-            <div className="bg-gradient-to-br from-blue-600/20 to-cyan-600/20 border border-blue-500/30 rounded-lg p-4">
-              <div className="text-sm text-gray-400 mb-1">Total Potential Profit</div>
-              <div className="text-3xl font-bold text-blue-400">
-                {formatCurrency(filteredOpps.reduce((sum, o) => sum + o.maxProfit, 0))}
-              </div>
-            </div>
-            <div className="bg-gradient-to-br from-yellow-600/20 to-orange-600/20 border border-yellow-500/30 rounded-lg p-4">
-              <div className="text-sm text-gray-400 mb-1">Best ROI</div>
-              <div className="text-3xl font-bold text-yellow-400">
-                {Math.max(...filteredOpps.map(o => o.roi)).toFixed(2)}%
-              </div>
+        {/* Bankroll */}
+        <div className="card">
+          <label className="block text-sm font-semibold text-text-muted mb-3">Total Bankroll</label>
+          <input
+            type="number"
+            value={totalBankroll}
+            onChange={(e) => setTotalBankroll(parseInt(e.target.value))}
+            className="w-full bg-dark-surface border border-dark-border rounded-xl px-4 py-2 text-text-primary focus:border-brand-blue focus:outline-none transition-colors"
+          />
+        </div>
+      </div>
+
+      {/* Summary Stats */}
+      {filteredOpps.length > 0 && (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="stat-card bg-gradient-to-br from-accent-green/10 to-accent-green/5 border-accent-green/30">
+            <div className="text-text-muted text-sm mb-1">Total Opportunities</div>
+            <div className="text-4xl font-bold text-accent-green-light">{filteredOpps.length}</div>
+          </div>
+          <div className="stat-card bg-gradient-to-br from-brand-purple/10 to-brand-purple/5 border-brand-purple/30">
+            <div className="text-text-muted text-sm mb-1">Avg ROI</div>
+            <div className="text-4xl font-bold text-brand-purple-light">
+              {(filteredOpps.reduce((sum, o) => sum + o.roi, 0) / filteredOpps.length).toFixed(2)}%
             </div>
           </div>
-        )}
-
-        {/* Opportunities List */}
-        {filteredOpps.length === 0 ? (
-          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-12 text-center">
-            <div className="text-6xl mb-4">🔍</div>
-            <div className="text-xl font-semibold mb-2">No Opportunities Found</div>
-            <div className="text-gray-400 mb-6">
-              {scanning
-                ? 'Scanning for arbitrage opportunities...'
-                : 'Click "Scan for Opportunities" to search across multiple bookmakers'}
+          <div className="stat-card bg-gradient-to-br from-brand-blue/10 to-brand-blue/5 border-brand-blue/30">
+            <div className="text-text-muted text-sm mb-1">Total Potential Profit</div>
+            <div className="text-4xl font-bold text-brand-blue-light">
+              {formatCurrency(filteredOpps.reduce((sum, o) => sum + o.maxProfit, 0))}
             </div>
-            {!scanning && (
-              <button
-                onClick={handleScan}
-                className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 rounded-lg font-medium transition-colors"
+          </div>
+          <div className="stat-card bg-gradient-to-br from-accent-orange/10 to-accent-orange/5 border-accent-orange/30">
+            <div className="text-text-muted text-sm mb-1">Best ROI</div>
+            <div className="text-4xl font-bold text-accent-orange">
+              {Math.max(...filteredOpps.map(o => o.roi)).toFixed(2)}%
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Opportunities List */}
+      {filteredOpps.length === 0 ? (
+        <div className="card text-center py-16">
+          <div className="text-6xl mb-4">🔍</div>
+          <h2 className="text-2xl font-bold text-text-primary mb-2">No Opportunities Found</h2>
+          <p className="text-text-secondary mb-6 text-lg">
+            {scanning
+              ? 'Scanning for arbitrage opportunities...'
+              : 'Click "Scan for Opportunities" to search across multiple bookmakers'}
+          </p>
+          {!scanning && (
+            <button
+              onClick={handleScan}
+              className="btn-primary"
+            >
+              🔍 Start Scanning
+            </button>
+          )}
+        </div>
+      ) : (
+        <div className="space-y-6">
+          {filteredOpps.map((opp) => (
+            <div
+              key={opp.id}
+              className={`card ${
+                opp.type === 'arbitrage'
+                  ? 'bg-gradient-to-br from-accent-green/5 to-accent-green/0 border-accent-green/30'
+                  : 'bg-gradient-to-br from-brand-blue/5 to-brand-blue/0 border-brand-blue/30'
+              }`}
+            >
+              {/* Header */}
+              <div className="flex items-start justify-between mb-6">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-3 flex-wrap">
+                    <span
+                      className={`badge ${
+                        opp.type === 'arbitrage' ? 'badge-success' : 'badge-info'
+                      }`}
+                    >
+                      {opp.type === 'arbitrage' ? '💰 ARBITRAGE' : '🎯 MIDDLE'}
+                    </span>
+                    <span className="badge" style={{ backgroundColor: 'rgba(124, 58, 237, 0.2)', color: '#A78BFA', border: '1px solid rgba(124, 58, 237, 0.3)' }}>
+                      {opp.sport}
+                    </span>
+                    <span className="badge badge-secondary capitalize">
+                      {opp.market}
+                    </span>
+                    <span
+                      className={`badge ${
+                        opp.confidence === 'high'
+                          ? 'badge-success'
+                          : opp.confidence === 'medium'
+                          ? 'badge-warning'
+                          : 'badge-danger'
+                      }`}
+                    >
+                      {opp.confidence.toUpperCase()} CONFIDENCE
+                    </span>
+                  </div>
+                  <h3 className="text-2xl font-bold text-text-primary mb-2">
+                    {opp.awayTeam} @ {opp.homeTeam}
+                  </h3>
+                  <p className="text-sm text-text-secondary">
+                    {new Date(opp.gameTime).toLocaleString()}
+                  </p>
+                </div>
+
+                <div className="stat-card text-right py-4 px-6">
+                  <div className="text-text-muted text-xs mb-1">
+                    {opp.type === 'arbitrage' ? 'GUARANTEED PROFIT' : 'MAX PROFIT'}
+                  </div>
+                  <div className="text-3xl font-bold text-accent-green-light mb-1">
+                    {formatCurrency(opp.maxProfit)}
+                  </div>
+                  <div className="text-lg text-accent-green">ROI: {opp.roi.toFixed(2)}%</div>
+                </div>
+              </div>
+
+              {/* Bet Legs */}
+              <div className="grid md:grid-cols-2 gap-4 mb-6">
+                {/* Leg 1 */}
+                <div className="stat-card bg-gradient-to-br from-brand-blue/10 to-brand-blue/5">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs font-bold text-text-muted">LEG 1</span>
+                    <span className="badge badge-info text-xs">
+                      {opp.leg1.bookmaker}
+                    </span>
+                  </div>
+                  <div className="text-lg font-bold text-text-primary mb-2">{opp.leg1.selection}</div>
+                  <div className="text-sm text-text-secondary mb-3">
+                    Odds: <span className="font-semibold">{formatOdds(opp.leg1.odds)}</span>
+                  </div>
+                  <div className="flex justify-between items-center pt-3 border-t border-dark-border">
+                    <div>
+                      <div className="text-xs text-text-muted">Stake</div>
+                      <div className="text-lg font-bold text-text-primary">
+                        {formatCurrency(opp.leg1.optimalStake)}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xs text-text-muted">Return</div>
+                      <div className="text-lg font-bold text-accent-green-light">
+                        {formatCurrency(opp.leg1.potentialReturn)}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Leg 2 */}
+                <div className="stat-card bg-gradient-to-br from-brand-purple/10 to-brand-purple/5">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs font-bold text-text-muted">LEG 2</span>
+                    <span className="badge" style={{ backgroundColor: 'rgba(124, 58, 237, 0.3)', color: '#A78BFA' }}>
+                      {opp.leg2.bookmaker}
+                    </span>
+                  </div>
+                  <div className="text-lg font-bold text-text-primary mb-2">{opp.leg2.selection}</div>
+                  <div className="text-sm text-text-secondary mb-3">
+                    Odds: <span className="font-semibold">{formatOdds(opp.leg2.odds)}</span>
+                  </div>
+                  <div className="flex justify-between items-center pt-3 border-t border-dark-border">
+                    <div>
+                      <div className="text-xs text-text-muted">Stake</div>
+                      <div className="text-lg font-bold text-text-primary">
+                        {formatCurrency(opp.leg2.optimalStake)}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xs text-text-muted">Return</div>
+                      <div className="text-lg font-bold text-accent-green-light">
+                        {formatCurrency(opp.leg2.potentialReturn)}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Summary */}
+              <div className="stat-card bg-dark-surface flex items-center justify-between flex-wrap gap-4">
+                <div>
+                  <div className="text-sm text-text-muted mb-1">Total Investment</div>
+                  <div className="text-2xl font-bold text-text-primary">{formatCurrency(opp.totalStake)}</div>
+                </div>
+                {opp.type === 'middle' && (
+                  <div className="text-center">
+                    <div className="text-sm text-text-muted mb-1">Middle Range</div>
+                    <div className="text-lg font-bold text-text-primary">
+                      {(opp as MiddleOpportunity).middleRange.min} -{' '}
+                      {(opp as MiddleOpportunity).middleRange.max}
+                    </div>
+                    <div className="text-xs text-text-dim">
+                      ~{(opp as MiddleOpportunity).middleProbability}% chance
+                    </div>
+                  </div>
+                )}
+                <div className="text-right">
+                  <div className="text-sm text-text-muted mb-1">
+                    {opp.type === 'arbitrage' ? 'Guaranteed Return' : 'If Both Win'}
+                  </div>
+                  <div className="text-2xl font-bold text-accent-green-light">
+                    {formatCurrency(opp.totalStake + opp.maxProfit)}
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Button */}
+              <Link
+                to="/bet-tracker"
+                className="block w-full text-center btn-primary mt-6"
               >
-                🔍 Start Scanning
-              </button>
-            )}
-          </div>
-        ) : (
-          <div className="space-y-6">
-            {filteredOpps.map((opp) => (
-              <div
-                key={opp.id}
-                className={`backdrop-blur-sm border rounded-lg p-6 ${
-                  opp.type === 'arbitrage'
-                    ? 'bg-green-900/10 border-green-500/30'
-                    : 'bg-blue-900/10 border-blue-500/30'
-                }`}
-              >
-                {/* Header */}
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-bold ${
-                          opp.type === 'arbitrage'
-                            ? 'bg-green-600 text-white'
-                            : 'bg-blue-600 text-white'
-                        }`}
-                      >
-                        {opp.type === 'arbitrage' ? '💰 ARBITRAGE' : '🎯 MIDDLE'}
-                      </span>
-                      <span className="px-2 py-1 bg-purple-600/20 text-purple-400 text-xs font-medium rounded">
-                        {opp.sport}
-                      </span>
-                      <span className="px-2 py-1 bg-white/10 text-xs rounded capitalize">
-                        {opp.market}
-                      </span>
-                      <span
-                        className={`px-2 py-1 text-xs font-medium rounded ${
-                          opp.confidence === 'high'
-                            ? 'bg-green-600/20 text-green-400'
-                            : opp.confidence === 'medium'
-                            ? 'bg-yellow-600/20 text-yellow-400'
-                            : 'bg-red-600/20 text-red-400'
-                        }`}
-                      >
-                        {opp.confidence.toUpperCase()} CONFIDENCE
-                      </span>
-                    </div>
-                    <div className="text-xl font-bold mb-1">
-                      {opp.awayTeam} @ {opp.homeTeam}
-                    </div>
-                    <div className="text-sm text-gray-400">
-                      {new Date(opp.gameTime).toLocaleString()}
-                    </div>
-                  </div>
-
-                  <div className="text-right">
-                    <div className="text-sm text-gray-400">
-                      {opp.type === 'arbitrage' ? 'Guaranteed Profit' : 'Max Profit'}
-                    </div>
-                    <div className="text-3xl font-bold text-green-400">
-                      {formatCurrency(opp.maxProfit)}
-                    </div>
-                    <div className="text-lg text-green-400">ROI: {opp.roi.toFixed(2)}%</div>
-                  </div>
-                </div>
-
-                {/* Bet Legs */}
-                <div className="grid md:grid-cols-2 gap-4 mb-4">
-                  {/* Leg 1 */}
-                  <div className="bg-black/20 rounded-lg p-4 border border-white/10">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-medium text-gray-400">LEG 1</span>
-                      <span className="text-xs font-bold text-blue-400">
-                        {opp.leg1.bookmaker}
-                      </span>
-                    </div>
-                    <div className="text-lg font-bold mb-1">{opp.leg1.selection}</div>
-                    <div className="text-sm text-gray-400 mb-2">
-                      Odds: {formatOdds(opp.leg1.odds)}
-                    </div>
-                    <div className="flex justify-between items-center pt-2 border-t border-white/10">
-                      <div>
-                        <div className="text-xs text-gray-400">Stake</div>
-                        <div className="text-lg font-bold">
-                          {formatCurrency(opp.leg1.optimalStake)}
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-xs text-gray-400">Potential Return</div>
-                        <div className="text-lg font-bold text-green-400">
-                          {formatCurrency(opp.leg1.potentialReturn)}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Leg 2 */}
-                  <div className="bg-black/20 rounded-lg p-4 border border-white/10">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-medium text-gray-400">LEG 2</span>
-                      <span className="text-xs font-bold text-purple-400">
-                        {opp.leg2.bookmaker}
-                      </span>
-                    </div>
-                    <div className="text-lg font-bold mb-1">{opp.leg2.selection}</div>
-                    <div className="text-sm text-gray-400 mb-2">
-                      Odds: {formatOdds(opp.leg2.odds)}
-                    </div>
-                    <div className="flex justify-between items-center pt-2 border-t border-white/10">
-                      <div>
-                        <div className="text-xs text-gray-400">Stake</div>
-                        <div className="text-lg font-bold">
-                          {formatCurrency(opp.leg2.optimalStake)}
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-xs text-gray-400">Potential Return</div>
-                        <div className="text-lg font-bold text-green-400">
-                          {formatCurrency(opp.leg2.potentialReturn)}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Summary */}
-                <div className="bg-black/30 rounded-lg p-4 flex items-center justify-between">
-                  <div>
-                    <div className="text-sm text-gray-400 mb-1">Total Investment</div>
-                    <div className="text-2xl font-bold">{formatCurrency(opp.totalStake)}</div>
-                  </div>
-                  {opp.type === 'middle' && (
-                    <div className="text-center">
-                      <div className="text-sm text-gray-400 mb-1">Middle Range</div>
-                      <div className="text-lg font-bold">
-                        {(opp as MiddleOpportunity).middleRange.min} -{' '}
-                        {(opp as MiddleOpportunity).middleRange.max}
-                      </div>
-                      <div className="text-xs text-gray-500">
-                        ~{(opp as MiddleOpportunity).middleProbability}% chance
-                      </div>
-                    </div>
-                  )}
-                  <div className="text-right">
-                    <div className="text-sm text-gray-400 mb-1">
-                      {opp.type === 'arbitrage' ? 'Guaranteed Return' : 'If Both Win'}
-                    </div>
-                    <div className="text-2xl font-bold text-green-400">
-                      {formatCurrency(opp.totalStake + opp.maxProfit)}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Action Button */}
-                <div className="mt-4">
-                  <Link
-                    to="/bet-tracker"
-                    className="block w-full text-center px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 rounded-lg font-medium transition-colors"
-                  >
-                    Track This Opportunity
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Info Box */}
-        <div className="mt-8 bg-gradient-to-r from-purple-900/20 to-blue-900/20 border border-purple-700/30 rounded-lg p-6">
-          <h3 className="text-lg font-bold mb-3">💡 Understanding Opportunities</h3>
-          <div className="grid md:grid-cols-2 gap-4 text-sm text-gray-300">
-            <div>
-              <h4 className="font-semibold text-green-400 mb-2">💰 Arbitrage</h4>
-              <p>
-                Guaranteed profit by betting both sides of a market at different bookmakers.
-                No matter the outcome, you profit.
-              </p>
-              <p className="mt-2 text-xs text-gray-400">
-                Example: Bet Chiefs -2.5 at +105 (FanDuel) and Bills +3 at -110 (DraftKings).
-                One bet always wins.
-              </p>
+                Track This Opportunity
+              </Link>
             </div>
-            <div>
-              <h4 className="font-semibold text-blue-400 mb-2">🎯 Middle</h4>
-              <p>
-                Opportunity where BOTH bets can win if the result lands in the "middle" range.
-                If only one wins, you break even or profit slightly.
-              </p>
-              <p className="mt-2 text-xs text-gray-400">
-                Example: Bet Over 47.5 and Under 49.5. If total is 48 or 49, both win!
-              </p>
-            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Info Box */}
+      <div className="card bg-gradient-to-br from-brand-purple/10 to-brand-blue/10 border-brand-purple/30">
+        <h3 className="text-2xl font-bold text-text-primary mb-6 flex items-center gap-2">
+          <span className="text-3xl">💡</span>
+          Understanding Opportunities
+        </h3>
+        <div className="grid md:grid-cols-2 gap-6 text-sm">
+          <div>
+            <h4 className="font-bold text-accent-green-light mb-3 text-base">💰 Arbitrage</h4>
+            <p className="text-text-secondary mb-3">
+              Guaranteed profit by betting both sides of a market at different bookmakers.
+              No matter the outcome, you profit.
+            </p>
+            <p className="text-xs text-text-muted">
+              Example: Bet Chiefs -2.5 at +105 (FanDuel) and Bills +3 at -110 (DraftKings).
+              One bet always wins.
+            </p>
+          </div>
+          <div>
+            <h4 className="font-bold text-brand-blue-light mb-3 text-base">🎯 Middle</h4>
+            <p className="text-text-secondary mb-3">
+              Opportunity where BOTH bets can win if the result lands in the "middle" range.
+              If only one wins, you break even or profit slightly.
+            </p>
+            <p className="text-xs text-text-muted">
+              Example: Bet Over 47.5 and Under 49.5. If total is 48 or 49, both win!
+            </p>
           </div>
         </div>
       </div>

@@ -1,39 +1,53 @@
+/**
+ * Professional Betting Tools - Line Pointer
+ */
+
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { bettingMathService } from '../services/bettingMath.service';
 
 export function ProTools() {
   const [activeTab, setActiveTab] = useState<'kelly' | 'ev' | 'clv' | 'vig' | 'poisson' | 'sharp'>('kelly');
 
   return (
-    <div className="max-w-7xl mx-auto">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-white mb-2">🎯 Professional Betting Tools</h1>
-        <p className="text-gray-400">Industry-standard calculators used by professional sports bettors</p>
+    <div className="space-y-8">
+      {/* Header */}
+      <div>
+        <Link to="/" className="flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors group mb-3">
+          <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          <span className="font-medium">Back to Home</span>
+        </Link>
+        <h1 className="text-4xl font-bold text-text-primary mb-2">🎯 Professional Betting Tools</h1>
+        <p className="text-text-secondary text-lg">Industry-standard calculators used by professional sports bettors</p>
       </div>
 
       {/* Tool Tabs */}
-      <div className="flex flex-wrap gap-2 mb-6 bg-gray-900 p-4 rounded-lg">
-        {[
-          { id: 'kelly', label: '📊 Kelly Criterion', desc: 'Optimal bet sizing' },
-          { id: 'ev', label: '💰 EV Calculator', desc: 'Expected value' },
-          { id: 'clv', label: '📈 CLV Tracker', desc: 'Closing line value' },
-          { id: 'vig', label: '🔍 Vig Calculator', desc: 'True odds' },
-          { id: 'poisson', label: '🎲 Poisson Model', desc: 'Score prediction' },
-          { id: 'sharp', label: '🔥 Sharp Detector', desc: 'Smart money' }
-        ].map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id as any)}
-            className={`flex-1 min-w-[150px] p-3 rounded-lg font-semibold transition-all ${
-              activeTab === tab.id
-                ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg scale-105'
-                : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
-            }`}
-          >
-            <div className="text-sm">{tab.label}</div>
-            <div className="text-xs opacity-75">{tab.desc}</div>
-          </button>
-        ))}
+      <div className="card">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+          {[
+            { id: 'kelly', label: '📊 Kelly Criterion', desc: 'Optimal bet sizing' },
+            { id: 'ev', label: '💰 EV Calculator', desc: 'Expected value' },
+            { id: 'clv', label: '📈 CLV Tracker', desc: 'Closing line value' },
+            { id: 'vig', label: '🔍 Vig Calculator', desc: 'True odds' },
+            { id: 'poisson', label: '🎲 Poisson Model', desc: 'Score prediction' },
+            { id: 'sharp', label: '🔥 Sharp Detector', desc: 'Smart money' }
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as any)}
+              className={`p-4 rounded-2xl font-semibold transition-all ${
+                activeTab === tab.id
+                  ? 'bg-gradient-brand text-white shadow-glow-blue scale-105'
+                  : 'bg-dark-surface text-text-secondary hover:bg-dark-surface-hover border border-dark-border hover:border-brand-blue/50'
+              }`}
+            >
+              <div className="text-sm mb-1">{tab.label}</div>
+              <div className="text-xs opacity-75">{tab.desc}</div>
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Tool Content */}
@@ -59,32 +73,34 @@ function KellyCalculator() {
   const result = bettingMathService.calculateKelly(betOdds, fairWinProb / 100, bankroll, fraction);
 
   return (
-    <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
-      <h2 className="text-2xl font-bold text-white mb-4">📊 Kelly Criterion Calculator</h2>
-      <p className="text-gray-400 mb-6">
+    <div className="card">
+      <h2 className="text-3xl font-bold text-text-primary mb-4">📊 Kelly Criterion Calculator</h2>
+      <p className="text-text-secondary mb-2">
         The Kelly Criterion calculates the optimal bet size to maximize long-term bankroll growth while minimizing risk of ruin.
-        <span className="block mt-2 text-yellow-400 text-sm">
-          ⚠️ Pro Tip: Most professionals use fractional Kelly (25-50%) to reduce variance and account for estimation errors.
-        </span>
       </p>
+      <div className="stat-card bg-gradient-to-r from-accent-orange/10 to-accent-orange/5 border-accent-orange/30 mt-4 mb-6">
+        <p className="text-accent-orange text-sm">
+          ⚠️ <strong>Pro Tip:</strong> Most professionals use fractional Kelly (25-50%) to reduce variance and account for estimation errors.
+        </p>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         {/* Inputs */}
         <div className="space-y-4">
           <div>
-            <label className="block text-gray-300 mb-2">Bet Odds (American)</label>
+            <label className="block text-text-secondary font-semibold mb-2">Bet Odds (American)</label>
             <input
               type="number"
               value={betOdds}
               onChange={(e) => setBetOdds(Number(e.target.value))}
-              className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:border-blue-500 focus:outline-none"
+              className="w-full bg-dark-surface text-text-primary px-4 py-3 rounded-xl border border-dark-border focus:border-brand-blue focus:outline-none transition-colors"
               placeholder="-110"
             />
-            <p className="text-xs text-gray-500 mt-1">Enter American odds (e.g., -110, +150)</p>
+            <p className="text-xs text-text-muted mt-1">Enter American odds (e.g., -110, +150)</p>
           </div>
 
           <div>
-            <label className="block text-gray-300 mb-2">Your Fair Win Probability (%)</label>
+            <label className="block text-text-secondary font-semibold mb-2">Your Fair Win Probability (%)</label>
             <input
               type="number"
               min="0"
@@ -92,23 +108,23 @@ function KellyCalculator() {
               step="0.1"
               value={fairWinProb}
               onChange={(e) => setFairWinProb(Number(e.target.value))}
-              className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:border-blue-500 focus:outline-none"
+              className="w-full bg-dark-surface text-text-primary px-4 py-3 rounded-xl border border-dark-border focus:border-brand-blue focus:outline-none transition-colors"
             />
-            <p className="text-xs text-gray-500 mt-1">Your estimated true win probability</p>
+            <p className="text-xs text-text-muted mt-1">Your estimated true win probability</p>
           </div>
 
           <div>
-            <label className="block text-gray-300 mb-2">Bankroll ($)</label>
+            <label className="block text-text-secondary font-semibold mb-2">Bankroll ($)</label>
             <input
               type="number"
               value={bankroll}
               onChange={(e) => setBankroll(Number(e.target.value))}
-              className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:border-blue-500 focus:outline-none"
+              className="w-full bg-dark-surface text-text-primary px-4 py-3 rounded-xl border border-dark-border focus:border-brand-blue focus:outline-none transition-colors"
             />
           </div>
 
           <div>
-            <label className="block text-gray-300 mb-2">Kelly Fraction (Safety)</label>
+            <label className="block text-text-secondary font-semibold mb-2">Kelly Fraction (Safety)</label>
             <div className="flex gap-2">
               {[0.25, 0.5, 0.75, 1.0].map((f) => (
                 <button
@@ -122,7 +138,7 @@ function KellyCalculator() {
                 </button>
               ))}
             </div>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-text-muted mt-1">
               {fraction === 0.25 && '🛡️ Conservative (Recommended)'}
               {fraction === 0.5 && '⚖️ Moderate'}
               {fraction === 0.75 && '⚠️ Aggressive'}
@@ -201,7 +217,7 @@ function EVCalculator() {
   const result = bettingMathService.calculateEV(betOdds, fairWinProb / 100, stake);
 
   return (
-    <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
+    <div className="card">
       <h2 className="text-2xl font-bold text-white mb-4">💰 Expected Value (EV) Calculator</h2>
       <p className="text-gray-400 mb-6">
         EV is THE MOST IMPORTANT metric in sports betting. Professional bettors ONLY make bets with positive EV.
@@ -214,17 +230,17 @@ function EVCalculator() {
         {/* Inputs */}
         <div className="space-y-4">
           <div>
-            <label className="block text-gray-300 mb-2">Bet Odds (American)</label>
+            <label className="block text-text-secondary font-semibold mb-2">Bet Odds (American)</label>
             <input
               type="number"
               value={betOdds}
               onChange={(e) => setBetOdds(Number(e.target.value))}
-              className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:border-blue-500 focus:outline-none"
+              className="w-full bg-dark-surface text-text-primary px-4 py-3 rounded-xl border border-dark-border focus:border-brand-blue focus:outline-none transition-colors"
             />
           </div>
 
           <div>
-            <label className="block text-gray-300 mb-2">Fair Win Probability (%)</label>
+            <label className="block text-text-secondary font-semibold mb-2">Fair Win Probability (%)</label>
             <input
               type="number"
               min="0"
@@ -232,18 +248,18 @@ function EVCalculator() {
               step="0.1"
               value={fairWinProb}
               onChange={(e) => setFairWinProb(Number(e.target.value))}
-              className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:border-blue-500 focus:outline-none"
+              className="w-full bg-dark-surface text-text-primary px-4 py-3 rounded-xl border border-dark-border focus:border-brand-blue focus:outline-none transition-colors"
             />
-            <p className="text-xs text-gray-500 mt-1">From sharp book or your model</p>
+            <p className="text-xs text-text-muted mt-1">From sharp book or your model</p>
           </div>
 
           <div>
-            <label className="block text-gray-300 mb-2">Stake ($)</label>
+            <label className="block text-text-secondary font-semibold mb-2">Stake ($)</label>
             <input
               type="number"
               value={stake}
               onChange={(e) => setStake(Number(e.target.value))}
-              className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:border-blue-500 focus:outline-none"
+              className="w-full bg-dark-surface text-text-primary px-4 py-3 rounded-xl border border-dark-border focus:border-brand-blue focus:outline-none transition-colors"
             />
           </div>
         </div>
@@ -331,7 +347,7 @@ function CLVCalculator() {
   const result = bettingMathService.calculateCLV(yourOdds, closingOdds, betAmount);
 
   return (
-    <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
+    <div className="card">
       <h2 className="text-2xl font-bold text-white mb-4">📈 Closing Line Value (CLV) Calculator</h2>
       <p className="text-gray-400 mb-6">
         CLV is the BEST PREDICTOR of long-term betting success. Consistently beating the closing line = long-term profitability.
@@ -344,34 +360,34 @@ function CLVCalculator() {
         {/* Inputs */}
         <div className="space-y-4">
           <div>
-            <label className="block text-gray-300 mb-2">Your Bet Odds (American)</label>
+            <label className="block text-text-secondary font-semibold mb-2">Your Bet Odds (American)</label>
             <input
               type="number"
               value={yourOdds}
               onChange={(e) => setYourOdds(Number(e.target.value))}
-              className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:border-blue-500 focus:outline-none"
+              className="w-full bg-dark-surface text-text-primary px-4 py-3 rounded-xl border border-dark-border focus:border-brand-blue focus:outline-none transition-colors"
             />
-            <p className="text-xs text-gray-500 mt-1">The odds when you placed your bet</p>
+            <p className="text-xs text-text-muted mt-1">The odds when you placed your bet</p>
           </div>
 
           <div>
-            <label className="block text-gray-300 mb-2">Closing Odds (American)</label>
+            <label className="block text-text-secondary font-semibold mb-2">Closing Odds (American)</label>
             <input
               type="number"
               value={closingOdds}
               onChange={(e) => setClosingOdds(Number(e.target.value))}
-              className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:border-blue-500 focus:outline-none"
+              className="w-full bg-dark-surface text-text-primary px-4 py-3 rounded-xl border border-dark-border focus:border-brand-blue focus:outline-none transition-colors"
             />
-            <p className="text-xs text-gray-500 mt-1">The odds at game time / closing</p>
+            <p className="text-xs text-text-muted mt-1">The odds at game time / closing</p>
           </div>
 
           <div>
-            <label className="block text-gray-300 mb-2">Bet Amount ($)</label>
+            <label className="block text-text-secondary font-semibold mb-2">Bet Amount ($)</label>
             <input
               type="number"
               value={betAmount}
               onChange={(e) => setBetAmount(Number(e.target.value))}
-              className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:border-blue-500 focus:outline-none"
+              className="w-full bg-dark-surface text-text-primary px-4 py-3 rounded-xl border border-dark-border focus:border-brand-blue focus:outline-none transition-colors"
             />
           </div>
         </div>
@@ -446,7 +462,7 @@ function VigCalculator() {
   const result = bettingMathService.calculateVigFreeOdds(team1Odds, team2Odds);
 
   return (
-    <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
+    <div className="card">
       <h2 className="text-2xl font-bold text-white mb-4">🔍 Vig-Free Odds Calculator</h2>
       <p className="text-gray-400 mb-6">
         Remove the bookmaker's vig (juice/margin) to find the true fair odds. Essential for accurate EV calculations.
@@ -456,22 +472,22 @@ function VigCalculator() {
         {/* Inputs */}
         <div className="space-y-4">
           <div>
-            <label className="block text-gray-300 mb-2">Team 1 Odds (American)</label>
+            <label className="block text-text-secondary font-semibold mb-2">Team 1 Odds (American)</label>
             <input
               type="number"
               value={team1Odds}
               onChange={(e) => setTeam1Odds(Number(e.target.value))}
-              className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:border-blue-500 focus:outline-none"
+              className="w-full bg-dark-surface text-text-primary px-4 py-3 rounded-xl border border-dark-border focus:border-brand-blue focus:outline-none transition-colors"
             />
           </div>
 
           <div>
-            <label className="block text-gray-300 mb-2">Team 2 Odds (American)</label>
+            <label className="block text-text-secondary font-semibold mb-2">Team 2 Odds (American)</label>
             <input
               type="number"
               value={team2Odds}
               onChange={(e) => setTeam2Odds(Number(e.target.value))}
-              className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:border-blue-500 focus:outline-none"
+              className="w-full bg-dark-surface text-text-primary px-4 py-3 rounded-xl border border-dark-border focus:border-brand-blue focus:outline-none transition-colors"
             />
           </div>
 
@@ -538,7 +554,7 @@ function PoissonCalculator() {
   const result = bettingMathService.poissonScorePrediction(homeAvg, awayAvg, totalLine);
 
   return (
-    <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
+    <div className="card">
       <h2 className="text-2xl font-bold text-white mb-4">🎲 Poisson Score Predictor</h2>
       <p className="text-gray-400 mb-6">
         Uses Poisson distribution to predict game scores based on team average scoring rates.
@@ -548,35 +564,35 @@ function PoissonCalculator() {
         {/* Inputs */}
         <div className="space-y-4">
           <div>
-            <label className="block text-gray-300 mb-2">Home Team Avg Score</label>
+            <label className="block text-text-secondary font-semibold mb-2">Home Team Avg Score</label>
             <input
               type="number"
               step="0.1"
               value={homeAvg}
               onChange={(e) => setHomeAvg(Number(e.target.value))}
-              className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:border-blue-500 focus:outline-none"
+              className="w-full bg-dark-surface text-text-primary px-4 py-3 rounded-xl border border-dark-border focus:border-brand-blue focus:outline-none transition-colors"
             />
           </div>
 
           <div>
-            <label className="block text-gray-300 mb-2">Away Team Avg Score</label>
+            <label className="block text-text-secondary font-semibold mb-2">Away Team Avg Score</label>
             <input
               type="number"
               step="0.1"
               value={awayAvg}
               onChange={(e) => setAwayAvg(Number(e.target.value))}
-              className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:border-blue-500 focus:outline-none"
+              className="w-full bg-dark-surface text-text-primary px-4 py-3 rounded-xl border border-dark-border focus:border-brand-blue focus:outline-none transition-colors"
             />
           </div>
 
           <div>
-            <label className="block text-gray-300 mb-2">Total Line</label>
+            <label className="block text-text-secondary font-semibold mb-2">Total Line</label>
             <input
               type="number"
               step="0.5"
               value={totalLine}
               onChange={(e) => setTotalLine(Number(e.target.value))}
-              className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:border-blue-500 focus:outline-none"
+              className="w-full bg-dark-surface text-text-primary px-4 py-3 rounded-xl border border-dark-border focus:border-brand-blue focus:outline-none transition-colors"
             />
           </div>
         </div>
@@ -662,7 +678,7 @@ function SharpDetector() {
   const result = bettingMathService.detectSharpMoney(openingLine, currentLine, publicPct, hoursToGame);
 
   return (
-    <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
+    <div className="card">
       <h2 className="text-2xl font-bold text-white mb-4">🔥 Sharp Money Detector</h2>
       <p className="text-gray-400 mb-6">
         Identify when professional bettors (sharps) are betting heavily on one side. Sharp money often predicts outcomes better than public betting.
@@ -672,46 +688,46 @@ function SharpDetector() {
         {/* Inputs */}
         <div className="space-y-4">
           <div>
-            <label className="block text-gray-300 mb-2">Opening Line</label>
+            <label className="block text-text-secondary font-semibold mb-2">Opening Line</label>
             <input
               type="number"
               step="0.5"
               value={openingLine}
               onChange={(e) => setOpeningLine(Number(e.target.value))}
-              className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:border-blue-500 focus:outline-none"
+              className="w-full bg-dark-surface text-text-primary px-4 py-3 rounded-xl border border-dark-border focus:border-brand-blue focus:outline-none transition-colors"
             />
           </div>
 
           <div>
-            <label className="block text-gray-300 mb-2">Current Line</label>
+            <label className="block text-text-secondary font-semibold mb-2">Current Line</label>
             <input
               type="number"
               step="0.5"
               value={currentLine}
               onChange={(e) => setCurrentLine(Number(e.target.value))}
-              className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:border-blue-500 focus:outline-none"
+              className="w-full bg-dark-surface text-text-primary px-4 py-3 rounded-xl border border-dark-border focus:border-brand-blue focus:outline-none transition-colors"
             />
           </div>
 
           <div>
-            <label className="block text-gray-300 mb-2">Public Betting % (on favorite)</label>
+            <label className="block text-text-secondary font-semibold mb-2">Public Betting % (on favorite)</label>
             <input
               type="number"
               min="0"
               max="100"
               value={publicPct}
               onChange={(e) => setPublicPct(Number(e.target.value))}
-              className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:border-blue-500 focus:outline-none"
+              className="w-full bg-dark-surface text-text-primary px-4 py-3 rounded-xl border border-dark-border focus:border-brand-blue focus:outline-none transition-colors"
             />
           </div>
 
           <div>
-            <label className="block text-gray-300 mb-2">Hours Until Game</label>
+            <label className="block text-text-secondary font-semibold mb-2">Hours Until Game</label>
             <input
               type="number"
               value={hoursToGame}
               onChange={(e) => setHoursToGame(Number(e.target.value))}
-              className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:border-blue-500 focus:outline-none"
+              className="w-full bg-dark-surface text-text-primary px-4 py-3 rounded-xl border border-dark-border focus:border-brand-blue focus:outline-none transition-colors"
             />
           </div>
         </div>

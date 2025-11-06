@@ -1,10 +1,13 @@
 /**
+ * Line Pointer
+ */
+/**
  * Sentiment Analysis Page
  * Social media sentiment tracking for games and teams
  */
 
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import { sentimentService } from '../services/sentiment.service';
 import type { SentimentData, TrendingTopic, SocialPost } from '../services/sentiment.service';
 
@@ -44,10 +47,10 @@ export function SentimentAnalysis() {
     switch (sentiment) {
       case 'very_positive': return 'text-green-500';
       case 'positive': return 'text-green-400';
-      case 'neutral': return 'text-gray-400';
+      case 'neutral': return 'text-text-secondary';
       case 'negative': return 'text-red-400';
       case 'very_negative': return 'text-red-500';
-      default: return 'text-gray-400';
+      default: return 'text-text-secondary';
     }
   };
 
@@ -71,19 +74,28 @@ export function SentimentAnalysis() {
   };
 
   return (
+    <div className="space-y-8">
+      {/* Header */}
+      <div>
+        <Link to="/" className="flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors group mb-3">
+          <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          <span className="font-medium">Back to Home</span>
+        </Link>
     <div className="max-w-7xl mx-auto">
       {/* Header */}
       <div className="mb-6">
         <button
           onClick={() => navigate(-1)}
-          className="mb-4 text-gray-400 hover:text-white transition-colors"
+          className="mb-4 text-text-secondary hover:text-white transition-colors"
         >
           ← Back
         </button>
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-4xl font-bold text-white mb-2">📊 Social Sentiment</h1>
-            <p className="text-gray-300">Real-time social media analysis from Twitter and Reddit</p>
+            <p className="text-text-primary">Real-time social media analysis from Twitter and Reddit</p>
           </div>
         </div>
       </div>
@@ -115,7 +127,7 @@ export function SentimentAnalysis() {
           className={`px-6 py-3 rounded-lg font-semibold transition-colors ${
             activeTab === 'overview'
               ? 'bg-blue-600 text-white'
-              : 'bg-gray-800 text-gray-400 hover:text-white'
+              : 'bg-gray-800 text-text-secondary hover:text-white'
           }`}
         >
           📈 Overview
@@ -125,7 +137,7 @@ export function SentimentAnalysis() {
           className={`px-6 py-3 rounded-lg font-semibold transition-colors ${
             activeTab === 'trending'
               ? 'bg-blue-600 text-white'
-              : 'bg-gray-800 text-gray-400 hover:text-white'
+              : 'bg-gray-800 text-text-secondary hover:text-white'
           }`}
         >
           🔥 Trending
@@ -135,7 +147,7 @@ export function SentimentAnalysis() {
           className={`px-6 py-3 rounded-lg font-semibold transition-colors ${
             activeTab === 'feed'
               ? 'bg-blue-600 text-white'
-              : 'bg-gray-800 text-gray-400 hover:text-white'
+              : 'bg-gray-800 text-text-secondary hover:text-white'
           }`}
         >
           💬 Social Feed
@@ -146,7 +158,7 @@ export function SentimentAnalysis() {
       {activeTab === 'overview' && gameSentiment && (
         <div className="space-y-6">
           {/* Overall Sentiment Card */}
-          <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
+          <div className="card">
             <h2 className="text-xl font-bold text-white mb-4">Overall Sentiment</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="bg-gray-800 rounded-lg p-6 text-center">
@@ -155,7 +167,7 @@ export function SentimentAnalysis() {
                     {gameSentiment.overall.score.toFixed(0)}
                   </span>
                 </div>
-                <div className="text-gray-400 text-sm mb-1">Sentiment Score</div>
+                <div className="text-text-secondary text-sm mb-1">Sentiment Score</div>
                 <div className={`text-sm font-semibold ${getSentimentColor(gameSentiment.overall.sentiment)}`}>
                   {gameSentiment.overall.sentiment.replace('_', ' ').toUpperCase()}
                 </div>
@@ -164,7 +176,7 @@ export function SentimentAnalysis() {
                 <div className="text-4xl font-bold text-white mb-2">
                   {formatNumber(gameSentiment.overall.volume)}
                 </div>
-                <div className="text-gray-400 text-sm">Total Mentions</div>
+                <div className="text-text-secondary text-sm">Total Mentions</div>
                 {gameSentiment.overall.trending && (
                   <div className="mt-2 inline-block px-2 py-1 bg-red-600 text-white text-xs rounded-full font-semibold">
                     🔥 TRENDING
@@ -172,7 +184,7 @@ export function SentimentAnalysis() {
                 )}
               </div>
               <div className="bg-gray-800 rounded-lg p-6">
-                <div className="text-gray-400 text-sm mb-3">Public Bias</div>
+                <div className="text-text-secondary text-sm mb-3">Public Bias</div>
                 <div className="space-y-2">
                   <div>
                     <div className="flex justify-between text-sm mb-1">
@@ -185,7 +197,7 @@ export function SentimentAnalysis() {
                         style={{ width: `${gameSentiment.homeBias.score}%` }}
                       />
                     </div>
-                    <div className="text-gray-500 text-xs mt-1">{formatNumber(gameSentiment.homeBias.volume)} mentions</div>
+                    <div className="text-text-muted text-xs mt-1">{formatNumber(gameSentiment.homeBias.volume)} mentions</div>
                   </div>
                   <div>
                     <div className="flex justify-between text-sm mb-1">
@@ -198,7 +210,7 @@ export function SentimentAnalysis() {
                         style={{ width: `${gameSentiment.awayBias.score}%` }}
                       />
                     </div>
-                    <div className="text-gray-500 text-xs mt-1">{formatNumber(gameSentiment.awayBias.volume)} mentions</div>
+                    <div className="text-text-muted text-xs mt-1">{formatNumber(gameSentiment.awayBias.volume)} mentions</div>
                   </div>
                 </div>
               </div>
@@ -206,11 +218,11 @@ export function SentimentAnalysis() {
           </div>
 
           {/* Trending Topics */}
-          <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
+          <div className="card">
             <h2 className="text-xl font-bold text-white mb-4">Trending Topics</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {gameSentiment.topics.map((topic, idx) => (
-                <div key={idx} className="bg-gray-800 rounded-lg p-4 flex items-center justify-between">
+                <div key={idx} className="stat-card flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <span className={`w-3 h-3 rounded-full ${
                       topic.sentiment === 'positive' ? 'bg-green-500' :
@@ -219,7 +231,7 @@ export function SentimentAnalysis() {
                     }`}></span>
                     <div>
                       <div className="text-white font-semibold">{topic.keyword}</div>
-                      <div className="text-gray-400 text-sm">{formatNumber(topic.mentions)} mentions</div>
+                      <div className="text-text-secondary text-sm">{formatNumber(topic.mentions)} mentions</div>
                     </div>
                   </div>
                   <div className={`px-2 py-1 rounded text-xs font-bold ${
@@ -238,16 +250,16 @@ export function SentimentAnalysis() {
 
       {/* Trending Tab */}
       {activeTab === 'trending' && (
-        <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
+        <div className="card">
           <h2 className="text-xl font-bold text-white mb-6">🔥 What's Trending</h2>
           <div className="space-y-3">
             {trendingTopics.map((topic, idx) => (
               <div key={idx} className="flex items-center justify-between p-4 bg-gray-800 rounded-lg hover:bg-gray-750 transition-colors">
                 <div className="flex items-center gap-4">
-                  <div className="text-2xl font-bold text-gray-500">#{idx + 1}</div>
+                  <div className="text-2xl font-bold text-text-muted">#{idx + 1}</div>
                   <div>
                     <div className="text-white font-semibold">{topic.keyword}</div>
-                    <div className="text-gray-400 text-sm">{formatNumber(topic.mentions)} mentions</div>
+                    <div className="text-text-secondary text-sm">{formatNumber(topic.mentions)} mentions</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -277,20 +289,20 @@ export function SentimentAnalysis() {
         <div className="space-y-4">
           {socialFeed.length === 0 ? (
             <div className="bg-gray-900 rounded-lg p-12 text-center border border-gray-800">
-              <p className="text-gray-400 mb-4">No posts found. Try searching for a team or topic!</p>
+              <p className="text-text-secondary mb-4">No posts found. Try searching for a team or topic!</p>
             </div>
           ) : (
             socialFeed.map((post) => (
-              <div key={post.id} className="bg-gray-900 rounded-lg p-6 border border-gray-800">
+              <div key={post.id} className="card">
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold flex-shrink-0">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-text-primary font-bold flex-shrink-0">
                     {post.source === 'twitter' ? '𝕏' : 'R'}
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
                       <span className="text-white font-semibold">@{post.author}</span>
                       <span className="text-gray-600">•</span>
-                      <span className="text-gray-400 text-sm">{formatTime(post.timestamp)}</span>
+                      <span className="text-text-secondary text-sm">{formatTime(post.timestamp)}</span>
                       <span className={`ml-2 px-2 py-0.5 rounded text-xs font-bold ${
                         post.sentiment === 'positive' ? 'bg-green-600 text-white' :
                         post.sentiment === 'negative' ? 'bg-red-600 text-white' :
@@ -299,8 +311,8 @@ export function SentimentAnalysis() {
                         {post.sentiment.toUpperCase()}
                       </span>
                     </div>
-                    <p className="text-gray-300 mb-3">{post.content}</p>
-                    <div className="flex items-center gap-6 text-sm text-gray-400">
+                    <p className="text-text-primary mb-3">{post.content}</p>
+                    <div className="flex items-center gap-6 text-sm text-text-secondary">
                       <div className="flex items-center gap-1">
                         <span>❤️</span>
                         <span>{formatNumber(post.engagement.likes)}</span>

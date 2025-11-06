@@ -8,7 +8,6 @@ export function BetTracker() {
   const [stats, setStats] = useState<BetStats | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [filter, setFilter] = useState<'all' | 'pending' | 'won' | 'lost'>('all');
-  // const [editingBet, setEditingBet] = useState<Bet | null>(null);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -105,456 +104,450 @@ export function BetTracker() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="bg-black/30 backdrop-blur-sm border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link to="/" className="text-blue-400 hover:text-blue-300">
-              ← Back to Games
-            </Link>
-            <h1 className="text-2xl font-bold">Bet Tracker</h1>
-          </div>
-          <div className="flex gap-2">
-            <button
-              onClick={handleExportCSV}
-              className="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg text-sm font-medium transition-colors"
-            >
-              Export CSV
-            </button>
-            <button
-              onClick={() => setShowAddForm(!showAddForm)}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium transition-colors"
-            >
-              {showAddForm ? 'Cancel' : '+ Add Bet'}
-            </button>
-          </div>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <Link to="/" className="flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors group mb-3">
+            <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            <span className="font-medium">Back to Games</span>
+          </Link>
+          <h1 className="text-4xl font-bold text-text-primary">Bet Tracker</h1>
+          <p className="text-text-secondary mt-2">Track your bets and analyze your performance</p>
+        </div>
+        <div className="flex gap-3">
+          <button
+            onClick={handleExportCSV}
+            className="btn-success flex items-center gap-2"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            Export CSV
+          </button>
+          <button
+            onClick={() => setShowAddForm(!showAddForm)}
+            className={showAddForm ? "btn-secondary" : "btn-primary"}
+          >
+            {showAddForm ? 'Cancel' : '+ Add Bet'}
+          </button>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Statistics Dashboard */}
-        {stats && (
-          <div className="mb-8 grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-4">
-              <div className="text-sm text-gray-400 mb-1">Net Profit</div>
-              <div className={`text-2xl font-bold ${stats.netProfit >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                {formatCurrency(stats.netProfit)}
-              </div>
-              <div className="text-xs text-gray-500 mt-1">
-                ROI: {stats.roi.toFixed(1)}%
-              </div>
+      {/* Statistics Dashboard */}
+      {stats && (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div className="stat-card">
+            <div className="text-text-muted text-sm mb-2 font-semibold">NET PROFIT</div>
+            <div className={`text-3xl font-bold mb-1 ${stats.netProfit >= 0 ? 'gradient-text-green' : 'text-accent-red'}`}>
+              {formatCurrency(stats.netProfit)}
             </div>
-
-            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-4">
-              <div className="text-sm text-gray-400 mb-1">Record</div>
-              <div className="text-2xl font-bold">
-                {stats.wonBets}-{stats.lostBets}-{stats.pushBets}
-              </div>
-              <div className="text-xs text-gray-500 mt-1">
-                Win Rate: {stats.winRate.toFixed(1)}%
-              </div>
-            </div>
-
-            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-4">
-              <div className="text-sm text-gray-400 mb-1">Total Staked</div>
-              <div className="text-2xl font-bold">{formatCurrency(stats.totalStaked)}</div>
-              <div className="text-xs text-gray-500 mt-1">
-                Avg Stake: {formatCurrency(stats.averageStake)}
-              </div>
-            </div>
-
-            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-4">
-              <div className="text-sm text-gray-400 mb-1">Current Streak</div>
-              <div className="text-2xl font-bold">
-                {stats.currentStreak.count > 0 ? (
-                  <span className={stats.currentStreak.type === 'win' ? 'text-green-400' : 'text-red-400'}>
-                    {stats.currentStreak.type === 'win' ? 'W' : 'L'}{stats.currentStreak.count}
-                  </span>
-                ) : (
-                  <span className="text-gray-400">-</span>
-                )}
-              </div>
-              <div className="text-xs text-gray-500 mt-1">
-                Longest W: {stats.longestWinStreak} | L: {stats.longestLossStreak}
-              </div>
+            <div className="text-text-dim text-xs">
+              ROI: {stats.roi.toFixed(1)}%
             </div>
           </div>
-        )}
 
-        {/* Add Bet Form */}
-        {showAddForm && (
-          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-6 mb-8">
-            <h2 className="text-xl font-bold mb-4">Add New Bet</h2>
-            <form onSubmit={handleAddBet} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm text-gray-400 mb-1">Sport</label>
-                <select
-                  value={formData.sport}
-                  onChange={(e) => setFormData({ ...formData, sport: e.target.value as Bet['sport'] })}
-                  className="w-full bg-white/10 border border-white/20 rounded px-3 py-2 text-white"
-                >
-                  <option value="NFL">NFL</option>
-                  <option value="NCAAF">NCAAF</option>
-                  <option value="NBA">NBA</option>
-                  <option value="NCAAB">NCAAB</option>
-                  <option value="MLB">MLB</option>
-                  <option value="NHL">NHL</option>
-                  <option value="Other">Other</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm text-gray-400 mb-1">Bet Type</label>
-                <select
-                  value={formData.betType}
-                  onChange={(e) => setFormData({ ...formData, betType: e.target.value as Bet['betType'] })}
-                  className="w-full bg-white/10 border border-white/20 rounded px-3 py-2 text-white"
-                >
-                  <option value="spread">Spread</option>
-                  <option value="moneyline">Moneyline</option>
-                  <option value="total">Total (Over/Under)</option>
-                  <option value="prop">Prop Bet</option>
-                  <option value="parlay">Parlay</option>
-                  <option value="teaser">Teaser</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm text-gray-400 mb-1">Away Team</label>
-                <input
-                  type="text"
-                  value={formData.awayTeam}
-                  onChange={(e) => setFormData({ ...formData, awayTeam: e.target.value })}
-                  className="w-full bg-white/10 border border-white/20 rounded px-3 py-2 text-white"
-                  placeholder="e.g., Kansas City Chiefs"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm text-gray-400 mb-1">Home Team</label>
-                <input
-                  type="text"
-                  value={formData.homeTeam}
-                  onChange={(e) => setFormData({ ...formData, homeTeam: e.target.value })}
-                  className="w-full bg-white/10 border border-white/20 rounded px-3 py-2 text-white"
-                  placeholder="e.g., Buffalo Bills"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm text-gray-400 mb-1">Selection</label>
-                <input
-                  type="text"
-                  value={formData.selection}
-                  onChange={(e) => setFormData({ ...formData, selection: e.target.value })}
-                  className="w-full bg-white/10 border border-white/20 rounded px-3 py-2 text-white"
-                  placeholder="e.g., Chiefs -3, Over 48.5"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm text-gray-400 mb-1">Game Date</label>
-                <input
-                  type="date"
-                  value={formData.date}
-                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                  className="w-full bg-white/10 border border-white/20 rounded px-3 py-2 text-white"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm text-gray-400 mb-1">Odds (American)</label>
-                <input
-                  type="number"
-                  value={formData.odds}
-                  onChange={(e) => setFormData({ ...formData, odds: parseInt(e.target.value) })}
-                  className="w-full bg-white/10 border border-white/20 rounded px-3 py-2 text-white"
-                  placeholder="-110"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm text-gray-400 mb-1">Stake ($)</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={formData.stake}
-                  onChange={(e) => setFormData({ ...formData, stake: parseFloat(e.target.value) })}
-                  className="w-full bg-white/10 border border-white/20 rounded px-3 py-2 text-white"
-                  placeholder="100"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm text-gray-400 mb-1">Bookmaker (Optional)</label>
-                <input
-                  type="text"
-                  value={formData.bookmaker}
-                  onChange={(e) => setFormData({ ...formData, bookmaker: e.target.value })}
-                  className="w-full bg-white/10 border border-white/20 rounded px-3 py-2 text-white"
-                  placeholder="e.g., DraftKings"
-                />
-              </div>
-
-              <div className="md:col-span-2">
-                <label className="block text-sm text-gray-400 mb-1">Notes (Optional)</label>
-                <textarea
-                  value={formData.notes}
-                  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                  className="w-full bg-white/10 border border-white/20 rounded px-3 py-2 text-white"
-                  rows={2}
-                  placeholder="e.g., Sharp money on Chiefs, model likes this spot"
-                />
-              </div>
-
-              <div className="md:col-span-2">
-                <button
-                  type="submit"
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg transition-colors"
-                >
-                  Add Bet
-                </button>
-              </div>
-            </form>
+          <div className="stat-card">
+            <div className="text-text-muted text-sm mb-2 font-semibold">RECORD</div>
+            <div className="text-3xl font-bold text-text-primary mb-1">
+              {stats.wonBets}-{stats.lostBets}-{stats.pushBets}
+            </div>
+            <div className="text-text-dim text-xs">
+              Win Rate: {stats.winRate.toFixed(1)}%
+            </div>
           </div>
-        )}
 
-        {/* Filter Tabs */}
-        <div className="flex gap-2 mb-6">
-          <button
-            onClick={() => setFilter('all')}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-              filter === 'all'
-                ? 'bg-blue-600 text-white'
-                : 'bg-white/5 text-gray-400 hover:bg-white/10'
-            }`}
-          >
-            All Bets ({stats?.totalBets || 0})
-          </button>
-          <button
-            onClick={() => setFilter('pending')}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-              filter === 'pending'
-                ? 'bg-yellow-600 text-white'
-                : 'bg-white/5 text-gray-400 hover:bg-white/10'
-            }`}
-          >
-            Pending ({stats?.pendingBets || 0})
-          </button>
-          <button
-            onClick={() => setFilter('won')}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-              filter === 'won'
-                ? 'bg-green-600 text-white'
-                : 'bg-white/5 text-gray-400 hover:bg-white/10'
-            }`}
-          >
-            Won ({stats?.wonBets || 0})
-          </button>
-          <button
-            onClick={() => setFilter('lost')}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-              filter === 'lost'
-                ? 'bg-red-600 text-white'
-                : 'bg-white/5 text-gray-400 hover:bg-white/10'
-            }`}
-          >
-            Lost ({stats?.lostBets || 0})
-          </button>
-        </div>
+          <div className="stat-card">
+            <div className="text-text-muted text-sm mb-2 font-semibold">TOTAL STAKED</div>
+            <div className="text-3xl font-bold text-text-primary mb-1">{formatCurrency(stats.totalStaked)}</div>
+            <div className="text-text-dim text-xs">
+              Avg: {formatCurrency(stats.averageStake)}
+            </div>
+          </div>
 
-        {/* Bets List */}
-        <div className="space-y-4">
-          {bets.length === 0 ? (
-            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-12 text-center">
-              <div className="text-gray-400 mb-4">
-                {filter === 'all'
-                  ? "No bets tracked yet. Click '+ Add Bet' to get started!"
-                  : `No ${filter} bets found.`}
-              </div>
-              {!showAddForm && (
-                <button
-                  onClick={() => setShowAddForm(true)}
-                  className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium transition-colors"
-                >
-                  Add Your First Bet
-                </button>
+          <div className="stat-card">
+            <div className="text-text-muted text-sm mb-2 font-semibold">CURRENT STREAK</div>
+            <div className="text-3xl font-bold mb-1">
+              {stats.currentStreak.count > 0 ? (
+                <span className={stats.currentStreak.type === 'win' ? 'gradient-text-green' : 'text-accent-red'}>
+                  {stats.currentStreak.type === 'win' ? 'W' : 'L'}{stats.currentStreak.count}
+                </span>
+              ) : (
+                <span className="text-text-muted">-</span>
               )}
             </div>
-          ) : (
-            bets.map((bet) => (
-              <div
-                key={bet.id}
-                className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-4 hover:bg-white/10 transition-colors"
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className="px-2 py-1 bg-blue-600/20 text-blue-400 text-xs font-medium rounded">
-                        {bet.sport}
-                      </span>
-                      <span className="px-2 py-1 bg-purple-600/20 text-purple-400 text-xs font-medium rounded">
-                        {bet.betType}
-                      </span>
-                      {bet.bookmaker && (
-                        <span className="text-xs text-gray-400">{bet.bookmaker}</span>
-                      )}
-                      <span className="text-xs text-gray-500">
-                        {new Date(bet.placedAt).toLocaleDateString()}
-                      </span>
-                    </div>
-
-                    <div className="text-lg font-semibold mb-1">
-                      {bet.gameDetails.awayTeam} @ {bet.gameDetails.homeTeam}
-                    </div>
-
-                    <div className="text-blue-400 font-medium mb-2">
-                      {bet.selection} ({formatOdds(bet.odds)})
-                    </div>
-
-                    <div className="flex items-center gap-6 text-sm">
-                      <div>
-                        <span className="text-gray-400">Stake:</span>{' '}
-                        <span className="font-medium">{formatCurrency(bet.stake)}</span>
-                      </div>
-                      <div>
-                        <span className="text-gray-400">To Win:</span>{' '}
-                        <span className="font-medium text-green-400">
-                          {formatCurrency(bet.toWin)}
-                        </span>
-                      </div>
-                      {bet.actualReturn !== undefined && (
-                        <div>
-                          <span className="text-gray-400">Profit/Loss:</span>{' '}
-                          <span
-                            className={`font-medium ${
-                              bet.actualReturn - bet.stake >= 0
-                                ? 'text-green-400'
-                                : 'text-red-400'
-                            }`}
-                          >
-                            {formatCurrency(bet.actualReturn - bet.stake)}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-
-                    {bet.notes && (
-                      <div className="mt-2 text-sm text-gray-400 italic">
-                        Note: {bet.notes}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="flex flex-col items-end gap-2">
-                    {bet.result === 'pending' ? (
-                      <div className="flex gap-1">
-                        <button
-                          onClick={() => handleUpdateResult(bet.id, 'won')}
-                          className="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-xs font-medium rounded transition-colors"
-                        >
-                          Won
-                        </button>
-                        <button
-                          onClick={() => handleUpdateResult(bet.id, 'lost')}
-                          className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-xs font-medium rounded transition-colors"
-                        >
-                          Lost
-                        </button>
-                        <button
-                          onClick={() => handleUpdateResult(bet.id, 'push')}
-                          className="px-3 py-1 bg-gray-600 hover:bg-gray-700 text-white text-xs font-medium rounded transition-colors"
-                        >
-                          Push
-                        </button>
-                      </div>
-                    ) : (
-                      <span
-                        className={`px-3 py-1 text-xs font-medium rounded ${
-                          bet.result === 'won'
-                            ? 'bg-green-600 text-white'
-                            : bet.result === 'lost'
-                            ? 'bg-red-600 text-white'
-                            : 'bg-gray-600 text-white'
-                        }`}
-                      >
-                        {bet.result.toUpperCase()}
-                      </span>
-                    )}
-
-                    <button
-                      onClick={() => handleDeleteBet(bet.id)}
-                      className="text-xs text-red-400 hover:text-red-300"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-
-        {/* Stats by Sport/Type - Show if we have data */}
-        {stats && stats.settledBets > 0 && (
-          <div className="mt-8 grid md:grid-cols-2 gap-6">
-            {/* By Sport */}
-            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-6">
-              <h3 className="text-lg font-bold mb-4">Performance by Sport</h3>
-              <div className="space-y-3">
-                {Object.entries(stats.statsBySport).map(([sport, sportStats]) => (
-                  <div key={sport} className="flex items-center justify-between">
-                    <div>
-                      <div className="font-medium">{sport}</div>
-                      <div className="text-xs text-gray-400">
-                        {sportStats.bets} bets · {sportStats.winRate.toFixed(0)}% win rate
-                      </div>
-                    </div>
-                    <div
-                      className={`text-lg font-bold ${
-                        sportStats.profit >= 0 ? 'text-green-400' : 'text-red-400'
-                      }`}
-                    >
-                      {formatCurrency(sportStats.profit)}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* By Bet Type */}
-            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-6">
-              <h3 className="text-lg font-bold mb-4">Performance by Bet Type</h3>
-              <div className="space-y-3">
-                {Object.entries(stats.statsByBetType).map(([type, typeStats]) => (
-                  <div key={type} className="flex items-center justify-between">
-                    <div>
-                      <div className="font-medium capitalize">{type}</div>
-                      <div className="text-xs text-gray-400">
-                        {typeStats.bets} bets · {typeStats.winRate.toFixed(0)}% win rate
-                      </div>
-                    </div>
-                    <div
-                      className={`text-lg font-bold ${
-                        typeStats.profit >= 0 ? 'text-green-400' : 'text-red-400'
-                      }`}
-                    >
-                      {formatCurrency(typeStats.profit)}
-                    </div>
-                  </div>
-                ))}
-              </div>
+            <div className="text-text-dim text-xs">
+              Best W: {stats.longestWinStreak} | L: {stats.longestLossStreak}
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Add Bet Form */}
+      {showAddForm && (
+        <div className="card">
+          <h2 className="text-2xl font-bold text-text-primary mb-6">Add New Bet</h2>
+          <form onSubmit={handleAddBet} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm text-text-secondary mb-2 font-medium">Sport</label>
+              <select
+                value={formData.sport}
+                onChange={(e) => setFormData({ ...formData, sport: e.target.value as Bet['sport'] })}
+                className="input"
+              >
+                <option value="NFL">NFL</option>
+                <option value="NCAAF">NCAAF</option>
+                <option value="NBA">NBA</option>
+                <option value="NCAAB">NCAAB</option>
+                <option value="MLB">MLB</option>
+                <option value="NHL">NHL</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm text-text-secondary mb-2 font-medium">Bet Type</label>
+              <select
+                value={formData.betType}
+                onChange={(e) => setFormData({ ...formData, betType: e.target.value as Bet['betType'] })}
+                className="input"
+              >
+                <option value="spread">Spread</option>
+                <option value="moneyline">Moneyline</option>
+                <option value="total">Total (Over/Under)</option>
+                <option value="prop">Prop Bet</option>
+                <option value="parlay">Parlay</option>
+                <option value="teaser">Teaser</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm text-text-secondary mb-2 font-medium">Away Team</label>
+              <input
+                type="text"
+                value={formData.awayTeam}
+                onChange={(e) => setFormData({ ...formData, awayTeam: e.target.value })}
+                className="input"
+                placeholder="e.g., Kansas City Chiefs"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm text-text-secondary mb-2 font-medium">Home Team</label>
+              <input
+                type="text"
+                value={formData.homeTeam}
+                onChange={(e) => setFormData({ ...formData, homeTeam: e.target.value })}
+                className="input"
+                placeholder="e.g., Buffalo Bills"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm text-text-secondary mb-2 font-medium">Selection</label>
+              <input
+                type="text"
+                value={formData.selection}
+                onChange={(e) => setFormData({ ...formData, selection: e.target.value })}
+                className="input"
+                placeholder="e.g., Chiefs -3, Over 48.5"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm text-text-secondary mb-2 font-medium">Game Date</label>
+              <input
+                type="date"
+                value={formData.date}
+                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                className="input"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm text-text-secondary mb-2 font-medium">Odds (American)</label>
+              <input
+                type="number"
+                value={formData.odds}
+                onChange={(e) => setFormData({ ...formData, odds: parseInt(e.target.value) })}
+                className="input"
+                placeholder="-110"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm text-text-secondary mb-2 font-medium">Stake ($)</label>
+              <input
+                type="number"
+                step="0.01"
+                value={formData.stake}
+                onChange={(e) => setFormData({ ...formData, stake: parseFloat(e.target.value) })}
+                className="input"
+                placeholder="100"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm text-text-secondary mb-2 font-medium">Bookmaker (Optional)</label>
+              <input
+                type="text"
+                value={formData.bookmaker}
+                onChange={(e) => setFormData({ ...formData, bookmaker: e.target.value })}
+                className="input"
+                placeholder="e.g., DraftKings"
+              />
+            </div>
+
+            <div className="md:col-span-2">
+              <label className="block text-sm text-text-secondary mb-2 font-medium">Notes (Optional)</label>
+              <textarea
+                value={formData.notes}
+                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                className="input"
+                rows={3}
+                placeholder="e.g., Sharp money on Chiefs, model likes this spot"
+              />
+            </div>
+
+            <div className="md:col-span-2">
+              <button
+                type="submit"
+                className="w-full btn-primary text-lg py-4"
+              >
+                Add Bet
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* Filter Tabs */}
+      <div className="pill-container inline-flex">
+        <button
+          onClick={() => setFilter('all')}
+          className={`pill-item ${filter === 'all' ? 'pill-item-active' : 'pill-item-inactive'}`}
+        >
+          All ({stats?.totalBets || 0})
+        </button>
+        <button
+          onClick={() => setFilter('pending')}
+          className={`pill-item ${filter === 'pending' ? 'pill-item-active' : 'pill-item-inactive'}`}
+        >
+          Pending ({stats?.pendingBets || 0})
+        </button>
+        <button
+          onClick={() => setFilter('won')}
+          className={`pill-item ${filter === 'won' ? 'pill-item-active' : 'pill-item-inactive'}`}
+        >
+          Won ({stats?.wonBets || 0})
+        </button>
+        <button
+          onClick={() => setFilter('lost')}
+          className={`pill-item ${filter === 'lost' ? 'pill-item-active' : 'pill-item-inactive'}`}
+        >
+          Lost ({stats?.lostBets || 0})
+        </button>
+      </div>
+
+      {/* Bets List */}
+      <div className="space-y-4">
+        {bets.length === 0 ? (
+          <div className="card text-center py-16">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-dark-surface border border-dark-border rounded-full mb-6">
+              <svg className="w-10 h-10 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+            </div>
+            <div className="text-text-secondary mb-6 text-lg">
+              {filter === 'all'
+                ? "No bets tracked yet. Click '+ Add Bet' to get started!"
+                : `No ${filter} bets found.`}
+            </div>
+            {!showAddForm && filter === 'all' && (
+              <button
+                onClick={() => setShowAddForm(true)}
+                className="btn-primary"
+              >
+                Add Your First Bet
+              </button>
+            )}
+          </div>
+        ) : (
+          bets.map((bet) => (
+            <div
+              key={bet.id}
+              className="card card-hover"
+            >
+              <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
+                <div className="flex-1 w-full">
+                  <div className="flex flex-wrap items-center gap-2 mb-3">
+                    <span className="badge badge-info">
+                      {bet.sport}
+                    </span>
+                    <span className="badge badge-info bg-brand-purple/20 text-brand-purple-light border-brand-purple/40">
+                      {bet.betType}
+                    </span>
+                    {bet.bookmaker && (
+                      <span className="text-xs text-text-muted">{bet.bookmaker}</span>
+                    )}
+                    <span className="text-xs text-text-dim ml-auto">
+                      {new Date(bet.placedAt).toLocaleDateString()}
+                    </span>
+                  </div>
+
+                  <div className="text-xl font-bold text-text-primary mb-2">
+                    {bet.gameDetails.awayTeam} @ {bet.gameDetails.homeTeam}
+                  </div>
+
+                  <div className="gradient-text text-lg font-bold mb-3">
+                    {bet.selection} ({formatOdds(bet.odds)})
+                  </div>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-3">
+                    <div className="stat-card py-2">
+                      <div className="text-text-muted text-xs mb-1">STAKE</div>
+                      <div className="font-bold text-text-primary">{formatCurrency(bet.stake)}</div>
+                    </div>
+                    <div className="stat-card py-2">
+                      <div className="text-text-muted text-xs mb-1">TO WIN</div>
+                      <div className="font-bold gradient-text-green">
+                        {formatCurrency(bet.toWin)}
+                      </div>
+                    </div>
+                    {bet.actualReturn !== undefined && (
+                      <div className="stat-card py-2">
+                        <div className="text-text-muted text-xs mb-1">PROFIT/LOSS</div>
+                        <div
+                          className={`font-bold ${
+                            bet.actualReturn - bet.stake >= 0
+                              ? 'gradient-text-green'
+                              : 'text-accent-red'
+                          }`}
+                        >
+                          {formatCurrency(bet.actualReturn - bet.stake)}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {bet.notes && (
+                    <div className="mt-3 p-3 bg-dark-surface/50 border border-dark-border rounded-2xl">
+                      <p className="text-sm text-text-secondary italic">
+                        <span className="text-text-muted font-semibold not-italic">Note:</span> {bet.notes}
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex flex-row sm:flex-col items-center sm:items-end gap-2 w-full sm:w-auto">
+                  {bet.result === 'pending' ? (
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleUpdateResult(bet.id, 'won')}
+                        className="px-4 py-2 bg-gradient-success text-white text-sm font-bold rounded-full hover:brightness-90 transition-all"
+                      >
+                        Won
+                      </button>
+                      <button
+                        onClick={() => handleUpdateResult(bet.id, 'lost')}
+                        className="px-4 py-2 bg-gradient-to-r from-accent-red to-red-600 text-white text-sm font-bold rounded-full hover:brightness-90 transition-all"
+                      >
+                        Lost
+                      </button>
+                      <button
+                        onClick={() => handleUpdateResult(bet.id, 'push')}
+                        className="px-4 py-2 bg-dark-card border-2 border-dark-border text-text-secondary text-sm font-bold rounded-full hover:border-brand-blue/50 transition-all"
+                      >
+                        Push
+                      </button>
+                    </div>
+                  ) : (
+                    <span
+                      className={`badge ${
+                        bet.result === 'won'
+                          ? 'badge-success'
+                          : bet.result === 'lost'
+                          ? 'badge-danger'
+                          : 'badge-info'
+                      } text-sm px-4 py-2`}
+                    >
+                      {bet.result.toUpperCase()}
+                    </span>
+                  )}
+
+                  <button
+                    onClick={() => handleDeleteBet(bet.id)}
+                    className="text-sm text-accent-red hover:text-red-400 transition-colors font-medium"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))
         )}
       </div>
+
+      {/* Stats by Sport/Type */}
+      {stats && stats.settledBets > 0 && (
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* By Sport */}
+          <div className="card">
+            <h3 className="text-2xl font-bold text-text-primary mb-6">Performance by Sport</h3>
+            <div className="space-y-4">
+              {Object.entries(stats.statsBySport).map(([sport, sportStats]) => (
+                <div key={sport} className="flex items-center justify-between p-4 bg-dark-surface/50 rounded-2xl border border-dark-border hover:border-brand-blue/30 transition-all">
+                  <div>
+                    <div className="font-bold text-text-primary text-lg">{sport}</div>
+                    <div className="text-sm text-text-muted">
+                      {sportStats.bets} bets · {sportStats.winRate.toFixed(0)}% win rate
+                    </div>
+                  </div>
+                  <div
+                    className={`text-2xl font-bold ${
+                      sportStats.profit >= 0 ? 'gradient-text-green' : 'text-accent-red'
+                    }`}
+                  >
+                    {formatCurrency(sportStats.profit)}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* By Bet Type */}
+          <div className="card">
+            <h3 className="text-2xl font-bold text-text-primary mb-6">Performance by Bet Type</h3>
+            <div className="space-y-4">
+              {Object.entries(stats.statsByBetType).map(([type, typeStats]) => (
+                <div key={type} className="flex items-center justify-between p-4 bg-dark-surface/50 rounded-2xl border border-dark-border hover:border-brand-blue/30 transition-all">
+                  <div>
+                    <div className="font-bold text-text-primary text-lg capitalize">{type}</div>
+                    <div className="text-sm text-text-muted">
+                      {typeStats.bets} bets · {typeStats.winRate.toFixed(0)}% win rate
+                    </div>
+                  </div>
+                  <div
+                    className={`text-2xl font-bold ${
+                      typeStats.profit >= 0 ? 'gradient-text-green' : 'text-accent-red'
+                    }`}
+                  >
+                    {formatCurrency(typeStats.profit)}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { apiService } from '../services/api.service';
 import { cacheService } from '../services/cache.service';
 import { rateLimiterService } from '../services/rateLimiter.service';
@@ -13,7 +14,7 @@ export function ApiDashboard() {
 
   useEffect(() => {
     loadStats();
-    const interval = setInterval(loadStats, 5000); // Refresh every 5 seconds
+    const interval = setInterval(loadStats, 5000);
     return () => clearInterval(interval);
   }, []);
 
@@ -61,31 +62,38 @@ export function ApiDashboard() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-white mb-2">API Dashboard</h1>
-        <p className="text-gray-400">Monitor and manage all API integrations</p>
+    <div className="space-y-8">
+      {/* Header */}
+      <div>
+        <Link to="/" className="flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors group mb-3">
+          <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          <span className="font-medium">Back to Home</span>
+        </Link>
+        <h1 className="text-4xl font-bold text-text-primary mb-2">API Dashboard</h1>
+        <p className="text-text-secondary text-lg">Monitor and manage all API integrations</p>
       </div>
 
       {/* API Status Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {apiStatus && Object.entries(apiStatus).map(([name, status]: [string, any]) => (
-          <div key={name} className="bg-gray-900 rounded-lg p-4 border border-gray-800">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-gray-400 text-sm">{name}</span>
+          <div key={name} className="stat-card">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-text-muted text-sm font-semibold">{name.toUpperCase()}</span>
               <span className={`w-3 h-3 rounded-full ${
-                status.status === 'operational' ? 'bg-green-500' : 'bg-red-500'
+                status.status === 'operational' ? 'bg-accent-green animate-pulse shadow-glow-green' : 'bg-accent-red'
               }`} />
             </div>
-            <div className="text-2xl font-bold text-white">{status.latency}ms</div>
-            <div className="text-gray-500 text-xs mt-1">{status.status}</div>
+            <div className="text-3xl font-bold text-text-primary mb-1">{status.latency}ms</div>
+            <div className="text-text-dim text-xs">{status.status}</div>
           </div>
         ))}
       </div>
 
       {/* API Configuration Status */}
-      <div className="bg-gray-900 rounded-lg p-6 border border-gray-800 mb-6">
-        <h2 className="text-lg font-semibold text-white mb-4">API Configuration Status</h2>
+      <div className="card">
+        <h2 className="text-2xl font-bold text-text-primary mb-6">API Configuration Status</h2>
         <div className="space-y-3">
           {[
             { name: 'The Odds API', key: API_CONFIG.theOddsApi.apiKey, url: 'https://the-odds-api.com/', status: 'Free tier: 500 req/month' },
@@ -94,22 +102,22 @@ export function ApiDashboard() {
             { name: 'OpenWeather', key: API_CONFIG.openWeather.apiKey, url: 'https://openweathermap.org/', status: 'Free tier: 60/min' },
             { name: 'OpenAI', key: API_CONFIG.openai.apiKey, url: 'https://platform.openai.com/', status: 'Pay-as-you-go' }
           ].map((api) => (
-            <div key={api.name} className="flex items-center justify-between bg-gray-800 rounded p-3">
+            <div key={api.name} className="flex items-center justify-between p-4 bg-dark-surface rounded-2xl border border-dark-border hover:border-brand-blue/30 transition-all">
               <div className="flex-1">
-                <div className="text-white font-semibold">{api.name}</div>
-                <div className="text-gray-400 text-xs">{api.status}</div>
+                <div className="text-text-primary font-bold">{api.name}</div>
+                <div className="text-text-muted text-sm">{api.status}</div>
               </div>
-              <div className="flex items-center space-x-3">
-                <span className={`px-3 py-1 rounded text-xs font-bold ${
-                  hasApiKey(api.key) ? 'bg-green-600 text-white' : 'bg-yellow-600 text-white'
+              <div className="flex items-center gap-3">
+                <span className={`badge ${
+                  hasApiKey(api.key) ? 'badge-success' : 'badge-warning'
                 }`}>
-                  {hasApiKey(api.key) ? 'Configured' : 'Not Configured'}
+                  {hasApiKey(api.key) ? '✓ Configured' : 'Not Configured'}
                 </span>
                 <a
                   href={api.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-400 hover:text-blue-300 text-sm"
+                  className="text-brand-blue-light hover:text-brand-blue text-sm font-medium"
                 >
                   Get Key →
                 </a>
@@ -118,20 +126,25 @@ export function ApiDashboard() {
           ))}
         </div>
 
-        <div className="mt-6 bg-blue-900/20 border border-blue-800/30 rounded-lg p-4">
-          <h3 className="text-blue-400 font-semibold mb-2 text-sm">🚀 Quick Start</h3>
-          <ol className="text-gray-300 text-sm space-y-1 list-decimal list-inside">
-            <li>Copy <code className="bg-gray-800 px-2 py-0.5 rounded">.env.example</code> to <code className="bg-gray-800 px-2 py-0.5 rounded">.env.local</code></li>
+        <div className="mt-6 bg-brand-blue/10 border border-brand-blue/30 rounded-2xl p-6">
+          <h3 className="text-brand-blue-light font-bold mb-4 flex items-center gap-2">
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
+            </svg>
+            Quick Start
+          </h3>
+          <ol className="text-text-secondary space-y-2 list-decimal list-inside">
+            <li>Copy <code className="bg-dark-surface px-2 py-1 rounded text-brand-blue-light">.env.example</code> to <code className="bg-dark-surface px-2 py-1 rounded text-brand-blue-light">.env.local</code></li>
             <li>Get free API keys from The Odds API and OpenWeather</li>
-            <li>Add your keys to <code className="bg-gray-800 px-2 py-0.5 rounded">.env.local</code></li>
+            <li>Add your keys to <code className="bg-dark-surface px-2 py-1 rounded text-brand-blue-light">.env.local</code></li>
             <li>Restart the development server</li>
           </ol>
         </div>
       </div>
 
       {/* API Testing */}
-      <div className="bg-gray-900 rounded-lg p-6 border border-gray-800 mb-6">
-        <h2 className="text-lg font-semibold text-white mb-4">API Testing</h2>
+      <div className="card">
+        <h2 className="text-2xl font-bold text-text-primary mb-6">API Testing</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {[
             { key: 'oddsApi', name: 'Test Odds API', description: 'Fetch live NFL odds' },
@@ -139,23 +152,25 @@ export function ApiDashboard() {
             { key: 'statsApi', name: 'Test Stats API', description: 'Fetch player stats' },
             { key: 'predictionApi', name: 'Test AI Predictions', description: 'Generate game predictions' }
           ].map((test) => (
-            <div key={test.key} className="bg-gray-800 rounded p-4">
-              <div className="flex items-center justify-between mb-2">
+            <div key={test.key} className="stat-card hover:border-brand-blue/30 transition-all">
+              <div className="flex items-center justify-between mb-3">
                 <div>
-                  <div className="text-white font-semibold">{test.name}</div>
-                  <div className="text-gray-400 text-xs">{test.description}</div>
+                  <div className="text-text-primary font-bold">{test.name}</div>
+                  <div className="text-text-muted text-sm">{test.description}</div>
                 </div>
                 <button
                   onClick={() => testApi(test.key)}
                   disabled={loading === test.key}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 text-white text-sm font-semibold rounded-lg"
+                  className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading === test.key ? 'Testing...' : 'Test'}
                 </button>
               </div>
               {testResults[test.key] && (
-                <div className={`mt-3 p-3 rounded text-xs ${
-                  testResults[test.key].success ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-red-400'
+                <div className={`p-3 rounded-2xl text-sm ${
+                  testResults[test.key].success
+                    ? 'bg-accent-green/20 text-accent-green-light border border-accent-green/40'
+                    : 'bg-accent-red/20 text-accent-red border border-accent-red/40'
                 }`}>
                   {testResults[test.key].success ? '✓ Success' : `✗ ${testResults[test.key].error?.message || 'Failed'}`}
                 </div>
@@ -165,43 +180,43 @@ export function ApiDashboard() {
         </div>
       </div>
 
-      {/* Cache Statistics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-white">Cache Statistics</h2>
+      {/* Cache & Rate Limits */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="card">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-text-primary">Cache Statistics</h2>
             <button
               onClick={clearCache}
-              className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded"
+              className="px-4 py-2 bg-accent-red hover:brightness-90 text-white font-semibold rounded-full transition-all"
             >
               Clear Cache
             </button>
           </div>
           {cacheStats && (
-            <div className="space-y-3">
+            <div className="space-y-4">
               <div className="flex justify-between items-center">
-                <span className="text-gray-400">Entries</span>
-                <span className="text-white font-semibold">{cacheStats.size} / {cacheStats.maxSize}</span>
+                <span className="text-text-muted font-semibold">ENTRIES</span>
+                <span className="text-text-primary font-bold text-xl">{cacheStats.size} / {cacheStats.maxSize}</span>
               </div>
-              <div className="bg-gray-800 rounded-full h-2 overflow-hidden">
+              <div className="bg-dark-surface rounded-full h-3 overflow-hidden border border-dark-border">
                 <div
-                  className="bg-blue-500 h-2"
+                  className="bg-gradient-brand h-full transition-all duration-1000"
                   style={{ width: `${(cacheStats.size / cacheStats.maxSize) * 100}%` }}
                 />
               </div>
-              <div className="text-gray-500 text-xs">
+              <div className="text-text-muted text-sm">
                 Cache hit rate improves performance and reduces API costs
               </div>
             </div>
           )}
         </div>
 
-        <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-white">Rate Limits</h2>
+        <div className="card">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-text-primary">Rate Limits</h2>
             <button
               onClick={resetRateLimits}
-              className="px-3 py-1 bg-yellow-600 hover:bg-yellow-700 text-white text-sm font-semibold rounded"
+              className="px-4 py-2 bg-accent-orange hover:brightness-90 text-white font-semibold rounded-full transition-all"
             >
               Reset All
             </button>
@@ -209,16 +224,16 @@ export function ApiDashboard() {
           {rateLimits && Object.keys(rateLimits).length > 0 ? (
             <div className="space-y-3">
               {Object.entries(rateLimits).map(([api, stats]: [string, any]) => (
-                <div key={api} className="bg-gray-800 rounded p-3">
+                <div key={api} className="stat-card py-3">
                   <div className="flex justify-between mb-2">
-                    <span className="text-gray-400 text-sm">{api}</span>
-                    <span className={`text-xs font-bold ${stats.blocked ? 'text-red-500' : 'text-green-500'}`}>
+                    <span className="text-text-muted text-sm font-semibold">{api.toUpperCase()}</span>
+                    <span className={`badge text-xs ${stats.blocked ? 'badge-danger' : 'badge-success'}`}>
                       {stats.blocked ? 'Blocked' : 'Active'}
                     </span>
                   </div>
-                  <div className="text-white font-semibold">{stats.requests} / {stats.limit}</div>
+                  <div className="text-text-primary font-bold text-lg">{stats.requests} / {stats.limit}</div>
                   {stats.blocked && (
-                    <div className="text-yellow-400 text-xs mt-1">
+                    <div className="text-accent-orange text-xs mt-1">
                       Resets in {Math.ceil(stats.timeToReset / 1000)}s
                     </div>
                   )}
@@ -226,42 +241,36 @@ export function ApiDashboard() {
               ))}
             </div>
           ) : (
-            <div className="text-gray-500 text-sm">No rate limit data yet</div>
+            <div className="text-text-muted">No rate limit data yet</div>
           )}
         </div>
       </div>
 
       {/* Documentation */}
-      <div className="bg-gradient-to-r from-purple-900/40 to-blue-900/40 rounded-lg p-6 border border-purple-800/30">
-        <h2 className="text-lg font-semibold text-white mb-4">📚 API Documentation</h2>
+      <div className="card bg-gradient-to-br from-brand-purple/10 to-brand-blue/10 border-brand-purple/30">
+        <h2 className="text-2xl font-bold text-text-primary mb-6 flex items-center gap-2">
+          <svg className="w-6 h-6 text-brand-purple-light" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
+          </svg>
+          API Documentation
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <a
-            href="https://the-odds-api.com/liveapi/guides/v4/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-gray-900/50 rounded p-4 hover:bg-gray-900/70 transition-colors"
-          >
-            <div className="text-white font-semibold mb-1">The Odds API</div>
-            <div className="text-gray-400 text-xs">Real-time odds documentation</div>
-          </a>
-          <a
-            href="https://www.mysportsfeeds.com/data-feeds/api-docs/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-gray-900/50 rounded p-4 hover:bg-gray-900/70 transition-colors"
-          >
-            <div className="text-white font-semibold mb-1">MySportsFeeds</div>
-            <div className="text-gray-400 text-xs">Stats & injuries API docs</div>
-          </a>
-          <a
-            href="https://openweathermap.org/api"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-gray-900/50 rounded p-4 hover:bg-gray-900/70 transition-colors"
-          >
-            <div className="text-white font-semibold mb-1">OpenWeather</div>
-            <div className="text-gray-400 text-xs">Weather API documentation</div>
-          </a>
+          {[
+            { name: 'The Odds API', desc: 'Real-time odds documentation', url: 'https://the-odds-api.com/liveapi/guides/v4/' },
+            { name: 'MySportsFeeds', desc: 'Stats & injuries API docs', url: 'https://www.mysportsfeeds.com/data-feeds/api-docs/' },
+            { name: 'OpenWeather', desc: 'Weather API documentation', url: 'https://openweathermap.org/api' }
+          ].map((doc) => (
+            <a
+              key={doc.name}
+              href={doc.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="stat-card hover:border-brand-blue/50 transition-all group"
+            >
+              <div className="text-text-primary font-bold mb-2 group-hover:gradient-text transition-all">{doc.name}</div>
+              <div className="text-text-muted text-sm">{doc.desc}</div>
+            </a>
+          ))}
         </div>
       </div>
     </div>

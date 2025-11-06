@@ -1914,65 +1914,60 @@ function App() {
 
   return (
     <Router>
-      <div className="min-h-screen flex flex-col bg-gray-950">
-        {/* Header */}
-        <header className="bg-gray-900 border-b border-gray-800 sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto px-4 py-4">
-            <div className="flex items-center space-x-2">
-              <span className="text-2xl">🏈</span>
-              <h1 className="text-xl font-bold text-white">AI Sports Analyst</h1>
-            </div>
+      <div className="min-h-screen flex flex-col bg-dark-bg">
+        {/* Header - Modern Sticky Navigation */}
+        <header className="glass glass-border sticky top-0 z-50 backdrop-blur-xl">
+          <div className="max-w-8xl mx-auto px-4 sm:px-6 py-4">
+            <div className="flex items-center justify-between">
+              {/* Logo */}
+              <Link to="/" className="flex items-center gap-3 group">
+                <div className="flex items-center justify-center w-10 h-10 bg-gradient-brand rounded-full shadow-glow-blue">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                <div>
+                  <h1 className="text-xl font-bold gradient-text group-hover:scale-105 transition-transform">Line Pointer</h1>
+                  <p className="text-text-muted text-xs hidden sm:block">Precision Sports Analytics</p>
+                </div>
+              </Link>
 
-            {/* Navigation */}
-            <nav className="flex space-x-1 mt-4">
-              <Link to="/" className="px-4 py-2 rounded-lg font-medium bg-blue-600 text-white">
-                Games
-              </Link>
-              <Link to="/bet-tracker" className="px-4 py-2 rounded-lg font-medium bg-gray-800 text-gray-300 hover:bg-gray-700">
-                Bet Tracker
-              </Link>
-              <Link to="/line-movement" className="px-4 py-2 rounded-lg font-medium bg-gray-800 text-gray-300 hover:bg-gray-700">
-                Line Movement
-              </Link>
-              <Link to="/live-betting" className="px-4 py-2 rounded-lg font-medium bg-gradient-to-r from-red-600 to-orange-600 text-white hover:from-red-700 hover:to-orange-700 animate-pulse">
-                🔴 Live
-              </Link>
-              <Link to="/arbitrage-finder" className="px-4 py-2 rounded-lg font-medium bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700">
-                💰 Arbitrage
-              </Link>
-              <Link to="/pro-edge" className="px-4 py-2 rounded-lg font-medium bg-gradient-to-r from-emerald-600 to-teal-600 text-white hover:from-emerald-700 hover:to-teal-700">
-                💎 Pro Edge
-              </Link>
-              <Link to="/parlay-builder" className="px-4 py-2 rounded-lg font-medium bg-gray-800 text-gray-300 hover:bg-gray-700">
-                Parlay Builder
-              </Link>
-              <Link to="/subscription" className="px-4 py-2 rounded-lg font-medium bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700">
-                ⚡ Upgrade
-              </Link>
-              <Link to="/history" className="px-4 py-2 rounded-lg font-medium bg-gray-800 text-gray-300 hover:bg-gray-700">
-                Performance
-              </Link>
-              <Link to="/bankroll" className="px-4 py-2 rounded-lg font-medium bg-gray-800 text-gray-300 hover:bg-gray-700">
-                Bankroll
-              </Link>
-              <Link to="/community" className="px-4 py-2 rounded-lg font-medium bg-gray-800 text-gray-300 hover:bg-gray-700">
-                🌟 Community
-              </Link>
-              <Link to="/sentiment" className="px-4 py-2 rounded-lg font-medium bg-gray-800 text-gray-300 hover:bg-gray-700">
-                📊 Sentiment
-              </Link>
-              <Link to="/pro-tools" className="px-4 py-2 rounded-lg font-medium bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700">
-                🎯 Pro Tools
-              </Link>
-              <Link to="/api-dashboard" className="px-4 py-2 rounded-lg font-medium bg-gray-800 text-gray-300 hover:bg-gray-700">
-                API Status
-              </Link>
-            </nav>
+              {/* Navigation - Scrollable on mobile */}
+              <nav className="flex items-center gap-2 overflow-x-auto scrollbar-hide flex-1 justify-end max-w-4xl">
+                <Link to="/" className="px-4 py-2 rounded-full font-medium bg-gradient-brand text-white whitespace-nowrap text-sm hover:brightness-90 transition-all">
+                  Games
+                </Link>
+                <Link to="/bet-tracker" className="px-4 py-2 rounded-full font-medium bg-dark-card text-text-secondary hover:text-text-primary hover:bg-dark-hover whitespace-nowrap text-sm transition-all border border-dark-border">
+                  Bet Tracker
+                </Link>
+                <Link to="/line-movement" className="px-4 py-2 rounded-full font-medium bg-dark-card text-text-secondary hover:text-text-primary hover:bg-dark-hover whitespace-nowrap text-sm transition-all border border-dark-border">
+                  Lines
+                </Link>
+                <Link to="/live-betting" className="px-4 py-2 rounded-full font-medium bg-gradient-to-r from-accent-red to-accent-orange text-white whitespace-nowrap text-sm hover:brightness-90 transition-all shadow-lg">
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
+                    Live
+                  </span>
+                </Link>
+                <Link to="/arbitrage-finder" className="px-4 py-2 rounded-full font-medium bg-gradient-success text-white whitespace-nowrap text-sm hover:brightness-90 transition-all shadow-lg">
+                  Arbitrage
+                </Link>
+                <Link to="/pro-edge" className="px-4 py-2 rounded-full font-medium bg-gradient-to-r from-accent-teal to-accent-green text-white whitespace-nowrap text-sm hover:brightness-90 transition-all shadow-lg">
+                  Pro Edge
+                </Link>
+                <Link to="/pro-tools" className="px-4 py-2 rounded-full font-medium bg-gradient-purple text-white whitespace-nowrap text-sm hover:brightness-90 transition-all shadow-lg">
+                  Tools
+                </Link>
+                <Link to="/subscription" className="px-4 py-2 rounded-full font-medium bg-gradient-to-r from-brand-purple to-brand-purple-light text-white whitespace-nowrap text-sm hover:brightness-90 transition-all shadow-lg">
+                  ⚡ Upgrade
+                </Link>
+              </nav>
+            </div>
           </div>
         </header>
 
         {/* Main Content */}
-        <main className="flex-grow max-w-7xl w-full mx-auto px-4 py-6">
+        <main className="flex-grow max-w-8xl w-full mx-auto px-4 sm:px-6 py-8 sm:py-12">
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/game/:gameId" element={<GameDetail />} />
@@ -1994,18 +1989,78 @@ function App() {
         </main>
 
         {/* Footer */}
-        <footer className="bg-gray-900 border-t border-gray-800 mt-auto">
-          <div className="max-w-7xl mx-auto px-4 py-6">
-            <div className="bg-yellow-900/20 border border-yellow-700/30 rounded-lg p-4 mb-4">
-              <h3 className="text-yellow-500 font-semibold mb-2 text-sm">⚠️ Important Disclaimers</h3>
-              <ul className="text-gray-400 text-xs space-y-1">
-                <li>• For entertainment and informational purposes only</li>
-                <li>• Not gambling advice. We are not a sportsbook.</li>
-                <li>• Always gamble responsibly</li>
+        <footer className="border-t border-dark-border mt-auto bg-dark-surface/50">
+          <div className="max-w-8xl mx-auto px-4 sm:px-6 py-12">
+            {/* Disclaimer */}
+            <div className="bg-accent-orange/10 border border-accent-orange/30 rounded-3xl p-6 mb-8">
+              <h3 className="text-accent-orange font-bold mb-3 text-sm flex items-center gap-2">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+                Important Disclaimers
+              </h3>
+              <ul className="text-text-secondary text-sm space-y-2">
+                <li className="flex items-start gap-2">
+                  <span className="text-accent-orange">•</span>
+                  <span>For entertainment and informational purposes only</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-accent-orange">•</span>
+                  <span>Not gambling advice. We are not a sportsbook.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-accent-orange">•</span>
+                  <span>Always gamble responsibly and within your means</span>
+                </li>
               </ul>
             </div>
-            <div className="text-center text-gray-500 text-xs">
-              <p>&copy; 2025 AI Sports Analyst</p>
+
+            {/* Footer Links */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-8">
+              <div>
+                <h4 className="text-text-primary font-bold mb-4">Product</h4>
+                <ul className="space-y-2 text-text-secondary text-sm">
+                  <li><Link to="/" className="hover:text-brand-blue transition-colors">Games</Link></li>
+                  <li><Link to="/bet-tracker" className="hover:text-brand-blue transition-colors">Bet Tracker</Link></li>
+                  <li><Link to="/line-movement" className="hover:text-brand-blue transition-colors">Line Movement</Link></li>
+                  <li><Link to="/pro-tools" className="hover:text-brand-blue transition-colors">Pro Tools</Link></li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="text-text-primary font-bold mb-4">Premium</h4>
+                <ul className="space-y-2 text-text-secondary text-sm">
+                  <li><Link to="/subscription" className="hover:text-brand-blue transition-colors">Upgrade</Link></li>
+                  <li><Link to="/pro-edge" className="hover:text-brand-blue transition-colors">Pro Edge</Link></li>
+                  <li><Link to="/ios-waitlist" className="hover:text-brand-blue transition-colors">iOS App</Link></li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="text-text-primary font-bold mb-4">Resources</h4>
+                <ul className="space-y-2 text-text-secondary text-sm">
+                  <li><Link to="/community" className="hover:text-brand-blue transition-colors">Community</Link></li>
+                  <li><Link to="/sentiment" className="hover:text-brand-blue transition-colors">Sentiment Analysis</Link></li>
+                  <li><Link to="/api-dashboard" className="hover:text-brand-blue transition-colors">API Status</Link></li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Copyright */}
+            <div className="pt-8 border-t border-dark-border">
+              <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center justify-center w-8 h-8 bg-gradient-brand rounded-full">
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                  </div>
+                  <span className="text-text-muted text-sm">&copy; 2025 Line Pointer. All rights reserved.</span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <a href="#" className="text-text-muted hover:text-brand-blue text-sm transition-colors">Privacy</a>
+                  <a href="#" className="text-text-muted hover:text-brand-blue text-sm transition-colors">Terms</a>
+                  <a href="#" className="text-text-muted hover:text-brand-blue text-sm transition-colors">Contact</a>
+                </div>
+              </div>
             </div>
           </div>
         </footer>
