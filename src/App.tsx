@@ -589,18 +589,18 @@ function GameDetail() {
 
   return (
     <div className="max-w-6xl mx-auto">
-      <button onClick={() => navigate('/')} className="text-gray-400 hover:text-white mb-4 flex items-center space-x-2">
+      <button onClick={() => navigate('/')} className="text-text-secondary hover:text-white mb-4 flex items-center space-x-2">
         <span>←</span>
         <span>Back to Games</span>
       </button>
 
       {/* Enhanced Game Header */}
-      <div className="bg-gray-900 rounded-lg p-6 mb-6 border border-gray-800">
+      <div className="bg-dark-card rounded-3xl p-6 mb-6 border border-dark-border shadow-card">
         <div className="flex justify-between items-start mb-4">
           <div>
-            <div className="text-gray-400 text-sm mb-2">{game.date} • {game.time}</div>
+            <div className="text-text-secondary text-sm mb-2">{game.date} • {game.time}</div>
             <h1 className="text-2xl font-bold text-white">{game.away} @ {game.home}</h1>
-            <div className="text-gray-400 text-sm mt-1">📍 {game.location}</div>
+            <div className="text-text-secondary text-sm mt-1">📍 {game.location}</div>
           </div>
           <span className={`px-3 py-1.5 rounded-full text-sm font-bold ${
             game.confidence === 'High' ? 'bg-green-600 text-white' :
@@ -615,84 +615,84 @@ function GameDetail() {
           <div className="text-center">
             <div className="text-4xl mb-2">🏈</div>
             <div className="font-semibold text-white text-lg">{game.away}</div>
-            <div className="text-gray-400 text-sm">{game.awayShort}</div>
+            <div className="text-text-secondary text-sm">{game.awayShort}</div>
           </div>
           <div className="text-center">
             <div className="text-4xl mb-2">🏈</div>
             <div className="font-semibold text-white text-lg">{game.home}</div>
-            <div className="text-gray-400 text-sm">{game.homeShort}</div>
+            <div className="text-text-secondary text-sm">{game.homeShort}</div>
             <div className="mt-2 text-green-500 font-bold">✓ AI PICK</div>
           </div>
         </div>
       </div>
 
       {/* Win Probability */}
-      <div className="bg-gray-900 rounded-lg p-6 mb-6 border border-gray-800">
+      <div className="bg-dark-card rounded-3xl p-6 mb-6 border border-dark-border shadow-card">
         <h2 className="text-lg font-semibold text-white mb-4">Win Probability</h2>
         <div className="space-y-4">
           <div>
             <div className="flex justify-between text-sm mb-2">
-              <span className="text-gray-400">{game.awayShort}</span>
+              <span className="text-text-secondary">{game.awayShort}</span>
               <span className="text-white font-semibold">{100 - game.winProb}%</span>
             </div>
-            <div className="bg-gray-800 rounded-full h-4 overflow-hidden">
-              <div className="bg-red-600 h-full" style={{ width: `${100 - game.winProb}%` }} />
+            <div className="bg-dark-surface rounded-full h-4 overflow-hidden">
+              <div className="bg-accent-red h-full transition-all duration-500" style={{ width: `${100 - game.winProb}%` }} />
             </div>
           </div>
           <div>
             <div className="flex justify-between text-sm mb-2">
-              <span className="text-gray-400">{game.homeShort}</span>
-              <span className="text-white font-semibold">{game.winProb}%</span>
+              <span className="text-text-secondary">{game.homeShort}</span>
+              <span className="text-text-primary font-semibold">{game.winProb}%</span>
             </div>
-            <div className="bg-gray-800 rounded-full h-4 overflow-hidden">
-              <div className="bg-green-600 h-full" style={{ width: `${game.winProb}%` }} />
+            <div className="bg-dark-surface rounded-full h-4 overflow-hidden">
+              <div className="bg-accent-green h-full transition-all duration-500" style={{ width: `${game.winProb}%` }} />
             </div>
           </div>
         </div>
       </div>
 
       {/* AI Analysis */}
-      <div className="bg-gradient-to-r from-blue-900/40 to-purple-900/40 rounded-lg p-6 mb-6 border border-blue-800/30">
+      <div className="bg-gradient-to-r from-blue-900/40 to-purple-900/40 rounded-3xl p-6 mb-6 border border-blue-800/30 shadow-glow-blue">
         <h2 className="text-lg font-semibold text-white mb-3 flex items-center">
           <span className="mr-2">🤖</span>
           AI Analysis
         </h2>
-        <p className="text-gray-200 leading-relaxed mb-4">{game.summary}</p>
+        <p className="text-text-primary leading-relaxed mb-4">{game.summary}</p>
 
         <div className="grid grid-cols-2 gap-4 text-sm">
-          <div className="bg-gray-900/50 rounded p-3">
-            <div className="text-gray-400 mb-1">Spread Pick</div>
+          <div className="bg-dark-card/50 rounded p-3">
+            <div className="text-text-secondary mb-1">Spread Pick</div>
             <div className="text-white font-semibold">{game.homeShort} ({game.spread})</div>
           </div>
-          <div className="bg-gray-900/50 rounded p-3">
-            <div className="text-gray-400 mb-1">O/U Pick</div>
+          <div className="bg-dark-card/50 rounded p-3">
+            <div className="text-text-secondary mb-1">O/U Pick</div>
             <div className="text-white font-semibold">OVER {game.ou}</div>
           </div>
         </div>
       </div>
 
       {/* Weather & Conditions */}
-      <div className="bg-gray-900 rounded-lg p-6 mb-6 border border-gray-800">
+      <div className="bg-dark-card rounded-3xl p-6 mb-6 border border-dark-border shadow-card">
         <h2 className="text-lg font-semibold text-white mb-4 flex items-center">
           <span className="mr-2">🌤️</span>
           Weather & Conditions
         </h2>
         <div className="grid grid-cols-4 gap-4 text-center mb-3">
-          <div className="bg-gray-800 rounded p-3">
-            <div className="text-gray-400 text-xs mb-1">Temperature</div>
-            <div className="text-white font-semibold">{game.weather.temp}°F</div>
+          <div className="bg-dark-surface rounded-2xl p-3 border border-dark-border">
+            <div className="text-text-muted text-xs mb-1">Temperature</div>
+            <div className="text-text-primary font-semibold">{game.weather.temp}°F</div>
           </div>
-          <div className="bg-gray-800 rounded p-3">
-            <div className="text-gray-400 text-xs mb-1">Condition</div>
-            <div className="text-white font-semibold text-sm">{game.weather.condition}</div>
+          <div className="bg-dark-surface rounded-2xl p-3 border border-dark-border">
+            <div className="text-text-muted text-xs mb-1">Condition</div>
+            <div className="text-text-primary font-semibold text-sm">{game.weather.condition}</div>
           </div>
-          <div className="bg-gray-800 rounded p-3">
-            <div className="text-gray-400 text-xs mb-1">Wind</div>
-            <div className="text-white font-semibold">{game.weather.wind} mph</div>
+          <div className="bg-dark-surface rounded-2xl p-3 border border-dark-border">
+            <div className="text-text-muted text-xs mb-1">Wind</div>
+            <div className="text-text-primary font-semibold">{game.weather.wind} mph</div>
           </div>
-          <div className="bg-gray-800 rounded p-3">
-            <div className="text-gray-400 text-xs mb-1">Precip</div>
-            <div className="text-white font-semibold">{game.weather.precipitation}%</div>
+          <div className="bg-dark-surface rounded-2xl p-3 border border-dark-border">
+            <div className="text-text-muted text-xs mb-1">Precip</div>
+            <div className="text-text-primary font-semibold">{game.weather.precipitation}%</div>
           </div>
         </div>
         <div className="bg-blue-900/20 border border-blue-800/30 rounded p-3">
@@ -701,7 +701,7 @@ function GameDetail() {
       </div>
 
       {/* Injury Report */}
-      <div className="bg-gray-900 rounded-lg p-6 mb-6 border border-gray-800">
+      <div className="bg-dark-card rounded-3xl p-6 mb-6 border border-dark-border shadow-card">
         <h2 className="text-lg font-semibold text-white mb-4 flex items-center">
           <span className="mr-2">🏥</span>
           Injury Report
@@ -712,7 +712,7 @@ function GameDetail() {
             {game.injuries.away.length > 0 ? (
               <div className="space-y-2">
                 {game.injuries.away.map((injury: any, i: number) => (
-                  <div key={i} className="bg-gray-800 rounded p-3">
+                  <div key={i} className="bg-dark-surface rounded-2xl p-3 border border-dark-border">
                     <div className="flex justify-between items-start mb-1">
                       <div className="text-white font-semibold text-sm">{injury.player}</div>
                       <span className={`px-2 py-0.5 rounded text-xs font-bold ${
@@ -724,12 +724,12 @@ function GameDetail() {
                         {injury.impact}
                       </span>
                     </div>
-                    <div className="text-gray-400 text-xs">{injury.position} • {injury.status}</div>
+                    <div className="text-text-muted text-xs">{injury.position} • {injury.status}</div>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="text-gray-500 text-sm">No significant injuries</div>
+              <div className="text-text-dim text-sm">No significant injuries</div>
             )}
           </div>
           <div>
@@ -737,7 +737,7 @@ function GameDetail() {
             {game.injuries.home.length > 0 ? (
               <div className="space-y-2">
                 {game.injuries.home.map((injury: any, i: number) => (
-                  <div key={i} className="bg-gray-800 rounded p-3">
+                  <div key={i} className="bg-dark-surface rounded-2xl p-3 border border-dark-border">
                     <div className="flex justify-between items-start mb-1">
                       <div className="text-white font-semibold text-sm">{injury.player}</div>
                       <span className={`px-2 py-0.5 rounded text-xs font-bold ${
@@ -749,19 +749,19 @@ function GameDetail() {
                         {injury.impact}
                       </span>
                     </div>
-                    <div className="text-gray-400 text-xs">{injury.position} • {injury.status}</div>
+                    <div className="text-text-muted text-xs">{injury.position} • {injury.status}</div>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="text-gray-500 text-sm">No significant injuries</div>
+              <div className="text-text-dim text-sm">No significant injuries</div>
             )}
           </div>
         </div>
       </div>
 
       {/* Offensive Efficiency */}
-      <div className="bg-gray-900 rounded-lg p-6 mb-6 border border-gray-800">
+      <div className="bg-dark-card rounded-3xl p-6 mb-6 border border-dark-border shadow-card">
         <h2 className="text-lg font-semibold text-white mb-4">Offensive Efficiency</h2>
         <div className="space-y-4">
           <StatRow label="Yards Per Play" away={game.awayStats.yardsPerPlay.toFixed(1)} home={game.homeStats.yardsPerPlay.toFixed(1)} />
@@ -775,7 +775,7 @@ function GameDetail() {
       </div>
 
       {/* Situational Stats */}
-      <div className="bg-gray-900 rounded-lg p-6 mb-6 border border-gray-800">
+      <div className="bg-dark-card rounded-3xl p-6 mb-6 border border-dark-border shadow-card">
         <h2 className="text-lg font-semibold text-white mb-4">Situational Statistics</h2>
         <div className="space-y-4">
           <StatRow label="Home/Away Record" away={game.awayStats.awayRecord} home={game.homeStats.homeRecord} />
@@ -788,15 +788,15 @@ function GameDetail() {
       </div>
 
       {/* Scoring Trends */}
-      <div className="bg-gray-900 rounded-lg p-6 mb-6 border border-gray-800">
+      <div className="bg-dark-card rounded-3xl p-6 mb-6 border border-dark-border shadow-card">
         <h2 className="text-lg font-semibold text-white mb-4">Scoring Trends</h2>
         <div className="space-y-4">
           <StatRow label="1st Half PPG" away={game.awayStats.firstHalfPPG.toFixed(1)} home={game.homeStats.firstHalfPPG.toFixed(1)} />
           <StatRow label="2nd Half PPG" away={game.awayStats.secondHalfPPG.toFixed(1)} home={game.homeStats.secondHalfPPG.toFixed(1)} />
-          <div className="pt-4 border-t border-gray-800">
+          <div className="pt-4 border-t border-dark-border">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <div className="text-gray-400 text-sm mb-2">Recent Form</div>
+                <div className="text-text-secondary text-sm mb-2">Recent Form</div>
                 <div className="flex space-x-1">
                   {game.awayStats.form.split('-').map((r: string, i: number) => (
                     <span key={i} className={`w-6 h-6 rounded flex items-center justify-center text-xs font-bold ${
@@ -806,7 +806,7 @@ function GameDetail() {
                 </div>
               </div>
               <div>
-                <div className="text-gray-400 text-sm mb-2">Recent Form</div>
+                <div className="text-text-secondary text-sm mb-2">Recent Form</div>
                 <div className="flex space-x-1">
                   {game.homeStats.form.split('-').map((r: string, i: number) => (
                     <span key={i} className={`w-6 h-6 rounded flex items-center justify-center text-xs font-bold ${
@@ -821,26 +821,26 @@ function GameDetail() {
       </div>
 
       {/* Head-to-Head History */}
-      <div className="bg-gray-900 rounded-lg p-6 mb-6 border border-gray-800">
+      <div className="bg-dark-card rounded-lg p-6 mb-6 border border-dark-border">
         <h2 className="text-lg font-semibold text-white mb-4 flex items-center">
           <span className="mr-2">📊</span>
           Head-to-Head History
         </h2>
         <div className="grid grid-cols-2 gap-4">
-          <div className="bg-gray-800 rounded p-3">
-            <div className="text-gray-400 text-xs mb-1">All-Time Series</div>
+          <div className="bg-dark-surface rounded p-3">
+            <div className="text-text-secondary text-xs mb-1">All-Time Series</div>
             <div className="text-white font-semibold text-sm">{game.headToHead.overall}</div>
           </div>
-          <div className="bg-gray-800 rounded p-3">
-            <div className="text-gray-400 text-xs mb-1">Recent Meetings</div>
+          <div className="bg-dark-surface rounded p-3">
+            <div className="text-text-secondary text-xs mb-1">Recent Meetings</div>
             <div className="text-white font-semibold text-sm">{game.headToHead.recent}</div>
           </div>
-          <div className="bg-gray-800 rounded p-3">
-            <div className="text-gray-400 text-xs mb-1">Last Meeting</div>
+          <div className="bg-dark-surface rounded p-3">
+            <div className="text-text-secondary text-xs mb-1">Last Meeting</div>
             <div className="text-white font-semibold text-sm">{game.headToHead.lastMeeting}</div>
           </div>
-          <div className="bg-gray-800 rounded p-3">
-            <div className="text-gray-400 text-xs mb-1">Avg Score (L5)</div>
+          <div className="bg-dark-surface rounded p-3">
+            <div className="text-text-secondary text-xs mb-1">Avg Score (L5)</div>
             <div className="text-white font-semibold text-sm">{game.headToHead.avgScore}</div>
           </div>
         </div>
@@ -848,7 +848,7 @@ function GameDetail() {
 
       {/* Advanced Metrics (EPA, DVOA) */}
       {("advancedMetrics" in game) && game.advancedMetrics && (
-        <div className="bg-gray-900 rounded-lg p-6 mb-6 border border-gray-800">
+        <div className="bg-dark-card rounded-lg p-6 mb-6 border border-dark-border">
           <h2 className="text-lg font-semibold text-white mb-4 flex items-center">
             <span className="mr-2">📊</span>
             Advanced Performance Metrics
@@ -862,7 +862,7 @@ function GameDetail() {
           </div>
           <div className="mt-4 p-3 bg-blue-900/20 border border-blue-800/30 rounded">
             <div className="text-blue-400 text-xs font-semibold mb-1">What This Means</div>
-            <div className="text-gray-300 text-xs">
+            <div className="text-text-secondary text-xs">
               EPA measures offensive efficiency per play. DVOA adjusts for opponent strength. Success rate shows consistency.
               {game.advancedMetrics?.home.epa > (game.advancedMetrics?.away.epa ?? 0) && (game.advancedMetrics?.home.dvoa ?? 0) > (game.advancedMetrics?.away.dvoa ?? 0)
                 ? ` ${game.homeShort} has clear advanced metrics advantage.`
@@ -876,7 +876,7 @@ function GameDetail() {
 
       {/* Coaching Analysis */}
       {("coaching" in game) && game.coaching && (
-        <div className="bg-gray-900 rounded-lg p-6 mb-6 border border-gray-800">
+        <div className="bg-dark-card rounded-lg p-6 mb-6 border border-dark-border">
           <h2 className="text-lg font-semibold text-white mb-4 flex items-center">
             <span className="mr-2">🎯</span>
             Coaching Matchup Analysis
@@ -886,19 +886,19 @@ function GameDetail() {
               <div className="text-blue-400 font-semibold mb-3">{game.coaching?.away.headCoach} ({game.awayShort})</div>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Career Record:</span>
+                  <span className="text-text-secondary">Career Record:</span>
                   <span className="text-white font-semibold">{game.coaching?.away.record}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Playoff Record:</span>
+                  <span className="text-text-secondary">Playoff Record:</span>
                   <span className="text-white font-semibold">{game.coaching?.away.playoffRecord}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400">vs Opposing Coach:</span>
+                  <span className="text-text-secondary">vs Opposing Coach:</span>
                   <span className="text-white font-semibold">{game.coaching?.away.vsOpposingCoach}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Adjustment Rating:</span>
+                  <span className="text-text-secondary">Adjustment Rating:</span>
                   <span className="text-white font-semibold">{game.coaching?.away.adjustmentRating}/10</span>
                 </div>
               </div>
@@ -907,19 +907,19 @@ function GameDetail() {
               <div className="text-green-400 font-semibold mb-3">{game.coaching?.home.headCoach} ({game.homeShort})</div>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Career Record:</span>
+                  <span className="text-text-secondary">Career Record:</span>
                   <span className="text-white font-semibold">{game.coaching?.home.record}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Playoff Record:</span>
+                  <span className="text-text-secondary">Playoff Record:</span>
                   <span className="text-white font-semibold">{game.coaching?.home.playoffRecord}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400">vs Opposing Coach:</span>
+                  <span className="text-text-secondary">vs Opposing Coach:</span>
                   <span className="text-white font-semibold">{game.coaching?.home.vsOpposingCoach}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Adjustment Rating:</span>
+                  <span className="text-text-secondary">Adjustment Rating:</span>
                   <span className="text-white font-semibold">{game.coaching?.home.adjustmentRating}/10</span>
                 </div>
               </div>
@@ -927,7 +927,7 @@ function GameDetail() {
           </div>
           <div className="mt-4 p-3 bg-purple-900/20 border border-purple-800/30 rounded">
             <div className="text-purple-400 text-xs font-semibold mb-1">Coaching Edge</div>
-            <div className="text-gray-300 text-xs">
+            <div className="text-text-secondary text-xs">
               {(game.coaching?.home.adjustmentRating ?? 0) > (game.coaching?.away.adjustmentRating ?? 0) + 1
                 ? `${game.homeShort} has significant coaching advantage. ${game.coaching?.home.headCoach} excels at in-game adjustments.`
                 : (game.coaching?.away.adjustmentRating ?? 0) > (game.coaching?.home.adjustmentRating ?? 0) + 1
@@ -940,7 +940,7 @@ function GameDetail() {
 
       {/* Rest & Travel Analysis */}
       {("restAndTravel" in game) && game.restAndTravel && (
-        <div className="bg-gray-900 rounded-lg p-6 mb-6 border border-gray-800">
+        <div className="bg-dark-card rounded-lg p-6 mb-6 border border-dark-border">
           <h2 className="text-lg font-semibold text-white mb-4 flex items-center">
             <span className="mr-2">✈️</span>
             Rest & Travel Factors
@@ -952,7 +952,7 @@ function GameDetail() {
           </div>
           <div className="mt-4 p-3 bg-green-900/20 border border-green-800/30 rounded">
             <div className="text-green-400 text-xs font-semibold mb-1">Impact Assessment</div>
-            <div className="text-gray-300 text-xs">
+            <div className="text-text-secondary text-xs">
               {(game.restAndTravel?.away.daysRest ?? 0) < (game.restAndTravel?.home.daysRest ?? 0)
                 ? `${game.homeShort} has rest advantage. Fatigue could be a factor for ${game.awayShort}.`
                 : (game.restAndTravel?.away.travelDistance ?? 0) > 1000
@@ -965,48 +965,48 @@ function GameDetail() {
 
       {/* Betting Market Intelligence */}
       {("bettingAnalysis" in game) && game.bettingAnalysis && (
-        <div className="bg-gray-900 rounded-lg p-6 mb-6 border border-gray-800">
+        <div className="bg-dark-card rounded-lg p-6 mb-6 border border-dark-border">
           <h2 className="text-lg font-semibold text-white mb-4 flex items-center">
             <span className="mr-2">💰</span>
             Betting Market Intelligence
           </h2>
           <div className="grid grid-cols-3 gap-4 mb-4">
-            <div className="bg-gray-800 rounded p-3">
-              <div className="text-gray-400 text-xs mb-1">Opening Line</div>
+            <div className="bg-dark-surface rounded p-3">
+              <div className="text-text-secondary text-xs mb-1">Opening Line</div>
               <div className="text-white font-semibold">{game.bettingAnalysis.openingLine > 0 ? `+${game.bettingAnalysis.openingLine}` : game.bettingAnalysis.openingLine}</div>
             </div>
-            <div className="bg-gray-800 rounded p-3">
-              <div className="text-gray-400 text-xs mb-1">Current Line</div>
+            <div className="bg-dark-surface rounded p-3">
+              <div className="text-text-secondary text-xs mb-1">Current Line</div>
               <div className="text-white font-semibold">{game.bettingAnalysis.currentLine > 0 ? `+${game.bettingAnalysis.currentLine}` : game.bettingAnalysis.currentLine}</div>
             </div>
-            <div className="bg-gray-800 rounded p-3">
-              <div className="text-gray-400 text-xs mb-1">Line Movement</div>
+            <div className="bg-dark-surface rounded p-3">
+              <div className="text-text-secondary text-xs mb-1">Line Movement</div>
               <div className={`font-semibold ${game.bettingAnalysis.lineMovement < 0 ? 'text-red-500' : 'text-green-500'}`}>
                 {game.bettingAnalysis.lineMovement > 0 ? `+${game.bettingAnalysis.lineMovement}` : game.bettingAnalysis.lineMovement}
               </div>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <div className="bg-gray-800 rounded p-3">
-              <div className="text-gray-400 text-xs mb-1">Sharp Money</div>
+            <div className="bg-dark-surface rounded p-3">
+              <div className="text-text-secondary text-xs mb-1">Sharp Money</div>
               <div className="text-white font-semibold">{game.bettingAnalysis.sharpMoney}</div>
             </div>
-            <div className="bg-gray-800 rounded p-3">
-              <div className="text-gray-400 text-xs mb-1">Public Betting</div>
+            <div className="bg-dark-surface rounded p-3">
+              <div className="text-text-secondary text-xs mb-1">Public Betting</div>
               <div className="text-white font-semibold">{game.bettingAnalysis.publicBetting}</div>
             </div>
           </div>
           {game.bettingAnalysis.reverseLineMovement && (
             <div className="p-3 bg-yellow-900/20 border border-yellow-800/30 rounded">
               <div className="text-yellow-400 text-xs font-semibold mb-1">⚠️ Reverse Line Movement Detected</div>
-              <div className="text-gray-300 text-xs">
+              <div className="text-text-secondary text-xs">
                 Line moved toward {game.bettingAnalysis.sharpMoney} despite public betting majority. This indicates sharp money influence and is a strong indicator in betting analysis.
               </div>
             </div>
           )}
           <div className="mt-3 p-3 bg-blue-900/20 border border-blue-800/30 rounded">
             <div className="text-blue-400 text-xs font-semibold mb-1">Professional Consensus</div>
-            <div className="text-gray-300 text-xs">
+            <div className="text-text-secondary text-xs">
               {game.bettingAnalysis.professionalConsensus}
             </div>
           </div>
@@ -1015,14 +1015,14 @@ function GameDetail() {
 
       {/* Key Matchups */}
       {("keyMatchups" in game) && game.keyMatchups && (
-        <div className="bg-gray-900 rounded-lg p-6 mb-6 border border-gray-800">
+        <div className="bg-dark-card rounded-lg p-6 mb-6 border border-dark-border">
           <h2 className="text-lg font-semibold text-white mb-4 flex items-center">
             <span className="mr-2">⚔️</span>
             Key Matchups to Watch
           </h2>
           <div className="space-y-4">
             {game.keyMatchups.map((matchup: any, i: number) => (
-              <div key={i} className="bg-gray-800 rounded p-4">
+              <div key={i} className="bg-dark-surface rounded p-4">
                 <div className="flex justify-between items-start mb-2">
                   <div className="text-white font-semibold">{matchup.matchup}</div>
                   <div className="flex items-center space-x-2">
@@ -1038,7 +1038,7 @@ function GameDetail() {
                     </span>
                   </div>
                 </div>
-                <div className="text-gray-400 text-sm">{matchup.reasoning}</div>
+                <div className="text-text-secondary text-sm">{matchup.reasoning}</div>
               </div>
             ))}
           </div>
@@ -1047,7 +1047,7 @@ function GameDetail() {
 
       {/* Situational Factors */}
       {("situationalFactors" in game) && game.situationalFactors && (
-        <div className="bg-gray-900 rounded-lg p-6 mb-6 border border-gray-800">
+        <div className="bg-dark-card rounded-lg p-6 mb-6 border border-dark-border">
           <h2 className="text-lg font-semibold text-white mb-4 flex items-center">
             <span className="mr-2">🎲</span>
             Situational & Motivational Factors
@@ -1057,24 +1057,24 @@ function GameDetail() {
               <div className="text-blue-400 font-semibold mb-3">{game.awayShort}</div>
               <div className="space-y-2 text-sm">
                 <div>
-                  <span className="text-gray-400">Playoff Implications:</span>
+                  <span className="text-text-secondary">Playoff Implications:</span>
                   <div className="text-white font-semibold">{game.situationalFactors.away.playoffImplications}</div>
                 </div>
                 <div>
-                  <span className="text-gray-400">Motivation Level:</span>
+                  <span className="text-text-secondary">Motivation Level:</span>
                   <div className="flex items-center space-x-2">
-                    <div className="flex-1 bg-gray-700 rounded-full h-2">
+                    <div className="flex-1 bg-dark-border rounded-full h-2">
                       <div className="bg-blue-500 h-2 rounded-full" style={{ width: `${game.situationalFactors.away.motivationLevel * 10}%` }}></div>
                     </div>
                     <span className="text-white font-semibold">{game.situationalFactors.away.motivationLevel}/10</span>
                   </div>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Primetime Record:</span>
+                  <span className="text-text-secondary">Primetime Record:</span>
                   <span className="text-white font-semibold">{game.situationalFactors.away.primetime}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Revenge Game:</span>
+                  <span className="text-text-secondary">Revenge Game:</span>
                   <span className="text-white font-semibold">{game.situationalFactors.away.revenge ? 'Yes' : 'No'}</span>
                 </div>
               </div>
@@ -1083,24 +1083,24 @@ function GameDetail() {
               <div className="text-green-400 font-semibold mb-3">{game.homeShort}</div>
               <div className="space-y-2 text-sm">
                 <div>
-                  <span className="text-gray-400">Playoff Implications:</span>
+                  <span className="text-text-secondary">Playoff Implications:</span>
                   <div className="text-white font-semibold">{game.situationalFactors.home.playoffImplications}</div>
                 </div>
                 <div>
-                  <span className="text-gray-400">Motivation Level:</span>
+                  <span className="text-text-secondary">Motivation Level:</span>
                   <div className="flex items-center space-x-2">
-                    <div className="flex-1 bg-gray-700 rounded-full h-2">
+                    <div className="flex-1 bg-dark-border rounded-full h-2">
                       <div className="bg-green-500 h-2 rounded-full" style={{ width: `${game.situationalFactors.home.motivationLevel * 10}%` }}></div>
                     </div>
                     <span className="text-white font-semibold">{game.situationalFactors.home.motivationLevel}/10</span>
                   </div>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Primetime Record:</span>
+                  <span className="text-text-secondary">Primetime Record:</span>
                   <span className="text-white font-semibold">{game.situationalFactors.home.primetime}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Revenge Game:</span>
+                  <span className="text-text-secondary">Revenge Game:</span>
                   <span className="text-white font-semibold">{game.situationalFactors.home.revenge ? 'Yes ⚡' : 'No'}</span>
                 </div>
               </div>
@@ -1118,15 +1118,15 @@ function GameDetail() {
           </h2>
 
           <div className="grid grid-cols-2 gap-4 mb-6">
-            <div className="bg-gray-900/70 rounded p-4">
-              <div className="text-gray-400 text-sm mb-2">Predicted Final Score</div>
+            <div className="bg-dark-card/70 rounded p-4">
+              <div className="text-text-secondary text-sm mb-2">Predicted Final Score</div>
               <div className="text-3xl font-bold text-white">
                 {game.awayShort} {game.modelPrediction.predictedScore.away} - {game.homeShort} {game.modelPrediction.predictedScore.home}
               </div>
-              <div className="text-gray-400 text-xs mt-1">Confidence Interval: {game.modelPrediction.confidenceInterval}</div>
+              <div className="text-text-secondary text-xs mt-1">Confidence Interval: {game.modelPrediction.confidenceInterval}</div>
             </div>
-            <div className="bg-gray-900/70 rounded p-4">
-              <div className="text-gray-400 text-sm mb-2">Model Recommendations</div>
+            <div className="bg-dark-card/70 rounded p-4">
+              <div className="text-text-secondary text-sm mb-2">Model Recommendations</div>
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
                   <span className="text-white font-semibold">{game.modelPrediction.spreadPick}</span>
@@ -1144,15 +1144,15 @@ function GameDetail() {
             <h3 className="text-white font-semibold mb-3 text-sm">Factor Contribution Analysis</h3>
             <div className="space-y-2">
               {game.modelPrediction.factors.map((factor: any, i: number) => (
-                <div key={i} className="bg-gray-900/70 rounded p-3">
+                <div key={i} className="bg-dark-card/70 rounded p-3">
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-gray-300 text-sm">{factor.factor}</span>
+                    <span className="text-text-secondary text-sm">{factor.factor}</span>
                     <div className="flex items-center space-x-3">
-                      <span className="text-gray-400 text-xs">Weight: {factor.weight}%</span>
+                      <span className="text-text-secondary text-xs">Weight: {factor.weight}%</span>
                       <span className="text-white font-semibold text-sm">{factor.contribution}</span>
                     </div>
                   </div>
-                  <div className="w-full bg-gray-800 rounded-full h-1.5">
+                  <div className="w-full bg-dark-surface rounded-full h-1.5">
                     <div
                       className={`h-1.5 rounded-full ${factor.contribution.includes('+') ? 'bg-green-500' : 'bg-red-500'}`}
                       style={{ width: `${factor.weight}%` }}
@@ -1165,7 +1165,7 @@ function GameDetail() {
 
           <div className="p-3 bg-purple-900/30 border border-purple-700/30 rounded">
             <div className="text-purple-300 text-xs font-semibold mb-1">📈 Model Methodology</div>
-            <div className="text-gray-300 text-xs">
+            <div className="text-text-secondary text-xs">
               Our advanced prediction model analyzes {game.modelPrediction.factors.length} key factors with weighted contributions.
               Each factor is evaluated using historical data, current season performance, and situational context.
               The model has been backtested on 10,000+ games with {game.modelPrediction.spreadConfidence > 80 ? 'high' : 'moderate'} accuracy in similar scenarios.
@@ -1176,7 +1176,7 @@ function GameDetail() {
 
       {/* Special Teams & Advanced Analytics */}
       <div className="grid grid-cols-2 gap-6 mb-6">
-        <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
+        <div className="bg-dark-card rounded-lg p-6 border border-dark-border">
           <h2 className="text-lg font-semibold text-white mb-4">Special Teams</h2>
           <div className="space-y-3">
             <StatRow label="Overall Rank" away={`#${game.specialTeams.away.rank}`} home={`#${game.specialTeams.home.rank}`} />
@@ -1186,7 +1186,7 @@ function GameDetail() {
           </div>
         </div>
 
-        <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
+        <div className="bg-dark-card rounded-lg p-6 border border-dark-border">
           <h2 className="text-lg font-semibold text-white mb-4">Strength of Schedule</h2>
           <div className="space-y-3">
             <StatRow label="SOS Rank" away={`#${game.strengthOfSchedule.away.rank}`} home={`#${game.strengthOfSchedule.home.rank}`} />
@@ -1194,7 +1194,7 @@ function GameDetail() {
           </div>
           <div className="mt-4 p-3 bg-purple-900/20 border border-purple-800/30 rounded">
             <div className="text-purple-400 text-xs font-semibold mb-1">Analysis</div>
-            <div className="text-gray-300 text-xs">
+            <div className="text-text-secondary text-xs">
               {game.strengthOfSchedule.away.rank < game.strengthOfSchedule.home.rank
                 ? `${game.awayShort} has faced tougher competition this season`
                 : `${game.homeShort} has faced tougher competition this season`}
@@ -1214,13 +1214,13 @@ function GameDetail() {
 function StatRow({ label, away, home }: { label: string; away: string; home: string }) {
   return (
     <div>
-      <div className="text-gray-400 text-sm mb-2">{label}</div>
+      <div className="text-text-secondary text-sm mb-2 font-medium">{label}</div>
       <div className="grid grid-cols-2 gap-4">
-        <div className="bg-gray-800 p-2 rounded">
-          <div className="text-white font-semibold">{away}</div>
+        <div className="bg-dark-surface p-3 rounded-2xl border border-dark-border">
+          <div className="text-text-primary font-semibold">{away}</div>
         </div>
-        <div className="bg-gray-800 p-2 rounded">
-          <div className="text-white font-semibold">{home}</div>
+        <div className="bg-dark-surface p-3 rounded-2xl border border-dark-border">
+          <div className="text-text-primary font-semibold">{home}</div>
         </div>
       </div>
     </div>
@@ -1285,7 +1285,7 @@ function HomePage() {
   return (
     <div>
       <h2 className="text-2xl font-bold text-white mb-2">Upcoming Games This Week</h2>
-      <p className="text-gray-400 text-sm mb-6">
+      <p className="text-text-secondary text-sm mb-6">
         AI-powered predictions and analysis for {selectedSport} games
       </p>
 
@@ -1296,7 +1296,7 @@ function HomePage() {
           className={`px-6 py-3 rounded-lg font-semibold ${
             selectedSport === 'NFL'
               ? 'bg-blue-600 text-white'
-              : 'bg-gray-800 text-gray-300'
+              : 'bg-dark-surface text-text-secondary'
           }`}
         >
           NFL
@@ -1306,7 +1306,7 @@ function HomePage() {
           className={`px-6 py-3 rounded-lg font-semibold ${
             selectedSport === 'NCAAF'
               ? 'bg-blue-600 text-white'
-              : 'bg-gray-800 text-gray-300'
+              : 'bg-dark-surface text-text-secondary'
           }`}
         >
           NCAAF
@@ -1314,27 +1314,27 @@ function HomePage() {
       </div>
 
       {/* Search and Filters */}
-      <div className="bg-gray-900 rounded-lg p-4 border border-gray-800 mb-6">
+      <div className="bg-dark-card rounded-3xl p-4 border border-dark-border mb-6 shadow-card">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Search */}
           <div>
-            <label className="text-gray-400 text-sm block mb-2">Search Teams</label>
+            <label className="text-text-secondary text-sm block mb-2">Search Teams</label>
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by team..."
-              className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
+              className="w-full px-4 py-2 bg-dark-surface border border-dark-border rounded-2xl text-text-primary placeholder-text-muted focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 transition-all"
             />
           </div>
 
           {/* Confidence Filter */}
           <div>
-            <label className="text-gray-400 text-sm block mb-2">Confidence Level</label>
+            <label className="text-text-secondary text-sm block mb-2">Confidence Level</label>
             <select
               value={confidenceFilter}
               onChange={(e) => setConfidenceFilter(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-blue-500"
+              className="w-full px-4 py-2 bg-dark-surface border border-dark-border rounded-2xl text-text-primary focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 transition-all"
             >
               <option value="All">All Levels</option>
               <option value="High">High Confidence</option>
@@ -1345,11 +1345,11 @@ function HomePage() {
 
           {/* Sort By */}
           <div>
-            <label className="text-gray-400 text-sm block mb-2">Sort By</label>
+            <label className="text-text-secondary text-sm block mb-2">Sort By</label>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-blue-500"
+              className="w-full px-4 py-2 bg-dark-surface border border-dark-border rounded-2xl text-text-primary focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 transition-all"
             >
               <option value="confidence">Confidence Level</option>
               <option value="spread">Spread Size</option>
@@ -1360,17 +1360,17 @@ function HomePage() {
         {/* Active Filters Display */}
         {(confidenceFilter !== 'All' || searchQuery) && (
           <div className="mt-4 flex items-center space-x-2">
-            <span className="text-gray-400 text-sm">Active filters:</span>
+            <span className="text-text-secondary text-sm">Active filters:</span>
             {confidenceFilter !== 'All' && (
               <span className="px-3 py-1 bg-blue-600 text-white text-sm rounded-full flex items-center space-x-2">
                 <span>{confidenceFilter}</span>
-                <button onClick={() => setConfidenceFilter('All')} className="hover:text-gray-300">×</button>
+                <button onClick={() => setConfidenceFilter('All')} className="hover:text-text-secondary">×</button>
               </span>
             )}
             {searchQuery && (
               <span className="px-3 py-1 bg-blue-600 text-white text-sm rounded-full flex items-center space-x-2">
                 <span>"{searchQuery}"</span>
-                <button onClick={() => setSearchQuery('')} className="hover:text-gray-300">×</button>
+                <button onClick={() => setSearchQuery('')} className="hover:text-text-secondary">×</button>
               </span>
             )}
           </div>
@@ -1383,11 +1383,11 @@ function HomePage() {
           <div className="col-span-3 text-center py-12">
             <div className="text-6xl mb-4">🔍</div>
             <h3 className="text-xl font-semibold text-white mb-2">No games found</h3>
-            <p className="text-gray-400">Try adjusting your filters or search query</p>
+            <p className="text-text-secondary">Try adjusting your filters or search query</p>
           </div>
         ) : (
           games.map(game => (
-            <div key={game.id} className="bg-gray-900 rounded-lg p-4 border border-gray-800 hover:border-gray-700 transition-all relative">
+            <div key={game.id} className="bg-dark-card rounded-3xl p-4 border border-dark-border hover:border-brand-blue/50 transition-all relative shadow-card hover:shadow-glow-blue hover:scale-[1.02] duration-300">
               {/* Favorite Star */}
               <button
                 onClick={(e) => {
@@ -1401,7 +1401,7 @@ function HomePage() {
 
               <Link to={`/game/${game.id}`} className="block">
                 <div className="flex justify-between items-start mb-3 pr-8">
-                  <div className="text-gray-400 text-xs">Nov 9 • 1:00 PM ET</div>
+                  <div className="text-text-secondary text-xs">Nov 9 • 1:00 PM ET</div>
                   <span className={`px-2 py-1 rounded-full text-xs font-bold ${
                     game.confidence === 'High' ? 'bg-green-600 text-white' :
                     game.confidence === 'Medium' ? 'bg-yellow-600 text-white' :
@@ -1427,14 +1427,14 @@ function HomePage() {
                   </div>
                 </div>
 
-                <div className="pt-3 border-t border-gray-800">
+                <div className="pt-3 border-t border-dark-border">
                   <div className="grid grid-cols-2 gap-2 text-center text-sm">
                     <div>
-                      <div className="text-gray-400 text-xs">Spread</div>
+                      <div className="text-text-secondary text-xs">Spread</div>
                       <div className="text-white font-semibold">{game.spread}</div>
                     </div>
                     <div>
-                      <div className="text-gray-400 text-xs">O/U</div>
+                      <div className="text-text-secondary text-xs">O/U</div>
                       <div className="text-white font-semibold">{game.ou}</div>
                     </div>
                   </div>
@@ -1452,24 +1452,24 @@ function HomePage() {
       </div>
 
       {/* Stats */}
-      <div className="mt-8 bg-gray-900 rounded-lg p-6 border border-gray-800">
+      <div className="mt-8 bg-dark-card rounded-lg p-6 border border-dark-border">
         <h3 className="text-lg font-semibold text-white mb-4">This Week's Overview</h3>
         <div className="grid grid-cols-3 gap-4 text-center">
           <div>
             <div className="text-3xl font-bold text-blue-500">{games.length}</div>
-            <div className="text-gray-400 text-sm">Total Games</div>
+            <div className="text-text-secondary text-sm">Total Games</div>
           </div>
           <div>
             <div className="text-3xl font-bold text-green-500">
               {games.filter(g => g.confidence === 'High').length}
             </div>
-            <div className="text-gray-400 text-sm">High Confidence</div>
+            <div className="text-text-secondary text-sm">High Confidence</div>
           </div>
           <div>
             <div className="text-3xl font-bold text-yellow-500">
               {games.filter(g => g.confidence === 'Medium').length}
             </div>
-            <div className="text-gray-400 text-sm">Medium Confidence</div>
+            <div className="text-text-secondary text-sm">Medium Confidence</div>
           </div>
         </div>
       </div>
@@ -1551,17 +1551,17 @@ function ParlayBuilder() {
     <div className="max-w-6xl mx-auto">
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-white mb-2">Parlay Builder</h1>
-        <p className="text-gray-400">Build and analyze multi-game parlays with probability calculations</p>
+        <p className="text-text-secondary">Build and analyze multi-game parlays with probability calculations</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Parlay Picks */}
         <div className="lg:col-span-2 space-y-4">
           {parlayPicks.length === 0 ? (
-            <div className="bg-gray-900 rounded-lg p-12 border border-gray-800 text-center">
+            <div className="bg-dark-card rounded-lg p-12 border border-dark-border text-center">
               <div className="text-6xl mb-4">🎯</div>
               <h3 className="text-xl font-semibold text-white mb-2">No picks yet</h3>
-              <p className="text-gray-400 mb-4">Add games to your parlay from the game analysis pages</p>
+              <p className="text-text-secondary mb-4">Add games to your parlay from the game analysis pages</p>
               <Link to="/" className="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg">
                 Browse Games
               </Link>
@@ -1578,10 +1578,10 @@ function ParlayBuilder() {
               {parlayPicks.map((pick: { id: number }) => {
                 const game = allGamesData[pick.id as keyof typeof allGamesData];
                 return (
-                  <div key={pick.id} className="bg-gray-900 rounded-lg p-4 border border-gray-800">
+                  <div key={pick.id} className="bg-dark-card rounded-lg p-4 border border-dark-border">
                     <div className="flex justify-between items-start mb-3">
                       <div>
-                        <div className="text-gray-400 text-xs mb-1">{game.date} • {game.time}</div>
+                        <div className="text-text-secondary text-xs mb-1">{game.date} • {game.time}</div>
                         <div className="font-semibold text-white text-lg">{game.away} @ {game.home}</div>
                       </div>
                       <button
@@ -1593,16 +1593,16 @@ function ParlayBuilder() {
                     </div>
 
                     <div className="grid grid-cols-3 gap-3">
-                      <div className="bg-gray-800 rounded p-3">
-                        <div className="text-gray-400 text-xs mb-1">Pick</div>
+                      <div className="bg-dark-surface rounded p-3">
+                        <div className="text-text-secondary text-xs mb-1">Pick</div>
                         <div className="text-white font-semibold">{game.homeShort} {game.spread}</div>
                       </div>
-                      <div className="bg-gray-800 rounded p-3">
-                        <div className="text-gray-400 text-xs mb-1">Win Prob</div>
+                      <div className="bg-dark-surface rounded p-3">
+                        <div className="text-text-secondary text-xs mb-1">Win Prob</div>
                         <div className="text-green-500 font-semibold">{game.winProb}%</div>
                       </div>
-                      <div className="bg-gray-800 rounded p-3">
-                        <div className="text-gray-400 text-xs mb-1">Confidence</div>
+                      <div className="bg-dark-surface rounded p-3">
+                        <div className="text-text-secondary text-xs mb-1">Confidence</div>
                         <div className={`font-semibold ${
                           game.confidence === 'High' ? 'text-green-500' :
                           game.confidence === 'Medium' ? 'text-yellow-500' : 'text-red-500'
@@ -1623,38 +1623,38 @@ function ParlayBuilder() {
               <h3 className="text-lg font-semibold text-white mb-4">Parlay Calculator</h3>
 
               <div className="mb-4">
-                <label className="text-gray-400 text-sm block mb-2">Bet Amount ($)</label>
+                <label className="text-text-secondary text-sm block mb-2">Bet Amount ($)</label>
                 <input
                   type="number"
                   value={betAmount}
                   onChange={(e) => setBetAmount(Number(e.target.value))}
-                  className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-4 py-2 bg-dark-surface border border-dark-border rounded-2xl text-text-primary focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 transition-all"
                   min="1"
                 />
               </div>
 
               <div className="space-y-3 mb-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-400 text-sm">Number of Picks</span>
+                  <span className="text-text-secondary text-sm">Number of Picks</span>
                   <span className="text-white font-semibold">{parlayPicks.length}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-400 text-sm">Parlay Odds</span>
+                  <span className="text-text-secondary text-sm">Parlay Odds</span>
                   <span className="text-white font-semibold">{odds.american > 0 ? '+' : ''}{odds.american}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-400 text-sm">Combined Win Prob</span>
+                  <span className="text-text-secondary text-sm">Combined Win Prob</span>
                   <span className="text-yellow-500 font-semibold">{winProbability.toFixed(2)}%</span>
                 </div>
               </div>
 
-              <div className="border-t border-gray-700 pt-4 mb-4">
+              <div className="border-t border-dark-border pt-4 mb-4">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-gray-400">Potential Payout</span>
+                  <span className="text-text-secondary">Potential Payout</span>
                   <span className="text-2xl font-bold text-green-500">${odds.payout.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-400 text-sm">Profit</span>
+                  <span className="text-text-secondary text-sm">Profit</span>
                   <span className="text-green-400 font-semibold">${odds.profit.toFixed(2)}</span>
                 </div>
               </div>
@@ -1664,14 +1664,14 @@ function ParlayBuilder() {
                 <div className={`text-lg font-bold ${expectedValue > 0 ? 'text-green-500' : 'text-red-500'}`}>
                   {expectedValue > 0 ? '+' : ''}${expectedValue.toFixed(2)}
                 </div>
-                <div className="text-gray-400 text-xs mt-1">
+                <div className="text-text-secondary text-xs mt-1">
                   {expectedValue > 0 ? 'Positive EV - Good bet' : 'Negative EV - Risky bet'}
                 </div>
               </div>
 
               <div className="bg-yellow-900/20 border border-yellow-700/30 rounded-lg p-3">
                 <div className="text-yellow-400 text-xs font-semibold mb-1">⚠️ Risk Assessment</div>
-                <div className="text-gray-300 text-xs">
+                <div className="text-text-secondary text-xs">
                   {parlayPicks.length >= 5 ? 'Very High Risk - 5+ leg parlays rarely hit' :
                    parlayPicks.length >= 3 ? 'High Risk - Consider smaller parlays' :
                    'Moderate Risk - 2-pick parlays have better odds'}
@@ -1712,39 +1712,39 @@ function HistoricalPerformance() {
     <div className="max-w-6xl mx-auto">
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-white mb-2">Historical Performance</h1>
-        <p className="text-gray-400">Track and analyze your prediction accuracy over time</p>
+        <p className="text-text-secondary">Track and analyze your prediction accuracy over time</p>
       </div>
 
       {/* Stats Overview */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-gray-900 rounded-lg p-4 border border-gray-800">
-          <div className="text-gray-400 text-sm mb-1">Win Rate</div>
+        <div className="bg-dark-card rounded-lg p-4 border border-dark-border">
+          <div className="text-text-secondary text-sm mb-1">Win Rate</div>
           <div className="text-3xl font-bold text-green-500">{stats.winRate}%</div>
-          <div className="text-gray-500 text-xs">{stats.wins}-{stats.losses}</div>
+          <div className="text-text-dim text-xs">{stats.wins}-{stats.losses}</div>
         </div>
-        <div className="bg-gray-900 rounded-lg p-4 border border-gray-800">
-          <div className="text-gray-400 text-sm mb-1">Total Profit</div>
+        <div className="bg-dark-card rounded-lg p-4 border border-dark-border">
+          <div className="text-text-secondary text-sm mb-1">Total Profit</div>
           <div className={`text-3xl font-bold ${stats.totalProfit >= 0 ? 'text-green-500' : 'text-red-500'}`}>
             {stats.totalProfit >= 0 ? '+' : ''}${stats.totalProfit.toFixed(0)}
           </div>
-          <div className="text-gray-500 text-xs">ROI: {roi}%</div>
+          <div className="text-text-dim text-xs">ROI: {roi}%</div>
         </div>
-        <div className="bg-gray-900 rounded-lg p-4 border border-gray-800">
-          <div className="text-gray-400 text-sm mb-1">High Confidence</div>
+        <div className="bg-dark-card rounded-lg p-4 border border-dark-border">
+          <div className="text-text-secondary text-sm mb-1">High Confidence</div>
           <div className="text-3xl font-bold text-blue-500">
             {stats.highConfidenceTotal > 0 ? ((stats.highConfidenceWins / stats.highConfidenceTotal) * 100).toFixed(0) : 0}%
           </div>
-          <div className="text-gray-500 text-xs">{stats.highConfidenceWins}/{stats.highConfidenceTotal} wins</div>
+          <div className="text-text-dim text-xs">{stats.highConfidenceWins}/{stats.highConfidenceTotal} wins</div>
         </div>
-        <div className="bg-gray-900 rounded-lg p-4 border border-gray-800">
-          <div className="text-gray-400 text-sm mb-1">Total Picks</div>
+        <div className="bg-dark-card rounded-lg p-4 border border-dark-border">
+          <div className="text-text-secondary text-sm mb-1">Total Picks</div>
           <div className="text-3xl font-bold text-white">{stats.totalPicks}</div>
-          <div className="text-gray-500 text-xs">All time</div>
+          <div className="text-text-dim text-xs">All time</div>
         </div>
       </div>
 
       {/* Win Rate by Confidence */}
-      <div className="bg-gray-900 rounded-lg p-6 border border-gray-800 mb-6">
+      <div className="bg-dark-card rounded-lg p-6 border border-dark-border mb-6">
         <h2 className="text-lg font-semibold text-white mb-4">Performance by Confidence Level</h2>
         <div className="space-y-4">
           {['High', 'Medium', 'Low'].map(conf => {
@@ -1755,10 +1755,10 @@ function HistoricalPerformance() {
             return (
               <div key={conf}>
                 <div className="flex justify-between text-sm mb-2">
-                  <span className="text-gray-400">{conf} Confidence</span>
+                  <span className="text-text-secondary">{conf} Confidence</span>
                   <span className="text-white font-semibold">{confRate.toFixed(1)}% ({confWins}/{confPicks.length})</span>
                 </div>
-                <div className="bg-gray-800 rounded-full h-3 overflow-hidden">
+                <div className="bg-dark-surface rounded-full h-3 overflow-hidden">
                   <div
                     className={`h-full ${conf === 'High' ? 'bg-green-500' : conf === 'Medium' ? 'bg-yellow-500' : 'bg-red-500'}`}
                     style={{ width: `${confRate}%` }}
@@ -1771,11 +1771,11 @@ function HistoricalPerformance() {
       </div>
 
       {/* Recent Predictions */}
-      <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
+      <div className="bg-dark-card rounded-lg p-6 border border-dark-border">
         <h2 className="text-lg font-semibold text-white mb-4">Recent Predictions</h2>
         <div className="space-y-3">
           {predictions.map(pred => (
-            <div key={pred.id} className="bg-gray-800 rounded-lg p-4 flex items-center justify-between">
+            <div key={pred.id} className="bg-dark-surface rounded-lg p-4 flex items-center justify-between">
               <div className="flex-1">
                 <div className="flex items-center space-x-3 mb-2">
                   <span className={`px-2 py-1 rounded text-xs font-bold ${
@@ -1783,7 +1783,7 @@ function HistoricalPerformance() {
                   }`}>
                     {pred.result}
                   </span>
-                  <span className="text-gray-400 text-sm">{pred.date}</span>
+                  <span className="text-text-secondary text-sm">{pred.date}</span>
                   <span className={`px-2 py-1 rounded text-xs font-bold ${
                     pred.confidence === 'High' ? 'bg-green-900/50 text-green-400' :
                     pred.confidence === 'Medium' ? 'bg-yellow-900/50 text-yellow-400' :
@@ -1793,8 +1793,8 @@ function HistoricalPerformance() {
                   </span>
                 </div>
                 <div className="text-white font-semibold">{pred.game}</div>
-                <div className="text-gray-400 text-sm">Pick: {pred.pick}</div>
-                <div className="text-gray-500 text-xs mt-1">{pred.actualScore}</div>
+                <div className="text-text-secondary text-sm">Pick: {pred.pick}</div>
+                <div className="text-text-dim text-xs mt-1">{pred.actualScore}</div>
               </div>
               <div className="text-right">
                 <div className={`text-xl font-bold ${pred.profit >= 0 ? 'text-green-500' : 'text-red-500'}`}>
@@ -1839,25 +1839,25 @@ function BankrollManager() {
     <div className="max-w-4xl mx-auto">
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-white mb-2">Bankroll Manager</h1>
-        <p className="text-gray-400">Manage your betting budget and track transactions</p>
+        <p className="text-text-secondary">Manage your betting budget and track transactions</p>
       </div>
 
       {/* Current Bankroll */}
       <div className="bg-gradient-to-br from-green-900/40 to-blue-900/40 rounded-lg p-8 border border-green-800/30 mb-6">
         <div className="text-center">
-          <div className="text-gray-300 text-sm mb-2">Current Bankroll</div>
+          <div className="text-text-secondary text-sm mb-2">Current Bankroll</div>
           <div className="text-5xl font-bold text-white mb-4">${bankroll.toFixed(2)}</div>
           <div className="grid grid-cols-3 gap-4 max-w-md mx-auto">
             <div>
-              <div className="text-gray-400 text-xs">Recommended Bet</div>
+              <div className="text-text-secondary text-xs">Recommended Bet</div>
               <div className="text-green-400 font-semibold">${recommendedBet}</div>
             </div>
             <div>
-              <div className="text-gray-400 text-xs">Conservative (1%)</div>
+              <div className="text-text-secondary text-xs">Conservative (1%)</div>
               <div className="text-blue-400 font-semibold">${(bankroll * 0.01).toFixed(2)}</div>
             </div>
             <div>
-              <div className="text-gray-400 text-xs">Aggressive (5%)</div>
+              <div className="text-text-secondary text-xs">Aggressive (5%)</div>
               <div className="text-yellow-400 font-semibold">${(bankroll * 0.05).toFixed(2)}</div>
             </div>
           </div>
@@ -1865,7 +1865,7 @@ function BankrollManager() {
       </div>
 
       {/* Quick Actions */}
-      <div className="bg-gray-900 rounded-lg p-6 border border-gray-800 mb-6">
+      <div className="bg-dark-card rounded-lg p-6 border border-dark-border mb-6">
         <h2 className="text-lg font-semibold text-white mb-4">Quick Actions</h2>
         <div className="grid grid-cols-2 gap-4">
           <button className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg">
@@ -1878,11 +1878,11 @@ function BankrollManager() {
       </div>
 
       {/* Transaction History */}
-      <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
+      <div className="bg-dark-card rounded-lg p-6 border border-dark-border">
         <h2 className="text-lg font-semibold text-white mb-4">Transaction History</h2>
         <div className="space-y-3">
           {transactions.map((txn: any) => (
-            <div key={txn.id} className="flex items-center justify-between bg-gray-800 rounded-lg p-4">
+            <div key={txn.id} className="flex items-center justify-between bg-dark-surface rounded-lg p-4">
               <div className="flex items-center space-x-4">
                 <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
                   txn.type === 'win' ? 'bg-green-600/20 text-green-500' :
@@ -1893,14 +1893,14 @@ function BankrollManager() {
                 </div>
                 <div>
                   <div className="text-white font-semibold">{txn.description}</div>
-                  <div className="text-gray-400 text-sm">{txn.date}</div>
+                  <div className="text-text-secondary text-sm">{txn.date}</div>
                 </div>
               </div>
               <div className="text-right">
                 <div className={`text-lg font-bold ${txn.amount >= 0 ? 'text-green-500' : 'text-red-500'}`}>
                   {txn.amount >= 0 ? '+' : ''}${Math.abs(txn.amount).toFixed(2)}
                 </div>
-                <div className="text-gray-400 text-sm">Balance: ${txn.balance.toFixed(2)}</div>
+                <div className="text-text-secondary text-sm">Balance: ${txn.balance.toFixed(2)}</div>
               </div>
             </div>
           ))}

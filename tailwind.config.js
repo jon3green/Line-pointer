@@ -49,6 +49,7 @@ export default {
       boxShadow: {
         'glow-blue': '0 0 20px rgba(52, 97, 255, 0.3)',
         'glow-green': '0 0 20px rgba(16, 185, 129, 0.3)',
+        'glow-red': '0 0 20px rgba(239, 68, 68, 0.3)',
         'card': '0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2)',
       },
     },
