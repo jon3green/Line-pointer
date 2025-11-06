@@ -4,7 +4,7 @@
  */
 
 import { authService } from './auth.service';
-import type { User } from './auth.service';
+// import type { User } from './auth.service';
 
 export type SubscriptionPlan = {
   id: 'free' | 'pro' | 'elite';

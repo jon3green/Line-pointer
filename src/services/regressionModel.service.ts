@@ -174,8 +174,8 @@ class RegressionModelService {
    * Generate prediction using regression model
    */
   generatePrediction(
-    _gameId: string,
-    _sport: string,
+    gameId: string,
+    sport: string,
     _homeTeam: string,
     _awayTeam: string,
     currentSpread: number,
@@ -590,8 +590,8 @@ class RegressionModelService {
    */
   findSimilarGames(
     _sport: string,
-    _homeTeam: string,
-    _awayTeam: string,
+    homeTeam: string,
+    awayTeam: string,
     _factors: RegressionFactors
   ): HistoricalComparison {
     // In production, query historical database

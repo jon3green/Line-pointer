@@ -123,7 +123,7 @@ export type RiskManagement = {
 };
 
 class EdgeService {
-  private readonly EDGE_CACHE_KEY = 'edge_scores';
+  // private readonly EDGE_CACHE_KEY = 'edge_scores';
 
   /**
    * Calculate comprehensive edge score
@@ -283,7 +283,7 @@ class EdgeService {
   /**
    * Generate statistical model prediction
    */
-  generateStatisticalModel(gameId: string, homeTeam: string, awayTeam: string): StatisticalModel {
+  generateStatisticalModel(gameId: string, _homeTeam: string, _awayTeam: string): StatisticalModel {
     // Mock advanced stats - in production, fetch real team stats
     const factors = {
       offensiveEfficiency: {
@@ -384,7 +384,7 @@ class EdgeService {
   /**
    * Calculate risk management recommendations
    */
-  calculateRiskManagement(bankroll: number, currentExposure: number, edge: number, confidence: number): RiskManagement {
+  calculateRiskManagement(bankroll: number, currentExposure: number, edge: number, _confidence: number): RiskManagement {
     const exposurePercentage = (currentExposure / bankroll) * 100;
     const remaining = bankroll - currentExposure;
 
@@ -481,7 +481,7 @@ class EdgeService {
     };
   }
 
-  private calculateLineMovementFactor(opening: number, current: number, sharp: number, publicPercent: number): EdgeFactor {
+  private calculateLineMovementFactor(opening: number, current: number, sharp: number, _publicPercent: number): EdgeFactor {
     const movement = Math.abs(current - opening);
     const isRLM = (current > opening && sharp < 50) || (current < opening && sharp > 50);
 

@@ -92,7 +92,7 @@ class LiveBettingService {
   private readonly LIVE_GAMES_KEY = 'live_games';
   private readonly LIVE_BETS_KEY = 'live_bets';
   private readonly LIVE_ALERTS_KEY = 'live_alerts';
-  private updateInterval: NodeJS.Timeout | null = null;
+  private updateInterval: ReturnType<typeof setInterval> | null = null;
 
   /**
    * Get all live games

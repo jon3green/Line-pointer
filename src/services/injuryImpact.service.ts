@@ -230,7 +230,7 @@ class InjuryImpactService {
     return Math.max(0.50, Math.min(0.95, confidence));
   }
 
-  private generateHistoricalData(team: string, player: string, withPlayer: boolean): InjuryImpact['historicalWith'] {
+  private generateHistoricalData(_team: string, _player: string, withPlayer: boolean): InjuryImpact['historicalWith'] {
     // Mock historical data (in production, query database)
     if (withPlayer) {
       return {

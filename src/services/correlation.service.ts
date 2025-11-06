@@ -264,7 +264,7 @@ class CorrelationService {
     return 'independent';
   }
 
-  private getCorrelationCoefficient(leg1: ParlayLeg, leg2: ParlayLeg, type: string): number {
+  private getCorrelationCoefficient(_leg1: ParlayLeg, _leg2: ParlayLeg, type: string): number {
     return this.CORRELATION_MATRIX[type] || 0;
   }
 
@@ -291,8 +291,8 @@ class CorrelationService {
   }
 
   private generateWarning(
-    leg1: ParlayLeg,
-    leg2: ParlayLeg,
+    _leg1: ParlayLeg,
+    _leg2: ParlayLeg,
     correlation: number,
     reduction: number
   ): { warning: string; severity: CorrelationAnalysis['severity']; recommendation: string } {
@@ -385,7 +385,7 @@ class CorrelationService {
     };
   }
 
-  private suggestRemovals(legs: ParlayLeg[], correlations: CorrelationAnalysis[]): string[] {
+  private suggestRemovals(_legs: ParlayLeg[], correlations: CorrelationAnalysis[]): string[] {
     // Find legs involved in most high correlations
     const legCorrelationCount: Map<string, number> = new Map();
 

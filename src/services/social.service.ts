@@ -123,7 +123,7 @@ class SocialService {
     profile.stats.netProfit = stats.netProfit;
     profile.stats.roi = stats.roi;
     profile.stats.winRate = stats.winRate;
-    profile.stats.currentStreak = stats.currentStreak;
+    profile.stats.currentStreak = stats.currentStreak.count;
     profile.stats.longestWinStreak = stats.longestWinStreak;
 
     this.updateProfile(profile);
