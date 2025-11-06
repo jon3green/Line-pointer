@@ -12,7 +12,7 @@
  */
 
 import { oddsApiService } from './oddsApi.service';
-import { weatherService } from './weather.service';
+// import { weatherService } from './weather.service';
 import { cacheService } from './cache.service';
 
 // Type definitions
@@ -320,7 +320,7 @@ class ApiService {
   /**
    * Get weather for a game
    */
-  private async getGameWeather(gameId: string): Promise<any> {
+  private async getGameWeather(_gameId: string): Promise<any> {
     // This would need game-to-stadium mapping
     // For now, return mock data
     return {

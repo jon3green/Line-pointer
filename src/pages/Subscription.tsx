@@ -5,7 +5,8 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { paymentService, SubscriptionPlan, Subscription, PaymentMethod, PaymentHistory } from '../services/payment.service';
+import { paymentService } from '../services/payment.service';
+import type { SubscriptionPlan, Subscription, PaymentMethod, PaymentHistory } from '../services/payment.service';
 import { authService } from '../services/auth.service';
 
 export function SubscriptionPage() {

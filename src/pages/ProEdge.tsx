@@ -9,11 +9,16 @@ import { clvService, CLVStats, CLVAlert, ClosingLinePrediction } from '../servic
 import { edgeService, EdgeScore, SharpBookComparison, StatisticalModel, InjuryImpact, RiskManagement } from '../services/edge.service';
 import { propModelService, PropModel } from '../services/propModel.service';
 import { sharpMoneyService, SharpMoneyData, SharpMoneyStats } from '../services/sharpMoney.service';
-import { regressionModelService, RegressionPrediction, ModelPerformance } from '../services/regressionModel.service';
-import { weatherImpactService, WeatherImpactData, StadiumData } from '../services/weatherImpact.service';
-import { strategyService, DailyStrategy, StrategyOpportunity } from '../services/strategy.service';
-import { injuryImpactService, TeamInjuryReport } from '../services/injuryImpact.service';
-import { correlationService, ParlayCorrelationReport, ParlayLeg } from '../services/correlation.service';
+import { regressionModelService } from '../services/regressionModel.service';
+import type { RegressionPrediction, ModelPerformance } from '../services/regressionModel.service';
+import { weatherImpactService } from '../services/weatherImpact.service';
+import type { WeatherImpactData, StadiumData } from '../services/weatherImpact.service';
+import { strategyService } from '../services/strategy.service';
+import type { DailyStrategy } from '../services/strategy.service';
+import { injuryImpactService } from '../services/injuryImpact.service';
+import type { TeamInjuryReport } from '../services/injuryImpact.service';
+import { correlationService } from '../services/correlation.service';
+import type { ParlayCorrelationReport, ParlayLeg } from '../services/correlation.service';
 
 export function ProEdgePage() {
   const navigate = useNavigate();

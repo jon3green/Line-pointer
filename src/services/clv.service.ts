@@ -3,7 +3,7 @@
  * THE #1 indicator of long-term betting profitability
  */
 
-import { betTrackerService, Bet } from './betTracker.service';
+import { betTrackerService } from './betTracker.service';
 
 export type CLVData = {
   betId: string;

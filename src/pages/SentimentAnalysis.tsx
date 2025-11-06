@@ -5,7 +5,8 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { sentimentService, SentimentData, TeamSentiment, TrendingTopic, SocialPost } from '../services/sentiment.service';
+import { sentimentService } from '../services/sentiment.service';
+import type { SentimentData, TrendingTopic, SocialPost } from '../services/sentiment.service';
 
 export function SentimentAnalysis() {
   const navigate = useNavigate();
@@ -50,7 +51,7 @@ export function SentimentAnalysis() {
     }
   };
 
-  const getSentimentBg = (sentiment: string) => {
+  const _getSentimentBg = (sentiment: string) => {
     switch (sentiment) {
       case 'very_positive': return 'bg-green-600';
       case 'positive': return 'bg-green-500';
