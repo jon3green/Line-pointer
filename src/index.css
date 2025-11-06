@@ -4,33 +4,142 @@
 
 @layer base {
   body {
-    @apply bg-gray-950 text-gray-100 min-h-screen;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+    @apply bg-dark-bg text-text-primary min-h-screen;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  * {
+    @apply border-dark-border;
+  }
+}
+
+@layer utilities {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+
+  /* Line clamp utilities */
+  .line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+  }
+
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .line-clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-accent-blue-light to-accent-blue bg-clip-text text-transparent;
   }
 }
 
 @layer components {
-  .game-card {
-    @apply bg-gray-900 rounded-lg shadow-lg border border-gray-800 p-4 transition-all hover:border-gray-700 hover:shadow-xl;
+  /* Modern card styles */
+  .card {
+    @apply bg-dark-surface border border-dark-border rounded-2xl p-6 transition-all;
   }
 
-  .confidence-badge-high {
-    @apply bg-green-600 text-white px-2 py-1 rounded-full text-xs font-bold;
+  .card-hover {
+    @apply hover:border-accent-blue/50 hover:shadow-xl hover:shadow-accent-blue/10 hover:scale-[1.01];
   }
 
-  .confidence-badge-medium {
-    @apply bg-yellow-600 text-white px-2 py-1 rounded-full text-xs font-bold;
-  }
-
-  .confidence-badge-low {
-    @apply bg-red-600 text-white px-2 py-1 rounded-full text-xs font-bold;
-  }
-
+  /* Button styles */
   .btn-primary {
-    @apply bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors;
+    @apply px-6 py-2.5 bg-gradient-to-r from-accent-blue-light to-accent-blue text-white font-semibold rounded-3xl hover:shadow-lg hover:shadow-accent-blue/30 transition-all hover:scale-105;
   }
 
   .btn-secondary {
-    @apply bg-gray-800 hover:bg-gray-700 text-gray-100 font-semibold py-2 px-4 rounded-lg transition-colors border border-gray-700;
+    @apply px-6 py-2.5 bg-dark-surface text-text-secondary hover:text-text-primary font-semibold rounded-3xl border border-dark-border hover:border-accent-blue/50 transition-all;
+  }
+
+  /* Badge styles */
+  .badge {
+    @apply px-3 py-1 rounded-full text-xs font-bold border;
+  }
+
+  .badge-success {
+    @apply bg-accent-green/20 text-accent-green border-accent-green/30;
+  }
+
+  .badge-warning {
+    @apply bg-yellow-500/20 text-yellow-500 border-yellow-500/30;
+  }
+
+  .badge-danger {
+    @apply bg-red-500/20 text-red-500 border-red-500/30;
+  }
+
+  .badge-info {
+    @apply bg-accent-blue/20 text-accent-blue border-accent-blue/30;
+  }
+
+  /* Input styles */
+  .input {
+    @apply w-full px-4 py-2.5 bg-dark-surface border border-dark-border rounded-xl text-text-primary placeholder-text-muted focus:outline-none focus:border-accent-blue/50 focus:ring-2 focus:ring-accent-blue/20 transition-all;
+  }
+
+  /* Section styles */
+  .section {
+    @apply space-y-6 sm:space-y-8;
+  }
+
+  .section-header {
+    @apply text-2xl sm:text-3xl font-bold text-text-primary mb-4;
+  }
+
+  .section-subheader {
+    @apply text-text-secondary text-base sm:text-lg;
+  }
+}
+
+/* Custom animations */
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Smooth transitions for route changes */
+.page-transition {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
