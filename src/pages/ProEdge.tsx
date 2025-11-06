@@ -5,10 +5,14 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { clvService, CLVStats, CLVAlert, ClosingLinePrediction } from '../services/clv.service';
-import { edgeService, EdgeScore, SharpBookComparison, StatisticalModel, InjuryImpact, RiskManagement } from '../services/edge.service';
-import { propModelService, PropModel } from '../services/propModel.service';
-import { sharpMoneyService, SharpMoneyData, SharpMoneyStats } from '../services/sharpMoney.service';
+import { clvService } from '../services/clv.service';
+import type { CLVStats, CLVAlert } from '../services/clv.service';
+import { edgeService } from '../services/edge.service';
+import type { EdgeScore, SharpBookComparison, RiskManagement } from '../services/edge.service';
+import { propModelService } from '../services/propModel.service';
+import type { PropModel } from '../services/propModel.service';
+import { sharpMoneyService } from '../services/sharpMoney.service';
+import type { SharpMoneyData, SharpMoneyStats } from '../services/sharpMoney.service';
 import { regressionModelService } from '../services/regressionModel.service';
 import type { RegressionPrediction, ModelPerformance } from '../services/regressionModel.service';
 import { weatherImpactService } from '../services/weatherImpact.service';

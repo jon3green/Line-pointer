@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ParlayPick } from '../types';
+import type { ParlayPick } from '../types';
 import { buildParlay } from '../utils/parlayCalculator';
 import ConfidenceBadge from '../components/ConfidenceBadge';
 

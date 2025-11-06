@@ -51,17 +51,6 @@ export function SentimentAnalysis() {
     }
   };
 
-  const _getSentimentBg = (sentiment: string) => {
-    switch (sentiment) {
-      case 'very_positive': return 'bg-green-600';
-      case 'positive': return 'bg-green-500';
-      case 'neutral': return 'bg-gray-600';
-      case 'negative': return 'bg-red-500';
-      case 'very_negative': return 'bg-red-600';
-      default: return 'bg-gray-600';
-    }
-  };
-
   const formatNumber = (num: number) => {
     if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
     if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;

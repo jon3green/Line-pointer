@@ -5,7 +5,8 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { liveBettingService, LiveGame, LiveBettingAlert, LiveBet } from '../services/liveBetting.service';
+import { liveBettingService } from '../services/liveBetting.service';
+import type { LiveGame, LiveBettingAlert, LiveBet } from '../services/liveBetting.service';
 
 export function LiveBetting() {
   const navigate = useNavigate();

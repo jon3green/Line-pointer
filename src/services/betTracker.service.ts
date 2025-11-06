@@ -454,7 +454,7 @@ class BetTrackerService {
    */
   importFromCSV(csv: string): { success: number; errors: number } {
     const lines = csv.trim().split('\n');
-    const _headers = lines[0];
+    // Skip header line (lines[0])
     let success = 0;
     let errors = 0;
 
