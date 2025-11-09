@@ -13,7 +13,7 @@ export default function Home() {
       {/* Hero Section */}
       <div className="text-center space-y-6 py-8">
         <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-brand/10 border border-brand-blue/30 rounded-full mb-4">
-          <span className="w-2 h-2 bg-accent-green rounded-full animate-pulse"></span>
+          <span className="w-2 h-2 bg-accent-green animate-pulse" style={{borderRadius: '50%'}}></span>
           <span className="text-accent-green-light text-sm font-semibold">Live Predictions Updated Daily</span>
         </div>
 
