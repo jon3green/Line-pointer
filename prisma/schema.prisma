@@ -1,0 +1,558 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  username      String    @unique
+  password      String    // hashed
+  name          String?
+  image         String?
+  emailVerified DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  // User preferences
+  favoriteTeams String?   // JSON array of team IDs
+  notifications Boolean   @default(true)
+  
+  // Relations
+  bets          Bet[]
+  parlays       Parlay[]
+  favorites     Favorite[]
+  sessions      Session[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Bet {
+  id            String    @id @default(cuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Bet details
+  betType       String    // 'single', 'parlay', 'teaser'
+  sport         String    // 'NFL', 'NCAAF'
+  stake         Float
+  odds          Float     // American odds
+  potentialWin  Float
+
+  // Game/Player info
+  gameId        String?
+  playerName    String?
+  teamName      String?
+  betCategory   String    // 'spread', 'moneyline', 'total', 'player_prop'
+  selection     String    // e.g., "Over 250.5 yards", "Chiefs -3.5"
+
+  // Status
+  status        String    @default("pending") // 'pending', 'won', 'lost', 'pushed'
+  settledAt     DateTime?
+
+  // Timestamps
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relation
+  parlayId      String?
+  parlay        Parlay?   @relation(fields: [parlayId], references: [id])
+
+  // Indexes for common queries
+  @@index([userId, status])
+  @@index([userId, createdAt])
+  @@index([gameId])
+  @@index([status])
+}
+
+model Parlay {
+  id            String    @id @default(cuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Parlay details
+  legs          Int       // number of legs
+  stake         Float
+  totalOdds     Float
+  potentialWin  Float
+
+  // Quality metrics
+  qualityScore  Int?      // 0-100
+  expectedValue Float?
+
+  // Status
+  status        String    @default("pending") // 'pending', 'won', 'lost', 'partial'
+  settledAt     DateTime?
+
+  // Timestamps
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  bets          Bet[]
+
+  // Indexes for common queries
+  @@index([userId, status])
+  @@index([userId, createdAt])
+}
+
+model Player {
+  id              String   @id @default(cuid())
+  name            String
+  team            String
+  position        String
+  number          Int?
+  sport           String   // 'NFL', 'NCAAF'
+  
+  // Stats (stored as JSON for flexibility)
+  seasonStats     String?  // JSON
+  lastGameStats   String?  // JSON
+  careerStats     String?  // JSON
+  
+  // Images
+  image           String?
+  teamLogo        String?
+  
+  // Meta
+  isActive        Boolean  @default(true)
+  lastUpdated     DateTime @updatedAt
+  createdAt       DateTime @default(now())
+  
+  @@unique([name, team])
+}
+
+model Game {
+  id              String   @id @default(cuid())
+  externalId      String?  @unique
+
+  // Game info
+  sport           String   // 'NFL', 'NCAAF'
+  week            Int?
+  season          Int
+
+  // Teams
+  homeTeam        String
+  awayTeam        String
+  homeTeamId      String?
+  awayTeamId      String?
+
+  // Scores
+  homeScore       Int?
+  awayScore       Int?
+
+  // Odds from Hard Rock Bet
+  spreadHome      Float?
+  spreadAway      Float?
+  spreadHomeOdds  Float?
+  spreadAwayOdds  Float?
+
+  moneylineHome   Float?
+  moneylineAway   Float?
+
+  totalLine       Float?
+  overOdds        Float?
+  underOdds       Float?
+
+  // Timestamps
+  gameTime        DateTime
+  status          String   @default("scheduled") // 'scheduled', 'live', 'final'
+  lastOddsUpdate  DateTime?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Indexes for common queries
+  @@index([sport, gameTime])
+  @@index([status, gameTime])
+  @@index([sport, status])
+  @@index([gameTime])
+}
+
+model PlayerProp {
+  id              String   @id @default(cuid())
+  
+  // Player info
+  playerId        String
+  playerName      String
+  team            String
+  position        String
+  
+  // Game info
+  gameId          String
+  opponent        String
+  
+  // Prop details
+  propType        String   // 'passing_yards', 'rushing_yards', 'receiving_yards', 'touchdowns', etc.
+  line            Float
+  overOdds        Float?
+  underOdds       Float?
+  
+  // Source
+  sportsbook      String   @default("Hard Rock Bet")
+  
+  // Timestamps
+  gameTime        DateTime
+  lastUpdated     DateTime @updatedAt
+  createdAt       DateTime @default(now())
+  
+  @@index([gameId])
+  @@index([playerId])
+}
+
+model Alert {
+  id              String   @id @default(cuid())
+  userId          String
+  
+  // Alert details
+  type            String   // 'value_bet', 'line_movement', 'game_start', 'result', 'arbitrage'
+  title           String
+  message         String
+  data            String?  // JSON data for alert details
+  
+  // Priority and status
+  priority        String   @default("normal") // 'low', 'normal', 'high', 'urgent'
+  read            Boolean  @default(false)
+  actionUrl       String?  // URL to navigate to
+  
+  // Timestamps
+  createdAt       DateTime @default(now())
+  expiresAt       DateTime?
+  
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model Favorite {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Favorite details
+  type            String   // 'team', 'player', 'game'
+  entityId        String   // Team ID, Player ID, or Game ID
+  entityName      String
+  sport           String   // 'NFL', 'NCAAF', 'NBA', 'MLB'
+  
+  // Preferences
+  notifyOnGames   Boolean  @default(true)
+  notifyOnProps   Boolean  @default(true)
+  notifyOnNews    Boolean  @default(false)
+  
+  // Timestamps
+  createdAt       DateTime @default(now())
+  
+  @@unique([userId, type, entityId])
+  @@index([userId])
+}
+
+model Subscription {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  
+  // Subscription details
+  tier            String   // 'free', 'basic', 'pro', 'premium'
+  status          String   // 'active', 'canceled', 'expired', 'trial'
+  
+  // Stripe details
+  stripeCustomerId      String?  @unique
+  stripeSubscriptionId  String?  @unique
+  stripePriceId         String?
+  stripeCurrentPeriodEnd DateTime?
+  
+  // Features
+  features        String?  // JSON array of enabled features
+  
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  trialEndsAt     DateTime?
+  canceledAt      DateTime?
+}
+
+model Follow {
+  id          String   @id @default(cuid())
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+  
+  @@unique([followerId, followingId])
+  @@index([followerId])
+  @@index([followingId])
+}
+
+model SharedParlay {
+  id          String   @id @default(cuid())
+  userId      String
+  title       String
+  description String?
+  parlayData  String   // JSON with legs, odds, etc.
+  sport       String   // 'NFL', 'NCAAF', 'NBA', 'MLB'
+  isPublic    Boolean  @default(true)
+  likes       Int      @default(0)
+  views       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([isPublic, createdAt])
+  @@index([sport])
+  @@index([likes])
+  @@index([sport, isPublic, createdAt])
+}
+
+model Prediction {
+  id              String   @id @default(cuid())
+  gameId          String
+  externalGameId  String?  // ESPN game ID
+
+  // Game details
+  sport           String   // 'NFL', 'NCAAF'
+  homeTeam        String
+  awayTeam        String
+  gameTime        DateTime
+
+  // Prediction details
+  predictedWinner String   // 'home' or 'away'
+  confidence      Float    // 0-100
+  predictedSpread Float?
+  predictedTotal  Float?
+
+  // Market predictions
+  spreadPick      String?  // e.g., "Chiefs -3.5"
+  totalPick       String?  // e.g., "Over 48.5"
+  moneylinePick   String?  // e.g., "Chiefs ML"
+
+  // Model details
+  modelVersion    String   @default("v1.0")
+  factors         String?  // JSON array of prediction factors
+
+  // Actual results (filled in after game)
+  actualWinner    String?  // 'home', 'away', or null if not completed
+  homeScore       Int?
+  awayScore       Int?
+  actualSpread    Float?
+  actualTotal     Float?
+
+  // Accuracy tracking
+  wasCorrect      Boolean? // Overall prediction correctness
+  spreadCorrect   Boolean?
+  totalCorrect    Boolean?
+  moneylineCorrect Boolean?
+
+  // Alert tracking
+  alertSent       Boolean  @default(false)
+  alertActedOn    Boolean  @default(false)
+
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  resultsFetchedAt DateTime?
+
+  @@index([gameId])
+  @@index([externalGameId])
+  @@index([sport, gameTime])
+  @@index([confidence])
+  @@index([createdAt])
+  @@index([wasCorrect])
+}
+
+model PredictionAlert {
+  id              String   @id @default(cuid())
+  predictionId    String
+
+  // Alert details
+  type            String   // 'high_confidence', 'value_bet', 'sharp_move'
+  title           String
+  message         String
+  confidence      Float
+
+  // Game details (denormalized for quick access)
+  sport           String
+  homeTeam        String
+  awayTeam        String
+  gameTime        DateTime
+  pick            String   // The recommended pick
+
+  // Tracking
+  sent            Boolean  @default(false)
+  sentAt          DateTime?
+  viewed          Boolean  @default(false)
+  viewedAt        DateTime?
+  actedOn         Boolean  @default(false)
+  actedOnAt       DateTime?
+
+  // User association (for future multi-user support)
+  userId          String?
+
+  // Result tracking
+  outcome         String?  // 'won', 'lost', 'push', null if pending
+
+  createdAt       DateTime @default(now())
+
+  @@index([predictionId])
+  @@index([sent, createdAt])
+  @@index([actedOn])
+  @@index([userId])
+}
+
+model PerformanceMetric {
+  id              String   @id @default(cuid())
+
+  // Time period
+  period          String   // 'daily', 'weekly', 'monthly', 'season', 'all_time'
+  startDate       DateTime
+  endDate         DateTime
+
+  // Sport/Category
+  sport           String?  // null for all sports
+  betType         String?  // 'spread', 'total', 'moneyline', null for all
+
+  // Metrics
+  totalPredictions Int
+  correctPredictions Int
+  accuracy        Float    // percentage
+
+  // Advanced metrics
+  roi             Float?   // Return on investment (if bet tracking enabled)
+  avgConfidence   Float
+  highConfPredictions Int  // predictions with confidence > 70%
+  highConfAccuracy Float?  // accuracy of high confidence picks
+
+  // Profit tracking (if using bet tracker)
+  totalStaked     Float?
+  totalProfit     Float?
+
+  // Timestamps
+  calculatedAt    DateTime @default(now())
+
+  @@index([period, startDate])
+  @@index([sport])
+  @@index([betType])
+  @@unique([period, startDate, endDate, sport, betType])
+}
+
+model OddsHistory {
+  id              String   @id @default(cuid())
+
+  // Game identification
+  gameId          String   // Internal or external game ID
+  externalGameId  String?  // ESPN game ID
+  sport           String   // 'NFL', 'NCAAF', 'TABLE_TENNIS'
+
+  // Teams (for easy querying)
+  homeTeam        String
+  awayTeam        String
+
+  // Game time
+  gameTime        DateTime
+
+  // Odds snapshot
+  spread          Float?   // Home team spread (e.g., -3.5)
+  spreadHomeOdds  Float?   // American odds for home spread
+  spreadAwayOdds  Float?   // American odds for away spread
+
+  total           Float?   // Over/Under line (e.g., 48.5)
+  overOdds        Float?   // American odds for over
+  underOdds       Float?   // American odds for under
+
+  homeML          Int?     // Home team moneyline (American odds)
+  awayML          Int?     // Away team moneyline (American odds)
+
+  // Source information
+  bookmaker       String   // 'FanDuel', 'DraftKings', 'BetMGM', 'Consensus', 'ESPN BET'
+  source          String   @default("TheOddsAPI") // 'TheOddsAPI', 'ESPN', 'Manual'
+
+  // Line movement indicators (calculated)
+  isSignificantMove Boolean @default(false) // >2 point spread move from opening
+  isSteamMove     Boolean  @default(false)  // Rapid movement indicator
+  isRLM           Boolean  @default(false)  // Reverse line movement
+  sharpMoney      Boolean  @default(false)  // Sharp money detected
+
+  // Movement amounts (vs previous snapshot)
+  spreadMovement  Float?   // Change in spread from previous
+  totalMovement   Float?   // Change in total from previous
+  mlMovement      Float?   // Change in moneyline from previous
+
+  // Timestamps
+  timestamp       DateTime @default(now())
+  collectedAt     DateTime @default(now())
+
+  @@index([gameId, timestamp])
+  @@index([externalGameId, timestamp])
+  @@index([sport, gameTime])
+  @@index([timestamp])
+  @@index([gameTime])
+  @@index([isSignificantMove])
+  @@index([isSteamMove])
+  @@index([bookmaker])
+}
+
+model LineMovementAlert {
+  id              String   @id @default(cuid())
+
+  // Game identification
+  gameId          String
+  externalGameId  String?
+  sport           String
+
+  // Teams
+  homeTeam        String
+  awayTeam        String
+  gameTime        DateTime
+
+  // Alert details
+  type            String   // 'steam_move', 'reverse_line', 'significant_move', 'sharp_money'
+  severity        String   // 'low', 'medium', 'high', 'critical'
+  title           String
+  message         String
+
+  // Movement details
+  openingLine     Float?   // Opening spread
+  currentLine     Float?   // Current spread
+  movement        Float?   // Total movement
+  movementPercent Float?   // Movement as percentage
+
+  // Indicators
+  indicators      String?  // JSON with detailed indicators
+
+  // Tracking
+  sent            Boolean  @default(false)
+  sentAt          DateTime?
+  read            Boolean  @default(false)
+  readAt          DateTime?
+  actedOn         Boolean  @default(false)
+
+  // User association (for future multi-user support)
+  userId          String?
+
+  createdAt       DateTime @default(now())
+  expiresAt       DateTime? // Alert expiration (e.g., game start time)
+
+  @@index([gameId])
+  @@index([externalGameId])
+  @@index([sent, createdAt])
+  @@index([type, severity])
+  @@index([userId])
+  @@index([gameTime])
+}

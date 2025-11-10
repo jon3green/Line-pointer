@@ -1,6 +1,20 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "framework": "vite",
-  "installCommand": "npm install"
+  "framework": "nextjs",
+  "installCommand": "npm install",
+  "buildCommand": "prisma generate && npm run build",
+  "devCommand": "npm run dev",
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "s-maxage=300, stale-while-revalidate=60" }
+      ]
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron/collect-odds",
+      "schedule": "*/5 * * * *"
+    }
+  ]
 }

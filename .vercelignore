@@ -1,0 +1,25 @@
+# Test files
+tests/
+*.test.ts
+*.test.tsx
+*.spec.ts
+playwright.config.ts
+vitest.config.ts
+
+# Documentation
+*.md
+!README.md
+
+# Local development
+.env.local
+.env.*.local
+prisma/dev.db
+prisma/dev.db-journal
+
+# IDE
+.vscode
+.idea
+
+# Misc
+.DS_Store
+*.log
