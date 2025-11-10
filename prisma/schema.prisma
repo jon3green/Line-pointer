@@ -347,6 +347,22 @@ model Prediction {
   modelVersion    String   @default("v1.0")
   factors         String?  // JSON array of prediction factors
 
+  // Closing Line Value (CLV) tracking
+  openingSpread   Float?   // Spread when prediction was made
+  closingSpread   Float?   // Final spread before game
+  spreadCLV       Float?   // Difference (our line - closing line)
+  beatTheCloseSpread Boolean? // Did we get better than closing line?
+
+  openingTotal    Float?   // Total when prediction was made
+  closingTotal    Float?   // Final total before game
+  totalCLV        Float?   // Difference
+  beatTheCloseTotal Boolean?
+
+  openingML       Int?     // Moneyline when prediction was made
+  closingML       Int?     // Final moneyline before game
+  mlCLV           Float?   // CLV in implied probability terms
+  beatTheCloseML  Boolean?
+
   // Actual results (filled in after game)
   actualWinner    String?  // 'home', 'away', or null if not completed
   homeScore       Int?
@@ -368,6 +384,7 @@ model Prediction {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   resultsFetchedAt DateTime?
+  closingLineCapturedAt DateTime?
 
   @@index([gameId])
   @@index([externalGameId])
@@ -375,6 +392,8 @@ model Prediction {
   @@index([confidence])
   @@index([createdAt])
   @@index([wasCorrect])
+  @@index([beatTheCloseSpread])
+  @@index([beatTheCloseTotal])
 }
 
 model PredictionAlert {
