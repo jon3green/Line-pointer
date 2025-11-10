@@ -14,7 +14,7 @@
   "crons": [
     {
       "path": "/api/cron/collect-odds",
-      "schedule": "*/5 * * * *"
+      "schedule": "0 8 * * *"
     }
   ]
 }
