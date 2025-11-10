@@ -5,56 +5,56 @@ export const mockNFLGames: Game[] = [
     id: 'nfl-1',
     sport: 'NFL',
     homeTeam: {
-      id: 'kc',
-      name: 'Kansas City Chiefs',
-      shortName: 'KC',
+      id: 'ne',
+      name: 'New England Patriots',
+      shortName: 'NE',
       logo: '🏈',
-      color: '#E31837',
-      secondaryColor: '#FFB81C'
-    },
-    awayTeam: {
-      id: 'buf',
-      name: 'Buffalo Bills',
-      shortName: 'BUF',
-      logo: '🏈',
-      color: '#00338D',
+      color: '#002244',
       secondaryColor: '#C60C30'
     },
-    date: '2025-11-09',
-    time: '1:00 PM ET',
-    spread: -2.5,
-    overUnder: 51.5,
-    homeMoneyline: -135,
-    awayMoneyline: +115,
-    aiConfidence: 'High',
+    awayTeam: {
+      id: 'nyj',
+      name: 'New York Jets',
+      shortName: 'NYJ',
+      logo: '🏈',
+      color: '#125740',
+      secondaryColor: '#000000'
+    },
+    date: '2025-11-14',
+    time: '8:15 PM ET',
+    spread: -3,
+    overUnder: 42.5,
+    homeMoneyline: -155,
+    awayMoneyline: +130,
+    aiConfidence: 'Medium',
     aiPrediction: {
       winner: 'home',
-      winProbability: 62,
+      winProbability: 59,
       spreadPick: 'home',
-      overUnderPick: 'over',
-      summary: 'Chiefs offense at home is elite, averaging 28.5 PPG. Buffalo\'s defense has struggled on the road. Expect a high-scoring affair with KC covering.'
+      overUnderPick: 'under',
+      summary: 'Thursday night divisional battle. Patriots defense at home gives them the edge. Expect a low-scoring defensive struggle with NE covering.'
     },
     stats: {
       homeTeam: {
-        offenseRank: 3,
-        defenseRank: 12,
-        recentForm: 'W-W-W-L-W',
+        offenseRank: 18,
+        defenseRank: 7,
+        recentForm: 'W-L-L-W-L',
         injuries: ['WR - Questionable'],
-        avgPointsScored: 28.5,
-        avgPointsAllowed: 21.3
+        avgPointsScored: 20.4,
+        avgPointsAllowed: 19.1
       },
       awayTeam: {
-        offenseRank: 5,
-        defenseRank: 8,
-        recentForm: 'W-L-W-W-L',
+        offenseRank: 24,
+        defenseRank: 12,
+        recentForm: 'L-L-W-L-W',
         injuries: ['OL - Out', 'LB - Doubtful'],
-        avgPointsScored: 26.8,
-        avgPointsAllowed: 19.2
+        avgPointsScored: 18.7,
+        avgPointsAllowed: 22.3
       },
       weather: {
         condition: 'Clear',
-        temperature: 65,
-        windSpeed: 8
+        temperature: 48,
+        windSpeed: 10
       }
     }
   },
@@ -62,63 +62,14 @@ export const mockNFLGames: Game[] = [
     id: 'nfl-2',
     sport: 'NFL',
     homeTeam: {
-      id: 'sf',
-      name: 'San Francisco 49ers',
-      shortName: 'SF',
+      id: 'phi',
+      name: 'Philadelphia Eagles',
+      shortName: 'PHI',
       logo: '🏈',
-      color: '#AA0000',
-      secondaryColor: '#B3995D'
+      color: '#004C54',
+      secondaryColor: '#A5ACAF'
     },
     awayTeam: {
-      id: 'dal',
-      name: 'Dallas Cowboys',
-      shortName: 'DAL',
-      logo: '🏈',
-      color: '#041E42',
-      secondaryColor: '#869397'
-    },
-    date: '2025-11-09',
-    time: '4:25 PM ET',
-    spread: -6.5,
-    overUnder: 47.5,
-    homeMoneyline: -280,
-    awayMoneyline: +230,
-    aiConfidence: 'Medium',
-    aiPrediction: {
-      winner: 'home',
-      winProbability: 58,
-      spreadPick: 'away',
-      overUnderPick: 'under',
-      summary: 'SF is favored but 6.5 points is steep. Dallas defense has been solid. Take the points with Cowboys in a defensive battle.'
-    },
-    stats: {
-      homeTeam: {
-        offenseRank: 8,
-        defenseRank: 4,
-        recentForm: 'W-W-L-W-W',
-        injuries: ['RB - Probable'],
-        avgPointsScored: 24.7,
-        avgPointsAllowed: 18.1
-      },
-      awayTeam: {
-        offenseRank: 14,
-        defenseRank: 6,
-        recentForm: 'L-W-W-L-L',
-        injuries: ['QB - Probable', 'DE - Out'],
-        avgPointsScored: 21.3,
-        avgPointsAllowed: 19.8
-      },
-      weather: {
-        condition: 'Partly Cloudy',
-        temperature: 58,
-        windSpeed: 12
-      }
-    }
-  },
-  {
-    id: 'nfl-3',
-    sport: 'NFL',
-    homeTeam: {
       id: 'det',
       name: 'Detroit Lions',
       shortName: 'DET',
@@ -126,49 +77,98 @@ export const mockNFLGames: Game[] = [
       color: '#0076B6',
       secondaryColor: '#B0B7BC'
     },
-    awayTeam: {
-      id: 'gb',
-      name: 'Green Bay Packers',
-      shortName: 'GB',
-      logo: '🏈',
-      color: '#203731',
-      secondaryColor: '#FFB612'
-    },
-    date: '2025-11-10',
+    date: '2025-11-17',
     time: '8:20 PM ET',
-    spread: -3,
-    overUnder: 48,
-    homeMoneyline: -155,
-    awayMoneyline: +130,
-    aiConfidence: 'Low',
+    spread: -2.5,
+    overUnder: 52.5,
+    homeMoneyline: -140,
+    awayMoneyline: +120,
+    aiConfidence: 'High',
     aiPrediction: {
-      winner: 'home',
-      winProbability: 53,
-      spreadPick: 'home',
+      winner: 'away',
+      winProbability: 56,
+      spreadPick: 'away',
       overUnderPick: 'over',
-      summary: 'Classic NFC North rivalry. Both teams well-matched. Lions slight edge at home, but this could go either way.'
+      summary: 'Sunday Night Football showcase. Lions high-powered offense travels well. Eagles at home but Detroit\'s balance gives them the edge. Lions win outright.'
     },
     stats: {
       homeTeam: {
-        offenseRank: 6,
-        defenseRank: 15,
-        recentForm: 'W-L-W-W-L',
-        injuries: ['TE - Questionable'],
-        avgPointsScored: 25.9,
-        avgPointsAllowed: 22.4
+        offenseRank: 7,
+        defenseRank: 9,
+        recentForm: 'W-W-W-L-W',
+        injuries: ['CB - Probable'],
+        avgPointsScored: 26.8,
+        avgPointsAllowed: 20.2
       },
       awayTeam: {
-        offenseRank: 9,
+        offenseRank: 2,
         defenseRank: 11,
-        recentForm: 'L-W-W-L-W',
-        injuries: ['CB - Out', 'WR - Questionable'],
-        avgPointsScored: 24.1,
-        avgPointsAllowed: 21.7
+        recentForm: 'W-W-L-W-W',
+        injuries: ['TE - Questionable'],
+        avgPointsScored: 30.2,
+        avgPointsAllowed: 22.8
       },
       weather: {
         condition: 'Clear',
-        temperature: 42,
-        windSpeed: 5
+        temperature: 52,
+        windSpeed: 8
+      }
+    }
+  },
+  {
+    id: 'nfl-3',
+    sport: 'NFL',
+    homeTeam: {
+      id: 'mia',
+      name: 'Miami Dolphins',
+      shortName: 'MIA',
+      logo: '🏈',
+      color: '#008E97',
+      secondaryColor: '#FC4C02'
+    },
+    awayTeam: {
+      id: 'was',
+      name: 'Washington Commanders',
+      shortName: 'WAS',
+      logo: '🏈',
+      color: '#5A1414',
+      secondaryColor: '#FFB612'
+    },
+    date: '2025-11-17',
+    time: '9:30 AM ET',
+    spread: -3.5,
+    overUnder: 48.5,
+    homeMoneyline: -170,
+    awayMoneyline: +145,
+    aiConfidence: 'Medium',
+    aiPrediction: {
+      winner: 'home',
+      winProbability: 61,
+      spreadPick: 'home',
+      overUnderPick: 'over',
+      summary: 'International game in Madrid. Dolphins offense clicking with Tua healthy. Washington struggles in unusual venues. Miami covers in European showcase.'
+    },
+    stats: {
+      homeTeam: {
+        offenseRank: 4,
+        defenseRank: 16,
+        recentForm: 'W-W-W-W-L',
+        injuries: [],
+        avgPointsScored: 28.6,
+        avgPointsAllowed: 23.4
+      },
+      awayTeam: {
+        offenseRank: 13,
+        defenseRank: 14,
+        recentForm: 'L-W-L-W-L',
+        injuries: ['RB - Out', 'DE - Questionable'],
+        avgPointsScored: 23.9,
+        avgPointsAllowed: 24.1
+      },
+      weather: {
+        condition: 'Sunny',
+        temperature: 68,
+        windSpeed: 6
       }
     }
   }
@@ -187,48 +187,48 @@ export const mockNCAAFGames: Game[] = [
       secondaryColor: '#000000'
     },
     awayTeam: {
-      id: 'fla',
-      name: 'Florida Gators',
-      shortName: 'FLA',
+      id: 'tex',
+      name: 'Texas Longhorns',
+      shortName: 'TEX',
       logo: '🏈',
-      color: '#0021A5',
-      secondaryColor: '#FA4616'
+      color: '#BF5700',
+      secondaryColor: '#FFFFFF'
     },
-    date: '2025-11-08',
-    time: '3:30 PM ET',
-    spread: -14,
-    overUnder: 56.5,
-    homeMoneyline: -450,
-    awayMoneyline: +340,
+    date: '2025-11-15',
+    time: '7:30 PM ET',
+    spread: -6.5,
+    overUnder: 50.5,
+    homeMoneyline: -260,
+    awayMoneyline: +210,
     aiConfidence: 'High',
     aiPrediction: {
       winner: 'home',
-      winProbability: 78,
+      winProbability: 68,
       spreadPick: 'home',
-      overUnderPick: 'over',
-      summary: 'Georgia\'s defense is dominant, ranked #1 nationally. Florida struggling with injuries. Bulldogs should cover easily at home.'
+      overUnderPick: 'under',
+      summary: 'Massive SEC showdown in Athens. Georgia\'s defense at home is elite. Texas offense will struggle against the Bulldogs D. Georgia covers in defensive battle.'
     },
     stats: {
       homeTeam: {
-        offenseRank: 12,
-        defenseRank: 1,
+        offenseRank: 8,
+        defenseRank: 2,
         recentForm: 'W-W-W-W-L',
-        injuries: [],
-        avgPointsScored: 34.2,
-        avgPointsAllowed: 12.8
+        injuries: ['LB - Questionable'],
+        avgPointsScored: 32.8,
+        avgPointsAllowed: 13.2
       },
       awayTeam: {
-        offenseRank: 28,
-        defenseRank: 45,
-        recentForm: 'L-L-W-L-L',
-        injuries: ['QB - Questionable', 'RB - Out', 'OL - Out'],
-        avgPointsScored: 22.4,
-        avgPointsAllowed: 28.9
+        offenseRank: 5,
+        defenseRank: 12,
+        recentForm: 'W-W-W-L-W',
+        injuries: ['OL - Probable'],
+        avgPointsScored: 35.6,
+        avgPointsAllowed: 19.8
       },
       weather: {
-        condition: 'Sunny',
-        temperature: 72,
-        windSpeed: 6
+        condition: 'Clear',
+        temperature: 58,
+        windSpeed: 8
       }
     }
   },
@@ -236,69 +236,12 @@ export const mockNCAAFGames: Game[] = [
     id: 'ncaaf-2',
     sport: 'NCAAF',
     homeTeam: {
-      id: 'osu',
-      name: 'Ohio State Buckeyes',
-      shortName: 'OSU',
+      id: 'bama',
+      name: 'Alabama Crimson Tide',
+      shortName: 'ALA',
       logo: '🏈',
-      color: '#BB0000',
-      secondaryColor: '#666666'
-    },
-    awayTeam: {
-      id: 'psu',
-      name: 'Penn State Nittany Lions',
-      shortName: 'PSU',
-      logo: '🏈',
-      color: '#041E42',
-      secondaryColor: '#FFFFFF'
-    },
-    date: '2025-11-08',
-    time: '7:30 PM ET',
-    spread: -7.5,
-    overUnder: 52,
-    homeMoneyline: -310,
-    awayMoneyline: +250,
-    aiConfidence: 'Medium',
-    aiPrediction: {
-      winner: 'home',
-      winProbability: 64,
-      spreadPick: 'away',
-      overUnderPick: 'under',
-      summary: 'Big Ten showdown. PSU defense travels well. OSU wins but Penn State keeps it close. Take the Nittany Lions with the points.'
-    },
-    stats: {
-      homeTeam: {
-        offenseRank: 4,
-        defenseRank: 8,
-        recentForm: 'W-W-W-W-W',
-        injuries: ['LB - Probable'],
-        avgPointsScored: 38.6,
-        avgPointsAllowed: 16.2
-      },
-      awayTeam: {
-        offenseRank: 18,
-        defenseRank: 3,
-        recentForm: 'W-W-L-W-W',
-        injuries: ['WR - Questionable'],
-        avgPointsScored: 29.3,
-        avgPointsAllowed: 14.7
-      },
-      weather: {
-        condition: 'Cloudy',
-        temperature: 48,
-        windSpeed: 10
-      }
-    }
-  },
-  {
-    id: 'ncaaf-3',
-    sport: 'NCAAF',
-    homeTeam: {
-      id: 'tex',
-      name: 'Texas Longhorns',
-      shortName: 'TEX',
-      logo: '🏈',
-      color: '#BF5700',
-      secondaryColor: '#FFFFFF'
+      color: '#9E1B32',
+      secondaryColor: '#828A8F'
     },
     awayTeam: {
       id: 'okla',
@@ -308,41 +251,98 @@ export const mockNCAAFGames: Game[] = [
       color: '#841617',
       secondaryColor: '#FFF'
     },
-    date: '2025-11-09',
-    time: '12:00 PM ET',
-    spread: -10,
-    overUnder: 61,
-    homeMoneyline: -380,
-    awayMoneyline: +300,
+    date: '2025-11-15',
+    time: '3:30 PM ET',
+    spread: -13.5,
+    overUnder: 54.5,
+    homeMoneyline: -420,
+    awayMoneyline: +320,
     aiConfidence: 'High',
     aiPrediction: {
       winner: 'home',
-      winProbability: 72,
+      winProbability: 75,
       spreadPick: 'home',
       overUnderPick: 'over',
-      summary: 'Red River rivalry renewed. Texas offense is explosive. Oklahoma defense ranks near bottom. Expect fireworks and a Texas blowout.'
+      summary: 'Alabama dominant at home with playoff hopes on the line. Oklahoma struggling in first SEC season. Tide rolls big in Tuscaloosa.'
     },
     stats: {
       homeTeam: {
-        offenseRank: 2,
-        defenseRank: 14,
-        recentForm: 'W-W-W-W-L',
-        injuries: ['DL - Out'],
-        avgPointsScored: 41.7,
-        avgPointsAllowed: 20.1
+        offenseRank: 3,
+        defenseRank: 6,
+        recentForm: 'W-W-W-W-W',
+        injuries: [],
+        avgPointsScored: 38.2,
+        avgPointsAllowed: 15.6
       },
       awayTeam: {
-        offenseRank: 22,
-        defenseRank: 67,
-        recentForm: 'L-L-W-L-W',
-        injuries: ['QB - Probable', 'CB - Out', 'S - Questionable'],
-        avgPointsScored: 26.8,
-        avgPointsAllowed: 32.4
+        offenseRank: 28,
+        defenseRank: 42,
+        recentForm: 'L-L-W-L-L',
+        injuries: ['QB - Questionable', 'RB - Out'],
+        avgPointsScored: 24.3,
+        avgPointsAllowed: 30.8
       },
       weather: {
-        condition: 'Sunny',
-        temperature: 78,
-        windSpeed: 7
+        condition: 'Partly Cloudy',
+        temperature: 65,
+        windSpeed: 10
+      }
+    }
+  },
+  {
+    id: 'ncaaf-3',
+    sport: 'NCAAF',
+    homeTeam: {
+      id: 'pitt',
+      name: 'Pittsburgh Panthers',
+      shortName: 'PITT',
+      logo: '🏈',
+      color: '#003594',
+      secondaryColor: '#FFB81C'
+    },
+    awayTeam: {
+      id: 'nd',
+      name: 'Notre Dame Fighting Irish',
+      shortName: 'ND',
+      logo: '🏈',
+      color: '#0C2340',
+      secondaryColor: '#C99700'
+    },
+    date: '2025-11-15',
+    time: '12:00 PM ET',
+    spread: -7,
+    overUnder: 48,
+    homeMoneyline: -290,
+    awayMoneyline: +235,
+    aiConfidence: 'Medium',
+    aiPrediction: {
+      winner: 'away',
+      winProbability: 58,
+      spreadPick: 'away',
+      overUnderPick: 'under',
+      summary: 'College GameDay in Pittsburgh. Notre Dame\'s playoff push continues. Irish defense will frustrate Pitt offense. ND wins and covers on the road.'
+    },
+    stats: {
+      homeTeam: {
+        offenseRank: 18,
+        defenseRank: 24,
+        recentForm: 'W-L-W-W-L',
+        injuries: ['WR - Out', 'DL - Questionable'],
+        avgPointsScored: 28.4,
+        avgPointsAllowed: 24.7
+      },
+      awayTeam: {
+        offenseRank: 11,
+        defenseRank: 4,
+        recentForm: 'W-W-W-W-L',
+        injuries: ['CB - Probable'],
+        avgPointsScored: 33.6,
+        avgPointsAllowed: 16.2
+      },
+      weather: {
+        condition: 'Cloudy',
+        temperature: 52,
+        windSpeed: 12
       }
     }
   }
