@@ -313,20 +313,40 @@ export default function OptimalParlays() {
                       {/* Recommended Stakes */}
                       {parlay.recommendedStakes && (
                         <div>
-                          <p className="text-xs text-gray-400 font-semibold uppercase mb-2">Recommended Stakes:</p>
+                          <p className="text-xs text-gray-400 font-semibold uppercase mb-2">
+                            Recommended Stakes (click to apply):
+                          </p>
                           <div className="grid grid-cols-3 gap-2">
-                            <div className="p-2 bg-blue-500/10 rounded text-center">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setStake(parlay.recommendedStakes!.conservative);
+                              }}
+                              className="p-2 bg-blue-500/10 hover:bg-blue-500/20 rounded text-center transition-all cursor-pointer border border-transparent hover:border-blue-500/50"
+                            >
                               <p className="text-xs text-blue-400 mb-1">Conservative</p>
                               <p className="text-white font-bold">${parlay.recommendedStakes.conservative}</p>
-                            </div>
-                            <div className="p-2 bg-green-500/10 rounded text-center">
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setStake(parlay.recommendedStakes!.moderate);
+                              }}
+                              className="p-2 bg-green-500/10 hover:bg-green-500/20 rounded text-center transition-all cursor-pointer border border-transparent hover:border-green-500/50"
+                            >
                               <p className="text-xs text-green-400 mb-1">Moderate</p>
                               <p className="text-white font-bold">${parlay.recommendedStakes.moderate}</p>
-                            </div>
-                            <div className="p-2 bg-orange-500/10 rounded text-center">
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setStake(parlay.recommendedStakes!.aggressive);
+                              }}
+                              className="p-2 bg-orange-500/10 hover:bg-orange-500/20 rounded text-center transition-all cursor-pointer border border-transparent hover:border-orange-500/50"
+                            >
                               <p className="text-xs text-orange-400 mb-1">Aggressive</p>
                               <p className="text-white font-bold">${parlay.recommendedStakes.aggressive}</p>
-                            </div>
+                            </button>
                           </div>
                         </div>
                       )}
