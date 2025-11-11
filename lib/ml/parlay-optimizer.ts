@@ -19,11 +19,17 @@ interface OptimalParlay {
 
 interface ParlayOption {
   game: Game;
-  betType: 'spread' | 'moneyline' | 'total';
+  betType: 'spread' | 'moneyline' | 'total' | 'player_prop';
   selection: string;
   odds: number;
   probability: number;
   confidence: number;
+  playerProp?: import('../types').PlayerProp;
+}
+
+interface ParlayGeneratorOptions {
+  sport?: string;
+  includePlayerProps?: boolean;
 }
 
 /**
@@ -33,10 +39,11 @@ export function generateOptimalParlays(
   games: Game[],
   stake: number = 100,
   minLegs: number = 3,
-  maxLegs: number = 5
+  maxLegs: number = 5,
+  options: ParlayGeneratorOptions = {}
 ): OptimalParlay[] {
   // Get all betting options
-  const allOptions = extractBettingOptions(games);
+  const allOptions = extractBettingOptions(games, options.includePlayerProps ?? false);
 
   // Filter to high-value options
   const valueBets = allOptions.filter((opt) => opt.confidence >= 55);
@@ -158,6 +165,51 @@ export function generateOptimalParlays(
     }
   }
 
+  // Strategy 7: Mixed Accuracy (best picks across all bet types)
+  const mixedBets = valueBets
+    .sort((a, b) => {
+      // Prioritize by confidence, then by EV
+      const confidenceDiff = b.confidence - a.confidence;
+      if (Math.abs(confidenceDiff) > 5) return confidenceDiff;
+      const evA = calculateExpectedValue(a.probability, a.odds);
+      const evB = calculateExpectedValue(b.probability, b.odds);
+      return evB - evA;
+    })
+    .slice(0, maxLegs);
+
+  if (mixedBets.length >= minLegs) {
+    for (let legCount = minLegs; legCount <= Math.min(maxLegs, mixedBets.length); legCount++) {
+      const legs = mixedBets.slice(0, legCount);
+      const betTypes = [...new Set(legs.map(l => l.betType))];
+      const parlay = buildParlay(legs, stake, 'Mixed Accuracy', [
+        `Combines ${betTypes.length} bet types: ${betTypes.join(', ')}`,
+        'Selects highest confidence picks regardless of type',
+        'Optimized for maximum win probability',
+      ]);
+      parlays.push(parlay);
+    }
+  }
+
+  // Strategy 8: Player Props Special (if enabled)
+  if (options.includePlayerProps) {
+    const propBets = valueBets
+      .filter((opt) => opt.betType === 'player_prop' && opt.confidence >= 60)
+      .sort((a, b) => b.confidence - a.confidence)
+      .slice(0, maxLegs);
+
+    if (propBets.length >= minLegs) {
+      for (let legCount = minLegs; legCount <= Math.min(maxLegs, propBets.length); legCount++) {
+        const legs = propBets.slice(0, legCount);
+        const parlay = buildParlay(legs, stake, 'Props Master', [
+          'Player prop bets only',
+          'Focuses on individual performances',
+          'Best for prop specialists',
+        ]);
+        parlays.push(parlay);
+      }
+    }
+  }
+
   // Sort by expected value and deduplicate
   return parlays
     .sort((a, b) => b.expectedValue - a.expectedValue)
@@ -173,7 +225,7 @@ export function generateOptimalParlays(
 /**
  * Extract all betting options from games
  */
-function extractBettingOptions(games: Game[]): ParlayOption[] {
+function extractBettingOptions(games: Game[], includePlayerProps: boolean = false): ParlayOption[] {
   const options: ParlayOption[] = [];
 
   games.forEach((game) => {
@@ -266,6 +318,31 @@ function extractBettingOptions(games: Game[]): ParlayOption[] {
         });
       }
     }
+
+    // Player Props
+    if (includePlayerProps && game.playerProps) {
+      game.playerProps.forEach((prop) => {
+        if (!prop.prediction || !prop.confidence) return;
+
+        const propConfidence = prop.confidence;
+        const isOver = prop.prediction === 'over';
+        const odds = isOver ? prop.overOdds : prop.underOdds;
+
+        // Format prop type for display
+        const propTypeDisplay = prop.propType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        const selection = `${prop.playerName} ${isOver ? 'Over' : 'Under'} ${prop.line} ${propTypeDisplay}`;
+
+        options.push({
+          game,
+          betType: 'player_prop',
+          selection,
+          odds,
+          probability: propConfidence / 100,
+          confidence: propConfidence,
+          playerProp: prop,
+        });
+      });
+    }
   });
 
   return options;
@@ -287,6 +364,7 @@ function buildParlay(
     selection: opt.selection,
     odds: opt.odds,
     probability: opt.probability,
+    ...(opt.playerProp && { playerProp: opt.playerProp }),
   }));
 
   const totalOdds = calculateParlayOdds(options.map((o) => o.odds));

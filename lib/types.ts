@@ -36,6 +36,18 @@ export interface FeaturedParlay {
   legs: FeaturedParlayLeg[];
 }
 
+export interface PlayerProp {
+  playerId: string;
+  playerName: string;
+  team: string;
+  propType: 'passing_yards' | 'rushing_yards' | 'receiving_yards' | 'touchdowns' | 'receptions' | 'passing_tds' | 'interceptions';
+  line: number;
+  overOdds: number;
+  underOdds: number;
+  prediction?: 'over' | 'under';
+  confidence?: number;
+}
+
 export interface Game {
   id: string;
   league: Sport;
@@ -49,6 +61,7 @@ export interface Game {
   broadcasts?: string[];
   weather?: GameWeather;
   featuredParlays?: FeaturedParlay[];
+  playerProps?: PlayerProp[];
   odds?: {
     source?: string;
     updatedAt?: string;
@@ -88,10 +101,11 @@ export interface Game {
 export interface ParlayLeg {
   gameId: string;
   game: Game;
-  betType: 'spread' | 'moneyline' | 'total';
+  betType: 'spread' | 'moneyline' | 'total' | 'player_prop';
   selection: string;
   odds: number;
   probability: number;
+  playerProp?: PlayerProp;
 }
 
 export interface Parlay {

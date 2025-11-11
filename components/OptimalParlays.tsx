@@ -7,6 +7,18 @@ import { Badge } from '@/components/ui/badge';
 import { Sparkles, TrendingUp, DollarSign, Target, ChevronDown, ChevronUp, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+interface PlayerProp {
+  playerId: string;
+  playerName: string;
+  team: string;
+  propType: string;
+  line: number;
+  overOdds: number;
+  underOdds: number;
+  prediction?: 'over' | 'under';
+  confidence?: number;
+}
+
 interface OptimalParlay {
   id: string;
   legs: Array<{
@@ -19,6 +31,7 @@ interface OptimalParlay {
     selection: string;
     odds: number;
     probability: number;
+    playerProp?: PlayerProp;
   }>;
   totalOdds: number;
   combinedProbability: number;
@@ -39,17 +52,19 @@ export default function OptimalParlays() {
   const [minLegs, setMinLegs] = useState(3);
   const [maxLegs, setMaxLegs] = useState(5);
   const [stake, setStake] = useState(100);
+  const [selectedSport, setSelectedSport] = useState<'ALL' | 'NFL' | 'NCAAF'>('ALL');
+  const [includeProps, setIncludeProps] = useState(true);
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ['optimal-parlays', minLegs, maxLegs, stake],
+    queryKey: ['optimal-parlays', minLegs, maxLegs, stake, selectedSport, includeProps],
     queryFn: async () => {
       const response = await fetch(
-        `/api/parlays/optimal?minLegs=${minLegs}&maxLegs=${maxLegs}&stake=${stake}&bankroll=1000`
+        `/api/parlays/optimal?minLegs=${minLegs}&maxLegs=${maxLegs}&stake=${stake}&bankroll=1000&sport=${selectedSport}&includeProps=${includeProps}`
       );
       if (!response.ok) throw new Error('Failed to fetch optimal parlays');
       return response.json();
     },
-    refetchInterval: 300000, // Refetch every 5 minutes
+    refetchInterval: 3600000, // Refetch every hour (matches cron schedule)
   });
 
   if (isLoading) {
@@ -113,34 +128,61 @@ export default function OptimalParlays() {
       </CardHeader>
       <CardContent>
         {/* Controls */}
-        <div className="flex items-center space-x-4 mb-6 p-4 bg-white/5 rounded-lg">
-          <div>
-            <label className="text-xs text-gray-400 block mb-1">Legs</label>
-            <select
-              value={`${minLegs}-${maxLegs}`}
-              onChange={(e) => {
-                const [min, max] = e.target.value.split('-').map(Number);
-                setMinLegs(min);
-                setMaxLegs(max);
-              }}
-              className="bg-white/10 border border-white/20 rounded px-3 py-1 text-white text-sm"
-            >
-              <option value="3-3">3 Legs</option>
-              <option value="3-4">3-4 Legs</option>
-              <option value="3-5">3-5 Legs</option>
-              <option value="4-5">4-5 Legs</option>
-            </select>
+        <div className="space-y-4 mb-6">
+          <div className="flex items-center space-x-4 p-4 bg-white/5 rounded-lg">
+            <div>
+              <label className="text-xs text-gray-400 block mb-1">Sport</label>
+              <select
+                value={selectedSport}
+                onChange={(e) => setSelectedSport(e.target.value as 'ALL' | 'NFL' | 'NCAAF')}
+                className="bg-white/10 border border-white/20 rounded px-3 py-1 text-white text-sm"
+              >
+                <option value="ALL">All Sports</option>
+                <option value="NFL">NFL</option>
+                <option value="NCAAF">NCAAF</option>
+              </select>
+            </div>
+            <div>
+              <label className="text-xs text-gray-400 block mb-1">Legs</label>
+              <select
+                value={`${minLegs}-${maxLegs}`}
+                onChange={(e) => {
+                  const [min, max] = e.target.value.split('-').map(Number);
+                  setMinLegs(min);
+                  setMaxLegs(max);
+                }}
+                className="bg-white/10 border border-white/20 rounded px-3 py-1 text-white text-sm"
+              >
+                <option value="3-3">3 Legs</option>
+                <option value="3-4">3-4 Legs</option>
+                <option value="3-5">3-5 Legs</option>
+                <option value="4-5">4-5 Legs</option>
+              </select>
+            </div>
+            <div>
+              <label className="text-xs text-gray-400 block mb-1">Stake</label>
+              <input
+                type="number"
+                value={stake}
+                onChange={(e) => setStake(Number(e.target.value))}
+                className="bg-white/10 border border-white/20 rounded px-3 py-1 text-white text-sm w-24"
+                min="5"
+                step="5"
+              />
+            </div>
           </div>
-          <div>
-            <label className="text-xs text-gray-400 block mb-1">Stake</label>
+
+          <div className="flex items-center space-x-2 p-3 bg-white/5 rounded-lg">
             <input
-              type="number"
-              value={stake}
-              onChange={(e) => setStake(Number(e.target.value))}
-              className="bg-white/10 border border-white/20 rounded px-3 py-1 text-white text-sm w-24"
-              min="5"
-              step="5"
+              type="checkbox"
+              id="includeProps"
+              checked={includeProps}
+              onChange={(e) => setIncludeProps(e.target.checked)}
+              className="w-4 h-4 rounded border-white/20 bg-white/10 text-purple-600 focus:ring-purple-500"
             />
+            <label htmlFor="includeProps" className="text-sm text-gray-300 cursor-pointer">
+              Include Player Props, Moneyline & Totals (mix & match for best accuracy)
+            </label>
           </div>
         </div>
 
@@ -224,10 +266,24 @@ export default function OptimalParlays() {
                         <p className="text-xs text-gray-400 font-semibold uppercase">Legs:</p>
                         {parlay.legs.map((leg, i) => (
                           <div key={i} className="flex items-center justify-between p-2 bg-white/5 rounded">
-                            <div>
+                            <div className="flex-1">
+                              <div className="flex items-center space-x-2 mb-1">
+                                <Badge className={`text-xs ${
+                                  leg.betType === 'spread' ? 'bg-blue-500/20 text-blue-400' :
+                                  leg.betType === 'moneyline' ? 'bg-green-500/20 text-green-400' :
+                                  leg.betType === 'total' ? 'bg-orange-500/20 text-orange-400' :
+                                  'bg-purple-500/20 text-purple-400'
+                                }`}>
+                                  {leg.betType === 'player_prop' ? 'PROP' : leg.betType.toUpperCase()}
+                                </Badge>
+                              </div>
                               <p className="text-white text-sm font-medium">{leg.selection}</p>
                               <p className="text-xs text-gray-400">
-                                {leg.game.awayTeam.abbreviation} @ {leg.game.homeTeam.abbreviation} • {leg.betType}
+                                {leg.betType === 'player_prop' && leg.playerProp ? (
+                                  `${leg.playerProp.team} • ${leg.game.awayTeam.abbreviation} @ ${leg.game.homeTeam.abbreviation}`
+                                ) : (
+                                  `${leg.game.awayTeam.abbreviation} @ ${leg.game.homeTeam.abbreviation}`
+                                )}
                               </p>
                             </div>
                             <div className="text-right">

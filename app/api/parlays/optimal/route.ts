@@ -11,12 +11,22 @@ export async function GET(request: Request) {
     const maxLegs = Number(searchParams.get('maxLegs')) || 5;
     const stake = Number(searchParams.get('stake')) || 100;
     const bankroll = Number(searchParams.get('bankroll')) || 1000;
+    const sport = searchParams.get('sport') || 'ALL'; // NFL, NCAAF, ALL
+    const includePropsBets = searchParams.get('includeProps') === 'true';
 
     // Fetch all available games
-    const games = await fetchGames();
+    let games = await fetchGames();
 
-    // Generate optimal parlays
-    const parlays = generateOptimalParlays(games, stake, minLegs, maxLegs);
+    // Filter by sport if specified
+    if (sport !== 'ALL') {
+      games = games.filter((game) => game.league === sport);
+    }
+
+    // Generate optimal parlays with enhanced options
+    const parlays = generateOptimalParlays(games, stake, minLegs, maxLegs, {
+      sport,
+      includePlayerProps: includePropsBets,
+    });
 
     // Add recommended stakes
     const parlaysWithStakes = parlays.map((parlay) => ({
