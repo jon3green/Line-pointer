@@ -40,3 +40,10 @@ mcp-cache.json
 
 
 /lib/generated/prisma
+
+# Python ML Service
+ml-service/venv/
+ml-service/data/
+ml-service/models/
+ml-service/__pycache__/
+*.pyc

@@ -152,8 +152,9 @@ async def predict(game: GameInput):
         high_confidence = 1 if game.confidence > 70 else 0
         medium_confidence = 1 if 50 <= game.confidence <= 70 else 0
 
-        # Build feature vector
-        features = pd.DataFrame([{
+        # Build feature vectors (different models use different features)
+        # Winner model uses all features
+        winner_features = pd.DataFrame([{
             'sport_encoded': sport_encoded,
             'homeTeam_encoded': home_encoded,
             'awayTeam_encoded': away_encoded,
@@ -176,12 +177,32 @@ async def predict(game: GameInput):
             'medium_confidence': medium_confidence,
         }])
 
-        # Make predictions
-        winner_pred = models['winner'].predict(features)[0]
-        winner_prob = models['winner'].predict_proba(features)[0][1]
+        # Spread model uses fewer features
+        spread_features = pd.DataFrame([{
+            'sport_encoded': sport_encoded,
+            'homeTeam_encoded': home_encoded,
+            'awayTeam_encoded': away_encoded,
+            'dayOfWeek': game.dayOfWeek,
+            'month': game.month,
+            'hour': game.hour,
+            'openingSpread': game.openingSpread,
+            'closingSpread': game.closingSpread,
+            'spread_movement': spread_movement,
+            'spread_movement_pct': spread_movement_pct,
+            'openingTotal': game.openingTotal,
+            'closingTotal': game.closingTotal,
+            'openingML': game.openingML,
+            'closingML': game.closingML,
+            'confidence': game.confidence,
+            'high_confidence': high_confidence,
+        }])
 
-        spread_pred = models['spread'].predict(features)[0]
-        spread_prob = models['spread'].predict_proba(features)[0][1]
+        # Make predictions
+        winner_pred = models['winner'].predict(winner_features)[0]
+        winner_prob = models['winner'].predict_proba(winner_features)[0][1]
+
+        spread_pred = models['spread'].predict(spread_features)[0]
+        spread_prob = models['spread'].predict_proba(spread_features)[0][1]
 
         return PredictionOutput(
             winner_prediction=bool(winner_pred),
