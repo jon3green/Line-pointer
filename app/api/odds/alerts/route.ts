@@ -1,46 +1,32 @@
 import { NextResponse } from 'next/server';
-import { getRecentLineMovementAlerts } from '@/lib/services/odds-collection';
 import { prisma } from '@/lib/prisma';
 
-export const dynamic = 'force-dynamic';
-
-/**
- * GET /api/odds/alerts
- * Get recent line movement alerts
- *
- * Query params:
- * - limit: number (default: 10)
- * - unread: boolean (optional)
- * - sport: string (optional)
- */
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const limit = parseInt(searchParams.get('limit') || '10');
-    const unread = searchParams.get('unread') === 'true';
-    const sport = searchParams.get('sport');
+    const unreadOnly = searchParams.get('unreadOnly') === 'true';
+    const gameId = searchParams.get('gameId');
 
-    let where: any = {
-      createdAt: {
-        gte: new Date(Date.now() - 24 * 60 * 60 * 1000), // Last 24 hours
-      },
-      expiresAt: {
-        gte: new Date(), // Not expired
-      },
-    };
+    const where: any = {};
 
-    if (unread) {
+    if (unreadOnly) {
       where.read = false;
     }
 
-    if (sport) {
-      where.sport = sport;
+    if (gameId) {
+      where.gameId = gameId;
     }
+
+    // Only show alerts for upcoming games (not expired)
+    where.expiresAt = {
+      gte: new Date(),
+    };
 
     const alerts = await prisma.lineMovementAlert.findMany({
       where,
       orderBy: [
-        { severity: 'desc' },
+        { severity: 'desc' }, // critical, high, medium, low
         { createdAt: 'desc' },
       ],
       take: limit,
@@ -49,36 +35,24 @@ export async function GET(request: Request) {
     return NextResponse.json({
       success: true,
       alerts,
-      count: alerts.length,
-      timestamp: new Date().toISOString(),
+      count: alerts.length
     });
   } catch (error) {
-    console.error('Error fetching alerts:', error);
+    console.error('Get line movement alerts error:', error);
     return NextResponse.json(
-      {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to fetch alerts',
-      },
+      { error: 'Failed to fetch line movement alerts' },
       { status: 500 }
     );
   }
 }
 
-/**
- * PATCH /api/odds/alerts
- * Mark alert as read
- *
- * Body:
- * - alertId: string
- */
 export async function PATCH(request: Request) {
   try {
-    const body = await request.json();
-    const { alertId } = body;
+    const { alertId } = await request.json();
 
     if (!alertId) {
       return NextResponse.json(
-        { success: false, error: 'alertId is required' },
+        { error: 'Alert ID is required' },
         { status: 400 }
       );
     }
@@ -91,18 +65,11 @@ export async function PATCH(request: Request) {
       },
     });
 
-    return NextResponse.json({
-      success: true,
-      alert,
-      timestamp: new Date().toISOString(),
-    });
+    return NextResponse.json({ success: true, alert });
   } catch (error) {
-    console.error('Error updating alert:', error);
+    console.error('Mark alert as read error:', error);
     return NextResponse.json(
-      {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to update alert',
-      },
+      { error: 'Failed to mark alert as read' },
       { status: 500 }
     );
   }

@@ -1,23 +1,24 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { TrendingUp, TrendingDown, Clock } from 'lucide-react';
+import { TrendingUp, TrendingDown, Clock, AlertCircle } from 'lucide-react';
 import { Line, LineChart, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+import { useQuery } from '@tanstack/react-query';
 
 interface OddsMovementProps {
   gameId: string;
 }
 
 export default function OddsMovement({ gameId }: OddsMovementProps) {
-  // Mock odds history data - in production, fetch from API
-  const oddsHistory = [
-    { time: '10:00 AM', spread: -3.5, moneyline: -165, total: 47.5 },
-    { time: '11:00 AM', spread: -3.0, moneyline: -155, total: 47.5 },
-    { time: '12:00 PM', spread: -3.5, moneyline: -160, total: 48.0 },
-    { time: '1:00 PM', spread: -4.0, moneyline: -170, total: 48.0 },
-    { time: '2:00 PM', spread: -4.0, moneyline: -165, total: 47.5 },
-    { time: 'Now', spread: -3.5, moneyline: -165, total: 47.5 },
-  ];
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['odds-history', gameId],
+    queryFn: async () => {
+      const response = await fetch(`/api/odds/history?gameId=${gameId}&hours=24`);
+      if (!response.ok) throw new Error('Failed to fetch odds history');
+      return response.json();
+    },
+    refetchInterval: 300000, // Refresh every 5 minutes
+  });
 
   const getMovementIndicator = (current: number, previous: number) => {
     if (current > previous) {
@@ -28,8 +29,58 @@ export default function OddsMovement({ gameId }: OddsMovementProps) {
     return <span className="w-4 h-4" />;
   };
 
+  if (isLoading) {
+    return (
+      <Card className="glass-morphism border-white/10">
+        <CardHeader>
+          <div className="flex items-center space-x-2">
+            <Clock className="w-5 h-5 text-blue-500" />
+            <CardTitle className="text-white">Odds Movement</CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-400"></div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error || !data?.success || !data?.history || data.history.length === 0) {
+    return (
+      <Card className="glass-morphism border-white/10">
+        <CardHeader>
+          <div className="flex items-center space-x-2">
+            <Clock className="w-5 h-5 text-blue-500" />
+            <CardTitle className="text-white">Odds Movement</CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <AlertCircle className="w-12 h-12 text-gray-600 mb-3" />
+            <p className="text-gray-400">No odds history available yet</p>
+            <p className="text-sm text-gray-500 mt-1">Data will appear as odds are collected</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // Transform API data for chart
+  const oddsHistory = data.history.map((item: any) => {
+    const time = new Date(item.timestamp);
+    return {
+      time: time.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }),
+      spread: item.spread || 0,
+      moneyline: item.homeML || 0,
+      total: item.total || 0,
+      timestamp: item.timestamp,
+    };
+  });
+
   const currentOdds = oddsHistory[oddsHistory.length - 1];
-  const previousOdds = oddsHistory[oddsHistory.length - 2];
+  const previousOdds = oddsHistory[oddsHistory.length - 2] || currentOdds;
 
   return (
     <Card className="glass-morphism border-white/10">
@@ -122,14 +173,28 @@ export default function OddsMovement({ gameId }: OddsMovementProps) {
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg">
-          <h4 className="text-sm font-semibold text-blue-400 mb-2">📊 Movement Insights</h4>
-          <ul className="space-y-1 text-xs text-gray-300">
-            <li>• Spread moved from -4.0 to -3.5 (favoring away team)</li>
-            <li>• 65% of bets on home team, but line moving away</li>
-            <li>• Sharp money appears to be on the away team</li>
-          </ul>
-        </div>
+        {data.movements && (data.movements.spread !== null || data.movements.total !== null) && (
+          <div className="p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+            <h4 className="text-sm font-semibold text-blue-400 mb-2">📊 Movement Insights</h4>
+            <ul className="space-y-1 text-xs text-gray-300">
+              {data.movements.spread !== null && data.movements.spread !== 0 && (
+                <li>
+                  • Spread moved {Math.abs(data.movements.spread).toFixed(1)} points
+                  {data.movements.spread > 0 ? ' (favoring home team)' : ' (favoring away team)'}
+                </li>
+              )}
+              {data.movements.total !== null && data.movements.total !== 0 && (
+                <li>
+                  • Total moved {Math.abs(data.movements.total).toFixed(1)} points
+                  {data.movements.total > 0 ? ' (higher)' : ' (lower)'}
+                </li>
+              )}
+              {data.dataPoints && (
+                <li>• Tracking {data.dataPoints} data points over last 24 hours</li>
+              )}
+            </ul>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
