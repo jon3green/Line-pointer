@@ -119,14 +119,16 @@ async function handleSubscriptionCanceled(subscription: Stripe.Subscription) {
     return;
   }
 
+  const endDate = (subscription as any).current_period_end
+    ? new Date((subscription as any).current_period_end * 1000)
+    : null;
+
   await prisma.user.update({
     where: { id: userId },
     data: {
       subscriptionTier: 'FREE',
       subscriptionStatus: 'canceled',
-      subscriptionEndDate: subscription.current_period_end
-        ? new Date(subscription.current_period_end * 1000)
-        : null,
+      subscriptionEndDate: endDate,
     },
   });
 
@@ -188,18 +190,21 @@ async function updateUserSubscription(
     return;
   }
 
+  const startDate = (subscription as any).current_period_start
+    ? new Date((subscription as any).current_period_start * 1000)
+    : null;
+  const endDate = (subscription as any).current_period_end
+    ? new Date((subscription as any).current_period_end * 1000)
+    : null;
+
   await prisma.user.update({
     where: { id: userId },
     data: {
       subscriptionTier: tier,
       stripeSubscriptionId: subscription.id,
       subscriptionStatus: subscription.status,
-      subscriptionStartDate: subscription.current_period_start
-        ? new Date(subscription.current_period_start * 1000)
-        : null,
-      subscriptionEndDate: subscription.current_period_end
-        ? new Date(subscription.current_period_end * 1000)
-        : null,
+      subscriptionStartDate: startDate,
+      subscriptionEndDate: endDate,
     },
   });
 
