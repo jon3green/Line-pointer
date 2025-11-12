@@ -65,6 +65,7 @@ export async function POST(request: Request) {
       gameId,
       sport,
       betType,
+      betCategory,
       selection,
       odds,
       stake,
@@ -75,7 +76,7 @@ export async function POST(request: Request) {
     } = body;
 
     // Validate required fields
-    if (!gameId || !sport || !betType || !selection || !odds || !stake) {
+    if (!gameId || !sport || !betType || !betCategory || !selection || !odds || !stake) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
@@ -89,6 +90,7 @@ export async function POST(request: Request) {
         gameId,
         sport,
         betType,
+        betCategory,
         selection,
         odds,
         stake,
