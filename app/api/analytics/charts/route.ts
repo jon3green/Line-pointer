@@ -21,9 +21,9 @@ export async function GET(request: Request) {
 
     const predictions = await prisma.prediction.findMany({
       where,
-      orderBy: { madeAt: 'asc' },
+      orderBy: { createdAt: 'asc' },
       select: {
-        madeAt: true,
+        createdAt: true,
         wasCorrect: true,
         confidence: true,
         spreadCLV: true,
@@ -129,7 +129,7 @@ function generateSportComparison(predictions: any[]) {
 function groupByWeek(predictions: any[]) {
   const weeks = new Map<string, any[]>();
   predictions.forEach(p => {
-    const date = new Date(p.madeAt);
+    const date = new Date(p.createdAt);
     const weekStart = new Date(date);
     weekStart.setDate(date.getDate() - date.getDay());
     const key = weekStart.toISOString().split('T')[0];
