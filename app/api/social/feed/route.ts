@@ -91,12 +91,12 @@ export async function GET(request: Request) {
             status: bet.status,
             line: bet.line,
           },
-          game: {
+          game: bet.game ? {
             homeTeam: bet.game.homeTeam,
             awayTeam: bet.game.awayTeam,
             gameTime: bet.game.gameTime,
             sport: bet.game.sport,
-          },
+          } : null,
           createdAt: bet.createdAt,
         };
       });
