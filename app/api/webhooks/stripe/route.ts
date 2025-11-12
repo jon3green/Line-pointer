@@ -124,7 +124,9 @@ async function handleSubscriptionCanceled(subscription: Stripe.Subscription) {
     data: {
       subscriptionTier: 'FREE',
       subscriptionStatus: 'canceled',
-      subscriptionEndDate: new Date(subscription.current_period_end * 1000),
+      subscriptionEndDate: subscription.current_period_end
+        ? new Date(subscription.current_period_end * 1000)
+        : null,
     },
   });
 
@@ -192,8 +194,12 @@ async function updateUserSubscription(
       subscriptionTier: tier,
       stripeSubscriptionId: subscription.id,
       subscriptionStatus: subscription.status,
-      subscriptionStartDate: new Date(subscription.current_period_start * 1000),
-      subscriptionEndDate: new Date(subscription.current_period_end * 1000),
+      subscriptionStartDate: subscription.current_period_start
+        ? new Date(subscription.current_period_start * 1000)
+        : null,
+      subscriptionEndDate: subscription.current_period_end
+        ? new Date(subscription.current_period_end * 1000)
+        : null,
     },
   });
 
