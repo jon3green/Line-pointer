@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { stripe } from '@/lib/stripe';
 import { prisma } from '@/lib/prisma';
-import { SUBSCRIPTION_TIERS } from '@/lib/subscription';
+import { SUBSCRIPTION_TIERS, SubscriptionTier } from '@/lib/subscription';
 
 export async function POST(request: Request) {
   try {
@@ -35,7 +35,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const tierConfig = SUBSCRIPTION_TIERS[tier];
+    const tierConfig = SUBSCRIPTION_TIERS[tier as SubscriptionTier];
     if (!tierConfig.priceId) {
       return NextResponse.json(
         { error: 'Price ID not configured for this tier' },
