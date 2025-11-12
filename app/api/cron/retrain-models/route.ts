@@ -90,7 +90,7 @@ export async function GET(request: Request) {
 
       for (const deployment of deployments) {
         console.log(
-          `[Cron] Deploying ${deployment.sport} model (${deployment.improvementPct.toFixed(2)}% improvement)`
+          `[Cron] Deploying ${deployment.sport} model (${(deployment.improvementPct || 0).toFixed(2)}% improvement)`
         );
 
         // TODO: Update model version in database
