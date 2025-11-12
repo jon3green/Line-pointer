@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import Link from 'next/link';
-import { TrendingUp, Menu, X, User, LogOut, LayoutDashboard, LogIn, UserPlus, Target } from 'lucide-react';
+import { TrendingUp, Menu, X, User, LogOut, LayoutDashboard, LogIn, UserPlus, Target, Users } from 'lucide-react';
 import { Button } from './ui/button';
 import { useStore } from '@/lib/store';
 import { cn } from '@/lib/utils';
@@ -84,6 +84,12 @@ export default function HeaderWithAuth() {
               <Button variant="ghost" className="flex items-center space-x-2">
                 <Target className="w-4 h-4" />
                 <span>Accuracy</span>
+              </Button>
+            </Link>
+            <Link href="/community">
+              <Button variant="ghost" className="flex items-center space-x-2">
+                <Users className="w-4 h-4" />
+                <span>Community</span>
               </Button>
             </Link>
           </div>
@@ -179,6 +185,13 @@ export default function HeaderWithAuth() {
               <Button variant="ghost" className="w-full flex items-center space-x-2">
                 <Target className="w-4 h-4" />
                 <span>Accuracy</span>
+              </Button>
+            </Link>
+
+            <Link href="/community" onClick={() => setMobileMenuOpen(false)}>
+              <Button variant="ghost" className="w-full flex items-center space-x-2">
+                <Users className="w-4 h-4" />
+                <span>Community</span>
               </Button>
             </Link>
 

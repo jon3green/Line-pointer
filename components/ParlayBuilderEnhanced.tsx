@@ -7,13 +7,21 @@ import { Badge } from './ui/badge';
 import { useStore } from '@/lib/store';
 import { calculateParlayOdds, calculateParlayProbability, formatOdds } from '@/lib/utils';
 import { validateParlayLegs, analyzeParlayQuality, calculateParlayEV } from '@/lib/parlay-validator';
-import { Trash2, DollarSign, TrendingUp, AlertTriangle, CheckCircle, Award, Target, Sparkles, X, Plus } from 'lucide-react';
+import { Trash2, DollarSign, TrendingUp, AlertTriangle, CheckCircle, Award, Target, Sparkles, X, Plus, Share2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useSession } from 'next-auth/react';
+import { useMutation } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 
 export default function ParlayBuilderEnhanced() {
   const { parlayLegs, removeParlayLeg, clearParlay, stake, setStake } = useStore();
   const [validation, setValidation] = useState<any>(null);
   const [quality, setQuality] = useState<any>(null);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [shareTitle, setShareTitle] = useState('');
+  const [shareDescription, setShareDescription] = useState('');
+  const { data: session } = useSession();
+  const router = useRouter();
   
   const totalOdds = parlayLegs.length > 0 
     ? calculateParlayOdds(parlayLegs.map(leg => leg.odds))
@@ -29,7 +37,62 @@ export default function ParlayBuilderEnhanced() {
   const expectedValue = parlayLegs.length > 0
     ? calculateParlayEV(parlayLegs, stake, totalOdds)
     : 0;
-  
+
+  // Share parlay mutation
+  const shareParlayMutation = useMutation({
+    mutationFn: async () => {
+      if (!session) {
+        router.push('/auth/signin');
+        return;
+      }
+
+      const parlayData = {
+        legs: parlayLegs.map(leg => ({
+          gameId: leg.gameId,
+          selection: leg.selection,
+          betType: leg.betType,
+          betCategory: leg.betCategory,
+          odds: leg.odds,
+          probability: leg.probability,
+          game: leg.game,
+        })),
+        totalOdds,
+        totalProbability,
+        stake,
+        potentialWin,
+        expectedValue,
+      };
+
+      const response = await fetch('/api/community/parlays', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: shareTitle,
+          description: shareDescription,
+          parlayData,
+          sport: parlayLegs[0]?.game.league || 'NFL',
+        }),
+      });
+
+      if (!response.ok) throw new Error('Failed to share parlay');
+      return response.json();
+    },
+    onSuccess: () => {
+      setShowShareModal(false);
+      setShareTitle('');
+      setShareDescription('');
+      router.push('/community');
+    },
+  });
+
+  const handleShareClick = () => {
+    if (!session) {
+      router.push('/auth/signin');
+      return;
+    }
+    setShowShareModal(true);
+  };
+
   // Validate parlay whenever legs change
   useEffect(() => {
     if (parlayLegs.length > 0) {
@@ -287,17 +350,25 @@ export default function ParlayBuilderEnhanced() {
             )}
 
             {/* Action Buttons */}
-            <div className="flex gap-3">
+            <div className="grid grid-cols-2 gap-3">
               <Button
                 onClick={clearParlay}
                 variant="outline"
-                className="flex-1 border-red-500/30 hover:bg-red-500/10 hover:border-red-500/50 text-red-400"
+                className="border-red-500/30 hover:bg-red-500/10 hover:border-red-500/50 text-red-400"
               >
                 <Trash2 className="w-4 h-4 mr-2" />
                 Clear All
               </Button>
               <Button
-                className="flex-1 gradient-primary hover-lift font-semibold"
+                onClick={handleShareClick}
+                variant="outline"
+                className="border-blue-500/30 hover:bg-blue-500/10 hover:border-blue-500/50 text-blue-400"
+              >
+                <Share2 className="w-4 h-4 mr-2" />
+                Share
+              </Button>
+              <Button
+                className="col-span-2 gradient-primary hover-lift font-semibold"
               >
                 <DollarSign className="w-4 h-4 mr-2" />
                 Place Bet
@@ -306,6 +377,130 @@ export default function ParlayBuilderEnhanced() {
           </>
         )}
       </CardContent>
+
+      {/* Share Modal */}
+      <AnimatePresence>
+        {showShareModal && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/80 z-50"
+              onClick={() => setShowShareModal(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg z-50"
+            >
+              <Card className="glass-premium border-white/20">
+                <CardHeader className="border-b border-white/10">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center">
+                        <Share2 className="w-5 h-5 text-white" />
+                      </div>
+                      <h3 className="text-xl font-bold text-white">Share to Community</h3>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setShowShareModal(false)}
+                      className="hover:bg-white/10"
+                    >
+                      <X className="w-5 h-5 text-gray-400" />
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent className="p-6 space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-white">
+                      Title <span className="text-red-400">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={shareTitle}
+                      onChange={(e) => setShareTitle(e.target.value)}
+                      placeholder="e.g., High Value 3-Leg NFL Parlay"
+                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-gray-500 focus:outline-none focus:border-blue-500/50 smooth-transition"
+                      maxLength={100}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-white">
+                      Description (Optional)
+                    </label>
+                    <textarea
+                      value={shareDescription}
+                      onChange={(e) => setShareDescription(e.target.value)}
+                      placeholder="Share your reasoning and analysis..."
+                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-gray-500 focus:outline-none focus:border-blue-500/50 smooth-transition resize-none"
+                      rows={4}
+                      maxLength={500}
+                    />
+                    <p className="text-xs text-gray-500 text-right">
+                      {shareDescription.length}/500
+                    </p>
+                  </div>
+
+                  <div className="glass-card rounded-xl p-4">
+                    <div className="flex items-center justify-between text-sm mb-2">
+                      <span className="text-gray-400">Parlay Summary</span>
+                      <Badge className="gradient-primary">
+                        {parlayLegs.length} {parlayLegs.length === 1 ? 'Leg' : 'Legs'}
+                      </Badge>
+                    </div>
+                    <div className="grid grid-cols-3 gap-3 text-center">
+                      <div>
+                        <p className="text-white font-bold">{formatOdds(totalOdds)}</p>
+                        <p className="text-xs text-gray-500">Odds</p>
+                      </div>
+                      <div>
+                        <p className="text-white font-bold">{totalProbability.toFixed(1)}%</p>
+                        <p className="text-xs text-gray-500">Win %</p>
+                      </div>
+                      <div>
+                        <p className="text-green-400 font-bold">${potentialWin.toFixed(0)}</p>
+                        <p className="text-xs text-gray-500">Potential</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-3">
+                    <Button
+                      onClick={() => setShowShareModal(false)}
+                      variant="outline"
+                      className="flex-1 border-white/20 hover:bg-white/5"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={() => shareParlayMutation.mutate()}
+                      disabled={!shareTitle.trim() || shareParlayMutation.isPending}
+                      className="flex-1 gradient-primary hover-lift font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {shareParlayMutation.isPending ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
+                          Sharing...
+                        </>
+                      ) : (
+                        <>
+                          <Share2 className="w-4 h-4 mr-2" />
+                          Share Parlay
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </Card>
   );
 }

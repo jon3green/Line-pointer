@@ -1,14 +1,25 @@
 'use client';
 
-import { Brain, TrendingUp, Target, Zap, Award, BarChart3 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Brain, TrendingUp, Target, Zap, Award, BarChart3, Sparkles } from 'lucide-react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Button } from './ui/button';
+import { AnimatedCounter } from './AnimatedCounter';
+import { useRef } from 'react';
 
 export default function HeroNew() {
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start start', 'end start'],
+  });
+
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.95]);
+
   const stats = [
-    { value: '72-75%', label: 'NFL Accuracy', change: '+12%' },
-    { value: '7', label: 'Data Sources', change: 'Industry Leading' },
-    { value: '$0', label: 'Monthly Cost', change: 'Free Tier' },
+    { value: 72, label: 'NFL Accuracy', suffix: '%', change: '+12%' },
+    { value: 7, label: 'Data Sources', suffix: '', change: 'Industry Leading' },
+    { value: 0, label: 'Monthly Cost', prefix: '$', change: 'Free Tier' },
   ];
 
   const features = [
@@ -51,7 +62,11 @@ export default function HeroNew() {
   ];
 
   return (
-    <section className="relative overflow-hidden pt-20 pb-32">
+    <motion.section
+      ref={ref}
+      style={{ opacity, scale }}
+      className="relative overflow-hidden pt-20 pb-32"
+    >
       {/* Animated Background Orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-green-500/10 rounded-full blur-3xl floating" 
@@ -132,15 +147,33 @@ export default function HeroNew() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 + index * 0.1, duration: 0.5 }}
-              className="glass-premium rounded-2xl p-6 text-center hover-lift group"
+              className="glass-premium rounded-2xl p-6 text-center hover-lift group relative overflow-hidden"
             >
-              <div className="text-4xl font-bold text-white mb-2 number-display">
-                {stat.value}
-              </div>
+              {/* Sparkle effect on hover */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                whileHover={{ opacity: 1 }}
+                className="absolute top-2 right-2"
+              >
+                <Sparkles className="w-4 h-4 text-green-400" />
+              </motion.div>
+
+              <AnimatedCounter
+                value={stat.value}
+                prefix={stat.prefix}
+                suffix={stat.suffix}
+                decimals={0}
+                className="text-4xl font-bold text-white mb-2 number-display"
+              />
               <div className="text-sm text-gray-400 mb-2">{stat.label}</div>
-              <div className="text-xs text-green-400 font-semibold">
+              <motion.div
+                initial={{ scale: 0.9 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.8 + index * 0.1 }}
+                className="text-xs text-green-400 font-semibold"
+              >
                 {stat.change}
-              </div>
+              </motion.div>
             </motion.div>
           ))}
         </motion.div>
@@ -216,7 +249,7 @@ export default function HeroNew() {
           </div>
         </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 }
 

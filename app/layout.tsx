@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
+import OddsTicker from "@/components/OddsTicker";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -88,7 +89,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={inter.className}>
-        <Providers>{children}</Providers>
+        <Providers>
+          <OddsTicker />
+          <div className="pt-12">{children}</div>
+        </Providers>
       </body>
     </html>
   );

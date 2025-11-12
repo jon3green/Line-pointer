@@ -2,273 +2,211 @@
 
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { TrendingUp, Award, Target, DollarSign, BarChart3, History } from 'lucide-react';
-import HeaderWithAuth from '@/components/HeaderWithAuth';
-import Footer from '@/components/Footer';
+import { TrendingUp, Target, DollarSign, Activity, Trophy, Calendar } from 'lucide-react';
+import { formatOdds } from '@/lib/utils';
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/auth/signin');
-    }
-  }, [status, router]);
+  const { data: statsData, isLoading: statsLoading } = useQuery({
+    queryKey: ['pick-stats'],
+    queryFn: async () => {
+      const response = await fetch('/api/picks/stats');
+      if (!response.ok) throw new Error('Failed to fetch stats');
+      return response.json();
+    },
+    enabled: !!session,
+  });
 
-  if (status === 'loading') {
+  const { data: picksData, isLoading: picksLoading } = useQuery({
+    queryKey: ['picks'],
+    queryFn: async () => {
+      const response = await fetch('/api/picks?limit=20');
+      if (!response.ok) throw new Error('Failed to fetch picks');
+      return response.json();
+    },
+    enabled: !!session,
+  });
+
+  if (status === 'loading' || statsLoading || picksLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center">
-        <div className="text-white text-xl">Loading...</div>
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400" />
       </div>
     );
   }
 
-  if (!session) {
+  if (status === 'unauthenticated') {
+    router.push('/auth/signin');
     return null;
   }
 
+  const stats = statsData?.stats || {};
+  const picks = picksData?.picks || [];
+
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
-      <HeaderWithAuth />
-      
-      <div className="container mx-auto px-4 py-8">
-        {/* Welcome Section */}
+    <main className="min-h-screen bg-black pt-24 pb-12">
+      <div className="container mx-auto px-4">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">
-            Welcome back, {(session.user as any)?.username || session.user?.name}! 🏈
-          </h1>
-          <p className="text-gray-400">
-            Here&apos;s your betting performance and analytics dashboard
-          </p>
+          <h1 className="text-4xl font-bold text-white mb-2">My Dashboard</h1>
+          <p className="text-gray-400">Track your picks and performance</p>
         </div>
 
-        {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card className="glass-morphism border-white/10">
             <CardContent className="p-6">
-              <div className="flex items-start justify-between mb-4">
-                <div className="p-3 rounded-lg bg-green-500/10">
-                  <TrendingUp className="w-6 h-6 text-green-500" />
-                </div>
-                <Badge className="bg-green-600/20 text-green-400">+12.4%</Badge>
+              <div className="flex items-center justify-between mb-2">
+                <Target className="w-5 h-5 text-green-400" />
+                <span className={`text-2xl font-bold ${stats.winRate >= 50 ? 'text-green-400' : 'text-red-400'}`}>
+                  {stats.winRate || 0}%
+                </span>
               </div>
-              <div>
-                <p className="text-gray-400 text-sm mb-1">Total Profit/Loss</p>
-                <p className="text-white text-2xl font-bold">+$1,247</p>
-              </div>
+              <p className="text-sm text-gray-400">Win Rate</p>
+              <p className="text-xs text-gray-500 mt-1">
+                {stats.wonBets || 0}-{stats.lostBets || 0}-{stats.pushedBets || 0}
+              </p>
             </CardContent>
           </Card>
 
           <Card className="glass-morphism border-white/10">
             <CardContent className="p-6">
-              <div className="flex items-start justify-between mb-4">
-                <div className="p-3 rounded-lg bg-blue-500/10">
-                  <Target className="w-6 h-6 text-blue-500" />
-                </div>
+              <div className="flex items-center justify-between mb-2">
+                <DollarSign className="w-5 h-5 text-blue-400" />
+                <span className={`text-2xl font-bold ${stats.profit >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                  {stats.profit >= 0 ? '+' : ''}{stats.profit || 0}
+                </span>
               </div>
-              <div>
-                <p className="text-gray-400 text-sm mb-1">Win Rate</p>
-                <p className="text-white text-2xl font-bold">64.3%</p>
-                <p className="text-xs text-gray-500 mt-1">18-10-0 (W-L-P)</p>
-              </div>
+              <p className="text-sm text-gray-400">Total Profit</p>
+              <p className="text-xs text-gray-500 mt-1">
+                ${stats.totalStaked || 0} staked
+              </p>
             </CardContent>
           </Card>
 
           <Card className="glass-morphism border-white/10">
             <CardContent className="p-6">
-              <div className="flex items-start justify-between mb-4">
-                <div className="p-3 rounded-lg bg-purple-500/10">
-                  <Award className="w-6 h-6 text-purple-500" />
-                </div>
+              <div className="flex items-center justify-between mb-2">
+                <Activity className="w-5 h-5 text-purple-400" />
+                <span className={`text-2xl font-bold ${stats.roi >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                  {stats.roi >= 0 ? '+' : ''}{stats.roi || 0}%
+                </span>
               </div>
-              <div>
-                <p className="text-gray-400 text-sm mb-1">Best Streak</p>
-                <p className="text-white text-2xl font-bold">8 Wins</p>
-                <p className="text-xs text-gray-500 mt-1">Current: 3 wins</p>
-              </div>
+              <p className="text-sm text-gray-400">ROI</p>
+              <p className="text-xs text-gray-500 mt-1">Return on investment</p>
             </CardContent>
           </Card>
 
           <Card className="glass-morphism border-white/10">
             <CardContent className="p-6">
-              <div className="flex items-start justify-between mb-4">
-                <div className="p-3 rounded-lg bg-orange-500/10">
-                  <DollarSign className="w-6 h-6 text-orange-500" />
-                </div>
+              <div className="flex items-center justify-between mb-2">
+                <Trophy className="w-5 h-5 text-yellow-400" />
+                <span className="text-2xl font-bold text-white">
+                  {stats.bestStreak || 0}
+                </span>
               </div>
-              <div>
-                <p className="text-gray-400 text-sm mb-1">Total Wagered</p>
-                <p className="text-white text-2xl font-bold">$10,050</p>
-                <p className="text-xs text-gray-500 mt-1">28 bets placed</p>
-              </div>
+              <p className="text-sm text-gray-400">Best Streak</p>
+              <p className="text-xs text-gray-500 mt-1">Current: {stats.currentStreak || 0}</p>
             </CardContent>
           </Card>
         </div>
 
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Recent Bets */}
-          <div className="lg:col-span-2">
-            <Card className="glass-morphism border-white/10">
-              <CardHeader>
-                <CardTitle className="text-xl text-white flex items-center space-x-2">
-                  <History className="w-5 h-5" />
-                  <span>Recent Bets</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {/* Mock betting history - will be populated from database */}
-                <div className="p-4 bg-white/5 rounded-lg border border-green-500/30">
-                  <div className="flex items-center justify-between mb-2">
-                    <div>
-                      <p className="text-white font-semibold">Chiefs -3.5</p>
-                      <p className="text-sm text-gray-400">vs Broncos • Spread</p>
-                    </div>
-                    <Badge className="bg-green-600/20 text-green-400">Won</Badge>
+        {stats.recentForm && stats.recentForm.length > 0 && (
+          <Card className="glass-morphism border-white/10 mb-8">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center space-x-2">
+                <TrendingUp className="w-5 h-5" />
+                <span>Recent Form</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex space-x-2">
+                {stats.recentForm.map((result: string, index: number) => (
+                  <div
+                    key={index}
+                    className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm ${
+                      result === 'won'
+                        ? 'bg-green-500/20 text-green-400 border border-green-500/50'
+                        : result === 'lost'
+                        ? 'bg-red-500/20 text-red-400 border border-red-500/50'
+                        : 'bg-gray-500/20 text-gray-400 border border-gray-500/50'
+                    }`}
+                  >
+                    {result === 'won' ? 'W' : result === 'lost' ? 'L' : 'P'}
                   </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-400">Stake: $100</span>
-                    <span className="text-green-400 font-semibold">+$90.91</span>
-                  </div>
-                </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
-                <div className="p-4 bg-white/5 rounded-lg border border-green-500/30">
-                  <div className="flex items-center justify-between mb-2">
-                    <div>
-                      <p className="text-white font-semibold">3-Leg Parlay</p>
-                      <p className="text-sm text-gray-400">Bills ML • Cowboys -7 • Over 48.5</p>
-                    </div>
-                    <Badge className="bg-green-600/20 text-green-400">Won</Badge>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-400">Stake: $50</span>
-                    <span className="text-green-400 font-semibold">+$287.50</span>
-                  </div>
-                </div>
-
-                <div className="p-4 bg-white/5 rounded-lg border border-red-500/30">
-                  <div className="flex items-center justify-between mb-2">
-                    <div>
-                      <p className="text-white font-semibold">Ravens ML</p>
-                      <p className="text-sm text-gray-400">vs Steelers • Moneyline</p>
-                    </div>
-                    <Badge className="bg-red-600/20 text-red-400">Lost</Badge>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-400">Stake: $150</span>
-                    <span className="text-red-400 font-semibold">-$150</span>
-                  </div>
-                </div>
-
-                <div className="p-4 bg-white/5 rounded-lg border border-white/10">
-                  <div className="flex items-center justify-between mb-2">
-                    <div>
-                      <p className="text-white font-semibold">Mahomes Over 275.5 Yds</p>
-                      <p className="text-sm text-gray-400">Player Prop • Passing Yards</p>
-                    </div>
-                    <Badge className="bg-yellow-600/20 text-yellow-400">Pending</Badge>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-400">Stake: $75</span>
-                    <span className="text-gray-400">To Win: +$68.18</span>
-                  </div>
-                </div>
-
-                <div className="text-center py-4">
-                  <button className="text-green-400 hover:text-green-300 text-sm font-semibold">
-                    View All Bets →
-                  </button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Performance Chart & Favorites */}
-          <div className="space-y-6">
-            <Card className="glass-morphism border-white/10">
-              <CardHeader>
-                <CardTitle className="text-xl text-white flex items-center space-x-2">
-                  <BarChart3 className="w-5 h-5" />
-                  <span>Performance</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div>
+        <Card className="glass-morphism border-white/10">
+          <CardHeader>
+            <CardTitle className="text-white flex items-center space-x-2">
+              <Calendar className="w-5 h-5" />
+              <span>Recent Picks</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {picks.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-gray-400">No picks yet</p>
+                <p className="text-sm text-gray-500 mt-2">Start tracking your bets from the games page</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {picks.map((pick: any) => (
+                  <div key={pick.id} className="p-4 bg-white/5 rounded-lg border border-white/10 hover:border-white/20 transition-colors">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-gray-400">NFL</span>
-                      <span className="text-white font-semibold">68.2%</span>
+                      <div className="flex items-center space-x-2">
+                        <Badge variant="outline" className="text-xs">{pick.sport}</Badge>
+                        <Badge
+                          variant="outline"
+                          className={`text-xs ${
+                            pick.status === 'won' ? 'border-green-500/50 text-green-400' :
+                            pick.status === 'lost' ? 'border-red-500/50 text-red-400' :
+                            pick.status === 'pending' ? 'border-blue-500/50 text-blue-400' :
+                            'border-gray-500/50 text-gray-400'
+                          }`}
+                        >
+                          {pick.status}
+                        </Badge>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-semibold text-white">
+                          ${pick.stake} → ${(pick.stake + pick.potentialWin).toFixed(2)}
+                        </p>
+                        <p className="text-xs text-gray-400">{formatOdds(pick.odds)}</p>
+                      </div>
                     </div>
-                    <div className="w-full bg-white/10 rounded-full h-2">
-                      <div className="gradient-green h-2 rounded-full" style={{ width: '68.2%' }} />
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-white font-medium">{pick.selection}</p>
+                        <p className="text-xs text-gray-400 mt-1">
+                          {pick.betCategory} • {new Date(pick.createdAt).toLocaleDateString()}
+                        </p>
+                      </div>
+                      {pick.status === 'won' && (
+                        <div className="text-green-400 font-bold">
+                          +${pick.potentialWin.toFixed(2)}
+                        </div>
+                      )}
+                      {pick.status === 'lost' && (
+                        <div className="text-red-400 font-bold">
+                          -${pick.stake.toFixed(2)}
+                        </div>
+                      )}
                     </div>
                   </div>
-
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-gray-400">NCAAF</span>
-                      <span className="text-white font-semibold">58.3%</span>
-                    </div>
-                    <div className="w-full bg-white/10 rounded-full h-2">
-                      <div className="gradient-blue h-2 rounded-full" style={{ width: '58.3%' }} />
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-gray-400">Spreads</span>
-                      <span className="text-white font-semibold">61.5%</span>
-                    </div>
-                    <div className="w-full bg-white/10 rounded-full h-2">
-                      <div className="bg-purple-500 h-2 rounded-full" style={{ width: '61.5%' }} />
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-gray-400">Player Props</span>
-                      <span className="text-white font-semibold">72.7%</span>
-                    </div>
-                    <div className="w-full bg-white/10 rounded-full h-2">
-                      <div className="bg-orange-500 h-2 rounded-full" style={{ width: '72.7%' }} />
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="glass-morphism border-white/10">
-              <CardHeader>
-                <CardTitle className="text-xl text-white">Quick Actions</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <button 
-                  onClick={() => router.push('/')}
-                  className="w-full p-3 bg-white/5 hover:bg-white/10 rounded-lg text-left text-white transition-colors"
-                >
-                  Browse Games →
-                </button>
-                <button 
-                  onClick={() => router.push('/players')}
-                  className="w-full p-3 bg-white/5 hover:bg-white/10 rounded-lg text-left text-white transition-colors"
-                >
-                  Player Stats →
-                </button>
-                <button className="w-full p-3 bg-white/5 hover:bg-white/10 rounded-lg text-left text-white transition-colors">
-                  My Favorites →
-                </button>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
-
-      <Footer />
     </main>
   );
 }
-

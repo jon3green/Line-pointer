@@ -5,10 +5,11 @@ import { Game } from '@/lib/types';
 import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
-import { 
-  TrendingUp, 
-  Plus, 
-  ChevronDown, 
+import {
+  TrendingUp,
+  TrendingDown,
+  Plus,
+  ChevronDown,
   ChevronUp,
   Calendar,
   Activity,
@@ -20,6 +21,7 @@ import { useStore } from '@/lib/store';
 import { motion, AnimatePresence } from 'framer-motion';
 import TeamComparison from './TeamComparison';
 import OddsMovement from './OddsMovement';
+import { useQuery } from '@tanstack/react-query';
 
 interface GameCardProps {
   game: Game;
@@ -30,9 +32,23 @@ export default function GameCard({ game }: GameCardProps) {
   const [showComparison, setShowComparison] = useState(false);
   const [showOddsMovement, setShowOddsMovement] = useState(false);
   const { addParlayLeg, parlayLegs } = useStore();
-  
+
   const isInParlay = parlayLegs.some(leg => leg.gameId === game.id);
   const confidence = getConfidenceLevel(game.prediction?.confidence || 0);
+
+  // Fetch line movement data
+  const { data: oddsData } = useQuery({
+    queryKey: ['odds-movement', game.id],
+    queryFn: async () => {
+      const response = await fetch(`/api/odds/history?gameId=${game.id}&hours=24`);
+      if (!response.ok) return null;
+      return response.json();
+    },
+    refetchInterval: 300000, // Refresh every 5 minutes
+    retry: false,
+  });
+
+  const movements = oddsData?.movements || {};
 
   const handleAddToParlay = (
     betType: 'spread' | 'moneyline' | 'total',
@@ -60,6 +76,28 @@ export default function GameCard({ game }: GameCardProps) {
   const totalOverValue = game.odds?.total?.over ?? 0;
   const totalOverLabel =
     game.odds?.total?.over !== undefined ? formatOdds(game.odds.total.over) : 'N/A';
+
+  // Helper function to render line movement badge
+  const renderMovementBadge = (movement: number | null | undefined, type: 'spread' | 'total' | 'moneyline') => {
+    if (!movement || Math.abs(movement) < 0.5) return null;
+
+    const isUp = movement > 0;
+    const absMovement = Math.abs(movement);
+    const displayValue = type === 'moneyline' ? absMovement.toFixed(0) : absMovement.toFixed(1);
+
+    return (
+      <motion.div
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        className={`absolute -top-1 -right-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold flex items-center space-x-0.5 ${
+          isUp ? 'bg-green-500/90 text-white' : 'bg-red-500/90 text-white'
+        }`}
+      >
+        {isUp ? <TrendingUp className="w-2.5 h-2.5" /> : <TrendingDown className="w-2.5 h-2.5" />}
+        <span>{displayValue}</span>
+      </motion.div>
+    );
+  };
 
   return (
     <Card className="glass-morphism border-white/10 card-hover overflow-hidden">
@@ -147,9 +185,10 @@ export default function GameCard({ game }: GameCardProps) {
                   `${game.homeTeam.abbreviation} ${spreadLabel}`,
                   spreadOddsValue
                 )}
-                className="p-3 bg-white/5 hover:bg-white/10 rounded-lg transition-colors text-center"
+                className="relative p-3 bg-white/5 hover:bg-white/10 rounded-lg transition-colors text-center"
                 disabled={!game.odds?.spread}
               >
+                {renderMovementBadge(movements.spread, 'spread')}
                 <div className="text-xs text-gray-400 mb-1">Spread</div>
                 <div className="text-white font-semibold">{spreadLabel}</div>
                 <div className="text-xs text-gray-400">{spreadOddsLabel}</div>
@@ -162,9 +201,10 @@ export default function GameCard({ game }: GameCardProps) {
                   game.homeTeam.name,
                   moneylineValue
                 )}
-                className="p-3 bg-white/5 hover:bg-white/10 rounded-lg transition-colors text-center"
+                className="relative p-3 bg-white/5 hover:bg-white/10 rounded-lg transition-colors text-center"
                 disabled={!game.odds?.moneyline?.home}
               >
+                {renderMovementBadge(movements.homeML, 'moneyline')}
                 <div className="text-xs text-gray-400 mb-1">Moneyline</div>
                 <div className="text-white font-semibold">{moneylineLabel}</div>
               </button>
@@ -176,9 +216,10 @@ export default function GameCard({ game }: GameCardProps) {
                   totalLabel,
                   totalOverValue
                 )}
-                className="p-3 bg-white/5 hover:bg-white/10 rounded-lg transition-colors text-center"
+                className="relative p-3 bg-white/5 hover:bg-white/10 rounded-lg transition-colors text-center"
                 disabled={!game.odds?.total}
               >
+                {renderMovementBadge(movements.total, 'total')}
                 <div className="text-xs text-gray-400 mb-1">Total</div>
                 <div className="text-white font-semibold">{totalLabel}</div>
                 <div className="text-xs text-gray-400">{totalOverLabel}</div>

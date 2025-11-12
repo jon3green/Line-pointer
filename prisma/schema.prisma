@@ -20,16 +20,33 @@ model User {
   emailVerified DateTime?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  
+
   // User preferences
   favoriteTeams String?   // JSON array of team IDs
   notifications Boolean   @default(true)
-  
+
+  // Social stats (denormalized for performance)
+  followerCount Int       @default(0)
+  followingCount Int      @default(0)
+
+  // Subscription & Payment
+  subscriptionTier      String    @default("FREE") // FREE, PRO, PREMIUM
+  stripeCustomerId      String?   @unique
+  stripeSubscriptionId  String?   @unique
+  subscriptionStatus    String?   // active, canceled, past_due, trialing, incomplete
+  subscriptionStartDate DateTime?
+  subscriptionEndDate   DateTime?
+
+  // Role & Permissions
+  role                  String    @default("user") // user, admin
+
   // Relations
   bets          Bet[]
   parlays       Parlay[]
   favorites     Favorite[]
   sessions      Session[]
+  sharedParlays SharedParlay[]
+  comments      Comment[]
 }
 
 model VerificationToken {
@@ -302,23 +319,42 @@ model Follow {
 }
 
 model SharedParlay {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   title       String
   description String?
-  parlayData  String   // JSON with legs, odds, etc.
-  sport       String   // 'NFL', 'NCAAF', 'NBA', 'MLB'
-  isPublic    Boolean  @default(true)
-  likes       Int      @default(0)
-  views       Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  parlayData  String    // JSON with legs, odds, etc.
+  sport       String    // 'NFL', 'NCAAF', 'NBA', 'MLB'
+  isPublic    Boolean   @default(true)
+  likes       Int       @default(0)
+  views       Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  comments    Comment[]
 
   @@index([userId])
   @@index([isPublic, createdAt])
   @@index([sport])
   @@index([likes])
   @@index([sport, isPublic, createdAt])
+}
+
+model Comment {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sharedParlayId  String
+  sharedParlay    SharedParlay @relation(fields: [sharedParlayId], references: [id], onDelete: Cascade)
+  content         String
+  likes           Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([sharedParlayId, createdAt])
+  @@index([userId])
 }
 
 model Prediction {
