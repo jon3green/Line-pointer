@@ -267,7 +267,7 @@ export async function applyBayesianUpdate(
 /**
  * Get summary of all active modifiers
  */
-export async function getActiveMod ifiers(sport: string): Promise<ConfidenceModifier[]> {
+export async function getActiveModifiers(sport: string): Promise<ConfidenceModifier[]> {
   return await calculateModifiers(sport);
 }
 
