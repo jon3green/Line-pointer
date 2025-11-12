@@ -84,7 +84,7 @@ export async function GET(request: Request) {
         ...trainingData.map(row =>
           headers
             .map(header => {
-              const value = row[header];
+              const value = (row as any)[header];
               // Handle objects/arrays
               if (typeof value === 'object' && value !== null) {
                 return `"${JSON.stringify(value).replace(/"/g, '""')}"`;
