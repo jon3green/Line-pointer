@@ -6,9 +6,9 @@ export const maxDuration = 60;
 
 /**
  * Cron job to check for alert triggers
- * Should run every 5 minutes
+ * Runs daily at 9am (Vercel Hobby plan limit)
  *
- * Vercel Cron: */5 * * * *
+ * Vercel Cron: 0 9 * * *
  */
 export async function GET(request: Request) {
   const authHeader = request.headers.get('authorization');
