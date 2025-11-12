@@ -141,22 +141,27 @@ export async function GET(request: Request) {
         ...(cursor && { cursor: { id: cursor }, skip: 1 }),
         take: limit,
         orderBy: { createdAt: 'desc' },
-        include: {
-          follower: {
-            select: {
-              id: true,
-              username: true,
-              name: true,
-              image: true,
-              followerCount: true,
-              followingCount: true,
-            },
-          },
+      });
+
+      // Fetch user details separately
+      const userIds = follows.map((f) => f.followerId);
+      const followers = await prisma.user.findMany({
+        where: { id: { in: userIds } },
+        select: {
+          id: true,
+          username: true,
+          name: true,
+          image: true,
+          followerCount: true,
+          followingCount: true,
         },
       });
 
+      // Create a map for quick lookup
+      const userMap = new Map(followers.map((u) => [u.id, u]));
+
       const users = follows.map((f) => ({
-        ...f.follower,
+        ...userMap.get(f.followerId),
         followedAt: f.createdAt,
       }));
 
@@ -171,22 +176,27 @@ export async function GET(request: Request) {
         ...(cursor && { cursor: { id: cursor }, skip: 1 }),
         take: limit,
         orderBy: { createdAt: 'desc' },
-        include: {
-          following: {
-            select: {
-              id: true,
-              username: true,
-              name: true,
-              image: true,
-              followerCount: true,
-              followingCount: true,
-            },
-          },
+      });
+
+      // Fetch user details separately
+      const userIds = follows.map((f) => f.followingId);
+      const following = await prisma.user.findMany({
+        where: { id: { in: userIds } },
+        select: {
+          id: true,
+          username: true,
+          name: true,
+          image: true,
+          followerCount: true,
+          followingCount: true,
         },
       });
 
+      // Create a map for quick lookup
+      const userMap = new Map(following.map((u) => [u.id, u]));
+
       const users = follows.map((f) => ({
-        ...f.following,
+        ...userMap.get(f.followingId),
         followedAt: f.createdAt,
       }));
 
