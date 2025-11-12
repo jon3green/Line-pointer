@@ -45,15 +45,6 @@ export async function GET(request: Request) {
           lte: tomorrow,
         },
       },
-      include: {
-        game: {
-          select: {
-            homeTeam: true,
-            awayTeam: true,
-            gameTime: true,
-          },
-        },
-      },
       orderBy: { confidence: 'desc' },
       take: 50, // Get top 50 to build combinations from
     });
