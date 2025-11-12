@@ -51,7 +51,6 @@ export default function ParlayBuilderEnhanced() {
           gameId: leg.gameId,
           selection: leg.selection,
           betType: leg.betType,
-          betCategory: leg.betCategory,
           odds: leg.odds,
           probability: leg.probability,
           game: leg.game,
