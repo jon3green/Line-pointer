@@ -6,8 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("POSTGRES_PRISMA_URL")
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -83,6 +83,9 @@ model Bet {
   teamName      String?
   betCategory   String    // 'spread', 'moneyline', 'total', 'player_prop'
   selection     String    // e.g., "Over 250.5 yards", "Chiefs -3.5"
+  line          Float?    // The line (e.g., -3.5 for spread, 48.5 for total)
+  bookmaker     String?   // Sportsbook where bet was placed
+  notes         String?   // User notes about the bet
 
   // Status
   status        String    @default("pending") // 'pending', 'won', 'lost', 'pushed'
@@ -92,9 +95,10 @@ model Bet {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  // Relation
+  // Relations
   parlayId      String?
   parlay        Parlay?   @relation(fields: [parlayId], references: [id])
+  game          Game?     @relation(fields: [gameId], references: [id])
 
   // Indexes for common queries
   @@index([userId, status])
@@ -198,6 +202,9 @@ model Game {
 
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+
+  // Relations
+  bets            Bet[]
 
   // Indexes for common queries
   @@index([sport, gameTime])
@@ -583,20 +590,24 @@ model LineMovementAlert {
   message         String
 
   // Movement details
-  openingLine     Float?   // Opening spread
-  currentLine     Float?   // Current spread
-  movement        Float?   // Total movement
+  oldLine         Float?   // Previous line
+  newLine         Float?   // Current line
+  lineMovement    Float?   // Total movement
   movementPercent Float?   // Movement as percentage
+  betType         String?  // 'spread', 'total', 'moneyline'
 
-  // Indicators
-  indicators      String?  // JSON with detailed indicators
+  // Line movement indicators
+  isSteamMove           Boolean @default(false)
+  isReverseLineMovement Boolean @default(false)
 
   // Tracking
+  alertSent       Boolean  @default(false)
   sent            Boolean  @default(false)
   sentAt          DateTime?
   read            Boolean  @default(false)
   readAt          DateTime?
   actedOn         Boolean  @default(false)
+  detectedAt      DateTime @default(now())
 
   // User association (for future multi-user support)
   userId          String?
@@ -610,4 +621,499 @@ model LineMovementAlert {
   @@index([type, severity])
   @@index([userId])
   @@index([gameTime])
+  @@index([alertSent])
+}
+
+// =============================================================================
+// COMPREHENSIVE FEATURES - NEW MODELS
+// =============================================================================
+
+// ============== BANKROLL MANAGEMENT ==============
+
+model BankrollTransaction {
+  id              String   @id @default(cuid())
+  userId          String
+
+  // Transaction details
+  type            String   // 'bet', 'deposit', 'withdrawal', 'win', 'loss', 'adjustment'
+  amount          Float    // Positive for deposits/wins, negative for bets/losses
+  balance         Float    // Balance after transaction
+
+  // Related bet (if applicable)
+  betId           String?
+  gameId          String?
+
+  // Description
+  description     String
+  category        String?  // 'sports', 'props', 'parlay', 'live'
+
+  // Metadata
+  metadata        String?  // JSON for additional details
+
+  // Timestamps
+  createdAt       DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([userId, type])
+  @@index([betId])
+}
+
+model BankrollSnapshot {
+  id              String   @id @default(cuid())
+  userId          String
+
+  // Snapshot data
+  balance         Float
+  totalDeposits   Float
+  totalWithdrawals Float
+  totalWagered    Float
+  totalWon        Float
+  totalLost       Float
+  netProfit       Float    // totalWon - totalLost
+
+  // Performance metrics
+  roi             Float    // Return on investment %
+  winRate         Float    // Win percentage
+  avgBetSize      Float
+  biggestWin      Float?
+  biggestLoss     Float?
+
+  // Streaks
+  currentStreak   Int      // Positive = win streak, negative = loss streak
+  longestWinStreak Int
+  longestLossStreak Int
+
+  // Period
+  period          String   // 'daily', 'weekly', 'monthly', 'yearly', 'all_time'
+  startDate       DateTime
+  endDate         DateTime
+
+  // Timestamps
+  createdAt       DateTime @default(now())
+
+  @@index([userId, period, createdAt])
+  @@unique([userId, period, startDate, endDate])
+}
+
+// ============== ENHANCED USER SETTINGS ==============
+
+model UserSettings {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+
+  // Notification Preferences
+  emailNotifications      Boolean @default(true)
+  pushNotifications       Boolean @default(true)
+  smsNotifications        Boolean @default(false)
+
+  // Alert Preferences
+  highConfidenceAlerts    Boolean @default(true)  // >80% confidence
+  lineMovementAlerts      Boolean @default(true)  // Steam moves, RLM
+  injuryAlerts            Boolean @default(true)  // Key player injuries
+  weatherAlerts           Boolean @default(false) // Weather impacts
+  gameStartAlerts         Boolean @default(true)  // 1 hour before game
+  resultAlerts            Boolean @default(true)  // Game results
+
+  // Alert Thresholds
+  minConfidenceThreshold  Float   @default(70)    // Min confidence for alerts
+  minLineMovement         Float   @default(2.0)   // Min spread movement for alerts
+
+  // Bet Tracking Preferences
+  trackBetsEnabled        Boolean @default(true)
+  defaultStake            Float?                  // Default bet amount
+  defaultUnit             Float   @default(100)   // Unit size for bankroll
+  riskLevel               String  @default("medium") // 'conservative', 'medium', 'aggressive'
+
+  // Display Preferences
+  oddsFormat              String  @default("american") // 'american', 'decimal', 'fractional'
+  timezone                String  @default("America/New_York")
+  favoriteTeams           String? // JSON array of team IDs
+  hideSpoilers            Boolean @default(false) // Hide scores until viewed
+
+  // Social Preferences
+  profilePublic           Boolean @default(true)
+  showStats               Boolean @default(true)  // Show betting stats publicly
+  allowFollowers          Boolean @default(true)
+  showBankroll            Boolean @default(false) // Show bankroll publicly
+
+  // Privacy
+  sharePicksPublicly      Boolean @default(false)
+  allowDirectMessages     Boolean @default(true)
+
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// ============== LEADERBOARDS & RANKINGS ==============
+
+model UserStats {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+
+  // Overall Performance
+  totalBets       Int      @default(0)
+  wonBets         Int      @default(0)
+  lostBets        Int      @default(0)
+  pushedBets      Int      @default(0)
+  winRate         Float    @default(0)
+
+  // Financial
+  totalWagered    Float    @default(0)
+  totalProfit     Float    @default(0)
+  roi             Float    @default(0)
+  biggestWin      Float?
+  biggestLoss     Float?
+
+  // Streaks
+  currentStreak   Int      @default(0) // Positive = wins, negative = losses
+  bestStreak      Int      @default(0)
+  worstStreak     Int      @default(0)
+
+  // By Sport
+  nflStats        String?  // JSON: {bets, wins, roi, ...}
+  ncaafStats      String?  // JSON
+  nbaStats        String?  // JSON
+  mlbStats        String?  // JSON
+
+  // By Bet Type
+  spreadStats     String?  // JSON: {bets, wins, roi, ...}
+  moneylineStats  String?  // JSON
+  totalStats      String?  // JSON
+  propStats       String?  // JSON
+  parlayStats     String?  // JSON
+
+  // Rankings
+  overallRank     Int?
+  sportRanks      String?  // JSON: {nfl: rank, ncaaf: rank, ...}
+
+  // Timestamps
+  lastBetAt       DateTime?
+  lastUpdated     DateTime @updatedAt
+  createdAt       DateTime @default(now())
+
+  @@index([winRate])
+  @@index([roi])
+  @@index([totalProfit])
+  @@index([overallRank])
+}
+
+model Leaderboard {
+  id              String   @id @default(cuid())
+
+  // Period
+  period          String   // 'daily', 'weekly', 'monthly', 'season', 'all_time'
+  sport           String?  // null for all sports
+  betType         String?  // null for all bet types
+  startDate       DateTime
+  endDate         DateTime
+
+  // Rankings (stored as JSON array)
+  rankings        String   // JSON: [{userId, username, wins, roi, profit, rank}, ...]
+
+  // Metadata
+  totalUsers      Int
+  calculatedAt    DateTime @default(now())
+
+  @@unique([period, sport, betType, startDate, endDate])
+  @@index([period, sport])
+}
+
+// ============== PLAYER PROPS PREDICTIONS ==============
+
+model PropPrediction {
+  id              String   @id @default(cuid())
+
+  // Player & Game
+  playerId        String
+  playerName      String
+  team            String
+  position        String
+  gameId          String
+  opponent        String
+  gameTime        DateTime
+  sport           String?
+
+  // Prop Details
+  propType        String   // 'passing_yards', 'rushing_yards', 'receiving_yards', 'touchdowns', etc.
+  line            Float
+  prediction      String   // 'over' or 'under'
+  projectedValue  Float    // Our projected stat line
+  confidence      Float    // 0-100
+
+  // Market Details
+  overOdds        Float?
+  underOdds       Float?
+  expectedValue   Float?   // EV calculation
+
+  // Factors (JSON)
+  factors         String?  // JSON with all decision factors
+
+  // Model
+  modelVersion    String   @default("v1.0")
+
+  // Actual Results
+  actualValue     Float?   // Actual stat achieved
+  wasCorrect      Boolean? // Did prediction hit?
+
+  // Tracking
+  alertSent       Boolean  @default(false)
+
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  resultsFetchedAt DateTime?
+
+  @@unique([playerId, gameId, propType])
+  @@index([playerId, gameTime])
+  @@index([gameId])
+  @@index([propType])
+  @@index([confidence])
+  @@index([wasCorrect])
+  @@index([gameTime])
+}
+
+// ============== LIVE BETTING DATA ==============
+
+model LiveGameData {
+  id              String   @id @default(cuid())
+  gameId          String
+  externalGameId  String?
+
+  // Game Info
+  sport           String
+  homeTeam        String
+  awayTeam        String
+
+  // Live Score
+  homeScore       Int
+  awayScore       Int
+
+  // Game State
+  quarter         Int      // Current quarter/period
+  timeRemaining   String   // "5:23" in quarter
+  possession      String?  // Team with possession
+  down            Int?     // Current down (NFL)
+  yardsToGo       Int?     // Yards to first down
+  yardLine        Int?     // Field position
+
+  // Live Odds
+  liveSpreadHome  Float?
+  liveSpreadAway  Float?
+  liveMoneylineHome Int?
+  liveMoneylineAway Int?
+  liveTotalLine   Float?
+
+  // Win Probability (from our model)
+  homeWinProb     Float?   // 0-100
+  awayWinProb     Float?   // 0-100
+
+  // Momentum Indicators
+  momentumScore   Float?   // -100 to 100 (negative = away, positive = home)
+  recentDrives    String?  // JSON array of recent drive outcomes
+
+  // Betting Recommendations
+  recommendations String?  // JSON array of live betting opportunities
+
+  // Timestamps
+  timestamp       DateTime @default(now())
+  lastUpdated     DateTime @updatedAt
+
+  @@index([gameId, timestamp])
+  @@index([externalGameId, timestamp])
+  @@index([sport, timestamp])
+}
+
+// ============== SHARP VS PUBLIC INDICATORS ==============
+
+model PublicBettingData {
+  id              String   @id @default(cuid())
+  gameId          String
+  externalGameId  String?
+
+  // Game Info
+  sport           String
+  homeTeam        String
+  awayTeam        String
+  gameTime        DateTime
+
+  // Public Betting Percentages
+  spreadPublicHome     Float?  // % of bets on home spread
+  spreadPublicAway     Float?  // % of bets on away spread
+  moneylinePublicHome  Float?  // % of bets on home ML
+  moneylinePublicAway  Float?  // % of bets on away ML
+  totalPublicOver      Float?  // % of bets on over
+  totalPublicUnder     Float?  // % of bets on under
+
+  // Money Percentages (Sharp indicators)
+  spreadMoneyHome      Float?  // % of money on home spread
+  spreadMoneyAway      Float?  // % of money on away spread
+  moneylineMoneyHome   Float?  // % of money on home ML
+  moneylineMoneyAway   Float?  // % of money on away ML
+  totalMoneyOver       Float?  // % of money on over
+  totalMoneyUnder      Float?  // % of money on under
+
+  // Ticket Counts
+  totalTickets    Int?
+  spreadTickets   Int?
+  mlTickets       Int?
+  totalTickets2   Int?    // Naming conflict workaround
+
+  // Sharp Indicators
+  isRLM           Boolean  @default(false) // Reverse Line Movement
+  isSharpSide     Boolean  @default(false) // Sharp money detected
+  publicFade      Boolean  @default(false) // Fading public recommended
+
+  // Source
+  source          String   @default("ActionNetwork") // 'ActionNetwork', 'Covers', 'VegasInsider'
+
+  // Timestamps
+  timestamp       DateTime @default(now())
+  collectedAt     DateTime @default(now())
+
+  @@index([gameId, timestamp])
+  @@index([externalGameId, timestamp])
+  @@index([isRLM])
+  @@index([isSharpSide])
+  @@index([gameTime])
+}
+
+// ============== SAME-GAME PARLAY BUILDER ==============
+
+model SameGameParlay {
+  id              String   @id @default(cuid())
+  userId          String
+  gameId          String
+
+  // Game Info
+  sport           String
+  homeTeam        String
+  awayTeam        String
+  gameTime        DateTime
+
+  // Parlay Details
+  legs            String   // JSON array of legs (spreads, totals, props)
+  totalOdds       Float
+  stake           Float?
+  potentialWin    Float?
+
+  // Quality Metrics
+  correlationScore Float?  // How correlated are the legs? (0-100, lower is better)
+  expectedValue    Float?  // EV of the parlay
+  confidence       Float?  // Overall confidence (0-100)
+  qualityGrade     String? // 'A', 'B', 'C', 'D', 'F'
+
+  // AI Recommendations
+  aiGenerated      Boolean @default(false) // Was this AI-suggested?
+  warnings         String? // JSON array of warnings about correlation
+
+  // Status
+  status           String  @default("pending") // 'pending', 'won', 'lost'
+  settledAt        DateTime?
+
+  // Timestamps
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([userId, createdAt])
+  @@index([gameId])
+  @@index([aiGenerated])
+  @@index([status])
+}
+
+// ============== NOTIFICATIONS & ALERTS ENHANCEMENT ==============
+
+model NotificationQueue {
+  id              String   @id @default(cuid())
+  userId          String
+
+  // Notification Details
+  type            String   // 'push', 'email', 'sms', 'in_app'
+  channel         String   // Specific channel (e.g., 'high_confidence_pick', 'steam_move')
+  priority        String   @default("normal") // 'low', 'normal', 'high', 'urgent'
+
+  // Content
+  title           String
+  message         String
+  data            String?  // JSON with additional data
+  actionUrl       String?  // Deep link or URL
+
+  // Status
+  status          String   @default("pending") // 'pending', 'sent', 'failed', 'canceled'
+  sentAt          DateTime?
+  failedAt        DateTime?
+  errorMessage    String?
+
+  // Deduplication
+  dedupeKey       String?  // Unique key to prevent duplicates
+
+  // Scheduling
+  scheduledFor    DateTime? // Send at specific time
+  expiresAt       DateTime? // Don't send after this time
+
+  // Timestamps
+  createdAt       DateTime @default(now())
+
+  @@index([userId, status])
+  @@index([scheduledFor])
+  @@index([dedupeKey])
+}
+
+// ============== INJURY & WEATHER TRACKING ==============
+
+model InjuryReport {
+  id              String   @id @default(cuid())
+
+  // Player info
+  playerId        String
+  playerName      String
+  team            String
+  position        String
+
+  // Injury details
+  status          String   // 'Out', 'Questionable', 'Doubtful', 'IR', 'PUP'
+  description     String?  // "Knee injury"
+
+  // Impact
+  impactScore     Float    // 0-100, how much this affects team
+
+  // Source & timing
+  source          String   @default("ESPN")
+  reportedAt      DateTime @default(now())
+
+  // Alert tracking
+  alertSent       Boolean  @default(false)
+
+  @@index([team, reportedAt])
+  @@index([playerId, reportedAt])
+  @@index([impactScore])
+}
+
+model WeatherReport {
+  id              String   @id @default(cuid())
+  gameId          String
+
+  // Location
+  venue           String
+  city            String
+  state           String
+
+  // Weather conditions
+  temperature     Float?   // Fahrenheit
+  feelsLike       Float?
+  windSpeed       Float?   // mph
+  windDirection   String?
+  precipitation   Float?   // % chance
+  humidity        Float?   // %
+  conditions      String?  // "Cloudy", "Rain", "Snow", etc.
+
+  // Impact assessment
+  impactScore     Float    // 0-100, how much weather affects game
+
+  // Source & timing
+  source          String   @default("OpenWeatherMap")
+  reportedAt      DateTime @default(now())
+  forecastFor     DateTime // When this forecast is for
+
+  @@index([gameId, forecastFor])
 }

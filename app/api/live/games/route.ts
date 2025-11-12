@@ -1,51 +1,82 @@
-export const runtime = 'nodejs';
+import { NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { prisma } from '@/lib/prisma';
+
 export const dynamic = 'force-dynamic';
 
-import { NextResponse } from 'next/server';
-import { getGameStream } from '@/lib/live/game-stream';
-import type { Sport } from '@/lib/types';
+/**
+ * GET - Get live game data with current scores, odds, and win probability
+ */
+export async function GET(request: Request) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
-const encoder = new TextEncoder();
+    const { searchParams } = new URL(request.url);
+    const sport = searchParams.get('sport') || undefined;
+    const gameId = searchParams.get('gameId') || undefined;
 
-function writeMessage(writer: WritableStreamDefaultWriter<Uint8Array>, event: string, data: unknown) {
-  const payload = typeof data === 'string' ? data : JSON.stringify(data);
-  return writer.write(encoder.encode(`event: ${event}\ndata: ${payload}\n\n`));
+    if (gameId) {
+      const liveData = await prisma.liveGameData.findFirst({
+        where: { gameId },
+        orderBy: { timestamp: 'desc' },
+      });
+
+      if (!liveData) {
+        return NextResponse.json({
+          success: true,
+          game: null,
+          message: 'No live data available for this game',
+        });
+      }
+
+      return NextResponse.json({ success: true, game: formatLiveGame(liveData) });
+    } else {
+      const where: any = {};
+      if (sport) where.sport = sport;
+
+      const liveGames = await prisma.liveGameData.findMany({
+        where,
+        orderBy: { timestamp: 'desc' },
+        take: 100,
+      });
+
+      const gameMap = new Map<string, any>();
+      liveGames.forEach(game => {
+        if (!gameMap.has(game.gameId)) {
+          gameMap.set(game.gameId, game);
+        }
+      });
+
+      const uniqueGames = Array.from(gameMap.values());
+
+      return NextResponse.json({
+        success: true,
+        games: uniqueGames.map(formatLiveGame),
+        count: uniqueGames.length,
+      });
+    }
+  } catch (error) {
+    console.error('[Live] Games error:', error);
+    return NextResponse.json({ error: 'Failed to fetch live games' }, { status: 500 });
+  }
 }
 
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const league = (searchParams.get('league')?.toUpperCase() ?? 'NFL') as Sport;
-
-  const stream = getGameStream(league);
-
-  const { readable, writable } = new TransformStream();
-  const writer = writable.getWriter();
-
-  await writeMessage(writer, 'ready', { league, status: 'connected' });
-
-  const unsubscribe = stream.subscribe((payload) => {
-    void writeMessage(writer, 'update', payload);
-  });
-
-  const ping = setInterval(() => {
-    void writeMessage(writer, 'ping', { ts: Date.now() });
-  }, 30_000);
-
-  const abortHandler = () => {
-    clearInterval(ping);
-    unsubscribe();
-    void writer.close();
+function formatLiveGame(liveData: any) {
+  return {
+    gameId: liveData.gameId,
+    sport: liveData.sport,
+    homeTeam: liveData.homeTeam,
+    awayTeam: liveData.awayTeam,
+    score: { home: liveData.homeScore, away: liveData.awayScore, total: liveData.homeScore + liveData.awayScore },
+    gameState: { quarter: liveData.quarter, timeRemaining: liveData.timeRemaining, possession: liveData.possession },
+    liveOdds: { spreadHome: liveData.liveSpreadHome, spreadAway: liveData.liveSpreadAway, moneylineHome: liveData.liveMoneylineHome, moneylineAway: liveData.liveMoneylineAway, totalLine: liveData.liveTotalLine },
+    winProbability: { home: liveData.homeWinProb, away: liveData.awayWinProb },
+    momentum: { score: liveData.momentumScore, indicator: liveData.momentumScore > 20 ? 'home' : liveData.momentumScore < -20 ? 'away' : 'neutral', recentDrives: liveData.recentDrives ? JSON.parse(liveData.recentDrives) : [] },
+    recommendations: liveData.recommendations ? JSON.parse(liveData.recommendations) : [],
+    lastUpdated: liveData.lastUpdated,
   };
-
-  request.signal.addEventListener('abort', abortHandler);
-
-  return new NextResponse(readable, {
-    status: 200,
-    headers: {
-      'Content-Type': 'text/event-stream',
-      'Cache-Control': 'no-cache, no-transform',
-      Connection: 'keep-alive',
-      'Transfer-Encoding': 'chunked',
-    },
-  });
 }
