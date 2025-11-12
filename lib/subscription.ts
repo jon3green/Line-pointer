@@ -13,7 +13,7 @@ export interface TierFeatures {
     prioritySupport: boolean;
     customAlerts: boolean;
     historicalData: number; // days
-    api Access: boolean;
+    apiAccess: boolean;
   };
 }
 
