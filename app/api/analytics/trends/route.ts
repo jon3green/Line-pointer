@@ -22,9 +22,9 @@ export async function GET(request: Request) {
 
     const predictions = await prisma.prediction.findMany({
       where,
-      orderBy: { madeAt: 'asc' },
+      orderBy: { createdAt: 'asc' },
       select: {
-        madeAt: true,
+        createdAt: true,
         wasCorrect: true,
         confidence: true,
         spreadCLV: true,
@@ -76,7 +76,7 @@ export async function GET(request: Request) {
 function groupByPeriod(predictions: any[], period: string) {
   const groups = new Map<string, any[]>();
   predictions.forEach(pred => {
-    const date = new Date(pred.madeAt);
+    const date = new Date(pred.createdAt);
     let key: string;
     if (period === 'daily') {
       key = date.toISOString().split('T')[0];
