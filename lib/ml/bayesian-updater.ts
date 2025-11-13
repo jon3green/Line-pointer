@@ -279,9 +279,11 @@ export async function saveModifier(modifier: ConfidenceModifier, sport: string):
   console.log(`[Bayesian] Saving modifier: ${modifier.situation}`);
 }
 
-export default {
+const bayesianUpdater = {
   calculateModifiers,
   applyBayesianUpdate,
   getActiveModifiers,
   saveModifier,
 };
+
+export default bayesianUpdater;
