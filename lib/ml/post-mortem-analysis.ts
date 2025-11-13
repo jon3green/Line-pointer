@@ -332,8 +332,10 @@ export function exportForRetraining(result: PostMortemResult): string {
   return JSON.stringify(report, null, 2);
 }
 
-export default {
+const postMortemAnalysis = {
   runPostMortem,
   analyzePattern,
   exportForRetraining,
 };
+
+export default postMortemAnalysis;

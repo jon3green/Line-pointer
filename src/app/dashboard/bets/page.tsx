@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
@@ -32,14 +32,7 @@ export default function BetTracker() {
     }
   }, [status, router]);
 
-  useEffect(() => {
-    if (status === 'authenticated') {
-      fetchBets();
-      fetchStats();
-    }
-  }, [status, filter]);
-
-  const fetchBets = async () => {
+  const fetchBets = useCallback(async () => {
     try {
       const sportParam = filter.sport !== 'all' ? `&sport=${filter.sport}` : '';
       const statusParam = filter.status !== 'all' ? `&status=${filter.status}` : '';
@@ -53,9 +46,9 @@ export default function BetTracker() {
     } catch (error) {
       console.error('Error fetching bets:', error);
     }
-  };
+  }, [filter]);
 
-  const fetchStats = async () => {
+  const fetchStats = useCallback(async () => {
     setLoading(true);
     try {
       const sportParam = filter.sport !== 'all' ? `?sport=${filter.sport}` : '';
@@ -69,7 +62,15 @@ export default function BetTracker() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filter]);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (status === 'authenticated') {
+      fetchBets();
+      fetchStats();
+    }
+  }, [status, fetchBets, fetchStats]);
 
   const handleAddBet = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Line, Bar, Doughnut } from 'react-chartjs-2';
@@ -47,13 +47,7 @@ export default function AnalyticsDashboard() {
     }
   }, [status, router]);
 
-  useEffect(() => {
-    if (status === 'authenticated') {
-      fetchAnalytics();
-    }
-  }, [status, period, sport, chartType]);
-
-  const fetchAnalytics = async () => {
+  const fetchAnalytics = useCallback(async () => {
     setLoading(true);
     try {
       // Fetch trends
@@ -82,7 +76,14 @@ export default function AnalyticsDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [period, sport, chartType]);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (status === 'authenticated') {
+      fetchAnalytics();
+    }
+  }, [status, fetchAnalytics]);
 
   if (status === 'loading' || loading) {
     return (

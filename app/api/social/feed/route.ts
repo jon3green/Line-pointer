@@ -166,25 +166,29 @@ export async function GET(request: Request) {
         },
       });
 
-      activities = bets.map(bet => ({
-        id: bet.id,
-        type: 'bet_placed',
-        bet: {
-          selection: bet.selection,
-          betType: bet.betType,
-          odds: bet.odds,
-          stake: bet.stake,
-          status: bet.status,
-          line: bet.line,
-        },
-        game: {
+      activities = bets.map(bet => {
+        const gameData = bet.game ? {
           homeTeam: bet.game.homeTeam,
           awayTeam: bet.game.awayTeam,
           gameTime: bet.game.gameTime,
           sport: bet.game.sport,
-        },
-        createdAt: bet.createdAt,
-      }));
+        } : null;
+
+        return {
+          id: bet.id,
+          type: 'bet_placed',
+          bet: {
+            selection: bet.selection,
+            betType: bet.betType,
+            odds: bet.odds,
+            stake: bet.stake,
+            status: bet.status,
+            line: bet.line,
+          },
+          game: gameData,
+          createdAt: bet.createdAt,
+        };
+      });
     }
 
     return NextResponse.json({
