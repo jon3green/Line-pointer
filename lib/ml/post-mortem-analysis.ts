@@ -70,9 +70,6 @@ export async function runPostMortem(
 
   const incorrectPredictions = await prisma.prediction.findMany({
     where,
-    include: {
-      game: true,
-    },
   });
 
   console.log(`[PostMortem] Analyzing ${incorrectPredictions.length} incorrect predictions`);
