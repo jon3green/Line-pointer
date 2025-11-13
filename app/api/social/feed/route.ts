@@ -123,6 +123,7 @@ export async function GET(request: Request) {
 
       activities = sharedParlays.map(parlay => {
         const user = userMap.get(parlay.userId);
+        const parlayData = JSON.parse(parlay.parlayData);
         return {
           id: parlay.id,
           type: 'parlay_shared',
@@ -132,10 +133,15 @@ export async function GET(request: Request) {
             image: user?.image,
           },
           parlay: {
-            legs: JSON.parse(parlay.legs),
-            totalOdds: parlay.totalOdds,
-            status: parlay.status,
+            title: parlay.title,
+            description: parlay.description,
+            sport: parlay.sport,
+            legs: parlayData.legs || [],
+            totalOdds: parlayData.totalOdds,
+            status: parlayData.status,
           },
+          likes: parlay.likes,
+          views: parlay.views,
           createdAt: parlay.createdAt,
         };
       });
